@@ -343,13 +343,13 @@ document.getElementById('fName').textContent     = CONFIG.name;
 document.getElementById('fTitle').textContent    = CONFIG.title;
 document.getElementById('fCompany').textContent  = CONFIG.company;
 document.getElementById('bMonogram').textContent = CONFIG.company_short;
-document.getElementById('bPhone').textContent    = CONFIG.phone_display;
-document.getElementById('bEmail').textContent    = CONFIG.email;
+document.getElementById('bPhone').innerHTML      = `<a href="tel:${CONFIG.phone}" style="color:inherit;text-decoration:none">${CONFIG.phone_display}</a>`;
+document.getElementById('bEmail').innerHTML      = `<a href="mailto:${CONFIG.email}" style="color:inherit;text-decoration:none">${CONFIG.email}</a>`;
 document.getElementById('bLoc').textContent      = CONFIG.location;
 document.getElementById('bSpecialty').textContent= CONFIG.specialty;
-document.getElementById('iPhone').textContent    = CONFIG.phone_display;
-document.getElementById('iEmail').textContent    = CONFIG.email;
-document.getElementById('iLoc').textContent      = CONFIG.location;
+document.getElementById('iPhone').innerHTML      = `<a href="tel:${CONFIG.phone}" style="color:inherit;text-decoration:none">${CONFIG.phone_display}</a>`;
+document.getElementById('iEmail').innerHTML      = `<a href="mailto:${CONFIG.email}" style="color:inherit;text-decoration:none">${CONFIG.email}</a>`;
+document.getElementById('iLoc').innerHTML        = `<a href="https://maps.google.com/?q=${encodeURIComponent(CONFIG.location)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${CONFIG.location}</a>`;
 
 document.getElementById('cardWrap').addEventListener('click', () => {
   document.getElementById('cardInner').classList.toggle('flipped');

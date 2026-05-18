@@ -129,11 +129,18 @@
                         border-color var(--dur-base) var(--ease-glass);
         }
 
-        .card-wrapper:hover .card-face {
+        .card-wrapper:hover .card-front {
             left: 0;
             top: 0;
             transform: translateY(-2px) scale(1.005);
             border-color: var(--card-border-hover);
+        }
+        /* Back face always stays rotated — hover must not override it */
+        .card-back {
+            transform: rotateY(180deg) !important;
+        }
+        .card-wrapper:hover .card-inner.flipped .card-back {
+            transform: rotateY(180deg) translateY(-2px) scale(1.005) !important;
         }
 
         .card-front {
@@ -1129,5 +1136,32 @@ END:VCARD`;
 })();
 </script>
 <!-- End Phase 4 Extras -->
+
+<script>
+/* MakersCo: Make contact values tappable */
+(function(){
+  var C = window.CONFIG || {};
+  function linkify(id, href, text) {
+    var el = document.getElementById(id);
+    if (!el || !href) return;
+    el.innerHTML = '<a href="' + href + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">' + (text || el.textContent) + '</a>';
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    if (C.phone) {
+      linkify('phoneDisplay', 'tel:' + C.phone.replace(/\D/g,''));
+    }
+    if (C.email) {
+      linkify('emailDisplay', 'mailto:' + C.email);
+    }
+    if (C.website) {
+      var url = C.website.startsWith('http') ? C.website : 'https://' + C.website;
+      linkify('websiteDisplay', url);
+    }
+    if (C.location) {
+      linkify('locationDisplay', 'https://maps.google.com/?q=' + encodeURIComponent(C.location));
+    }
+  });
+})();
+</script>
 </body>
 </html>

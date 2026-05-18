@@ -319,14 +319,14 @@ document.getElementById('personaTag').textContent  = CONFIG.persona;
 document.getElementById('cardName').textContent    = CONFIG.name;
 document.getElementById('cardTitle').textContent   = CONFIG.title;
 document.getElementById('cardCompany').textContent = CONFIG.company;
-document.getElementById('bPhone').textContent      = CONFIG.phone_display;
-document.getElementById('bEmail').textContent      = CONFIG.email;
-document.getElementById('bWeb').textContent        = CONFIG.website;
+document.getElementById('bPhone').innerHTML        = `<a href="tel:${CONFIG.phone}" style="color:inherit;text-decoration:none">${CONFIG.phone_display}</a>`;
+document.getElementById('bEmail').innerHTML        = `<a href="mailto:${CONFIG.email}" style="color:inherit;text-decoration:none">${CONFIG.email}</a>`;
+document.getElementById('bWeb').innerHTML          = `<a href="https://${CONFIG.website}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${CONFIG.website}</a>`;
 document.getElementById('bLoc').textContent        = CONFIG.location;
 document.getElementById('bSpecialty').textContent  = CONFIG.specialty;
-document.getElementById('iWa').textContent         = CONFIG.phone_display;
-document.getElementById('iEmail').textContent      = CONFIG.email;
-document.getElementById('iWeb').textContent        = CONFIG.website;
+document.getElementById('iWa').innerHTML           = `<a href="https://wa.me/${CONFIG.phone}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${CONFIG.phone_display}</a>`;
+document.getElementById('iEmail').innerHTML        = `<a href="mailto:${CONFIG.email}" style="color:inherit;text-decoration:none">${CONFIG.email}</a>`;
+document.getElementById('iWeb').innerHTML          = `<a href="https://${CONFIG.website}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${CONFIG.website}</a>`;
 
 // Flip
 document.getElementById('cardWrap').addEventListener('click', function(){
