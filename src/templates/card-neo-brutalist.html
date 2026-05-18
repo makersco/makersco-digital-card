@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Digital Business Card - Neo-Brutalist Design">
+    <title>Digital Business Card</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            /* Surface */
+            --bg-page: #FFFBF0;
+            --card-front: #FF5C39;
+            --card-back: #0a0a0f;
+            --ink: #0a0a0f;
+            --ink-inverse: #FFFBF0;
+
+            /* Accent system */
+            --accent: #FF5C39;
+            --accent-shadow: #B23A1F;
+            --badge-bg: #FFE74C;
+            --badge-ink: #0a0a0f;
+
+            /* Structure */
+            --border: #0a0a0f;
+            --border-width: 3px;
+            --shadow-offset: 8px;
+            --radius-card: 4px;
+            --radius-badge: 20px;
+
+            /* Type */
+            --font-sans: 'Space Grotesk', system-ui, sans-serif;
+
+            /* Motion */
+            --t-fast: 120ms;
+            --t-base: 200ms;
+            --t-flip: 280ms;
+            --ease-snap: cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-page);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .card-wrapper {
+            width: 360px;
+            height: 220px;
+            perspective: 1000px;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .card-wrapper {
+                width: 400px;
+                height: 240px;
+            }
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform var(--t-flip) var(--ease-snap);
+        }
+
+        .card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border: var(--border-width) solid var(--border);
+            border-radius: var(--radius-card);
+            overflow: hidden;
+        }
+
+        .card-front {
+            background: var(--card-front);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--ink);
+            transition: transform var(--t-fast) var(--ease-snap),
+                        box-shadow var(--t-fast) var(--ease-snap);
+        }
+
+        .card-wrapper:hover .card-front {
+            transform: translate(-2px, -2px);
+            box-shadow: 10px 10px 0 0 var(--ink);
+        }
+
+        .card-wrapper:active .card-front {
+            transform: translate(4px, 4px);
+            box-shadow: 4px 4px 0 0 var(--ink);
+        }
+
+        .card-back {
+            background: var(--card-back);
+            transform: rotateY(180deg);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--ink);
+        }
+
+        .face-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 24px;
+        }
+
+        .badge {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            padding: 2px 10px;
+            border-radius: var(--radius-badge);
+            background: var(--badge-bg);
+            border: 2px solid var(--ink);
+            font-weight: 700;
+            font-size: 11px;
+            line-height: 1;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--badge-ink);
+            animation: badgeEntrance var(--t-base) var(--ease-snap) 80ms backwards;
+        }
+
+        @keyframes badgeEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hatch-decoration {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+        }
+
+        .hatch-decoration line {
+            stroke: var(--ink);
+            stroke-width: 2;
+        }
+
+        .hatch-decoration-inverse {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            width: 56px;
+            height: 56px;
+        }
+
+        .hatch-decoration-inverse line {
+            stroke: var(--bg-page);
+            stroke-width: 2;
+        }
+
+        .name-block {
+            position: absolute;
+            left: 24px;
+            bottom: 72px;
+        }
+
+        .name {
+            font-weight: 700;
+            font-size: 32px;
+            line-height: 1.0;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        @media (min-width: 768px) {
+            .name {
+                font-size: 40px;
+            }
+        }
+
+        .meta-block {
+            position: absolute;
+            left: 24px;
+            bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .title {
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.2;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        .company {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 1.4;
+            color: var(--ink);
+        }
+
+        .anchor-bar {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 8px;
+            height: 48px;
+            background: var(--ink);
+        }
+
+        .flip-btn {
+            position: absolute;
+            right: 24px;
+            bottom: 24px;
+            font-weight: 700;
+            font-size: 13px;
+            line-height: 1;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 12px 20px;
+            background: var(--ink-inverse);
+            color: var(--ink);
+            border: 3px solid var(--ink);
+            border-radius: var(--radius-card);
+            box-shadow: 4px 4px 0 0 var(--ink);
+            cursor: pointer;
+            transition: transform var(--t-fast) var(--ease-snap),
+                        box-shadow var(--t-fast) var(--ease-snap);
+        }
+
+        .flip-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0 0 var(--ink);
+        }
+
+        .flip-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0 0 0 0 var(--ink);
+        }
+
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-top: 8px;
+        }
+
+        .contact-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 44px;
+            text-decoration: none;
+            color: var(--ink-inverse);
+            transition: transform var(--t-fast) var(--ease-snap);
+        }
+
+        .contact-row:hover {
+            transform: translateX(4px);
+        }
+
+        .contact-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            border: 2px solid var(--bg-page);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--ink-inverse);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .contact-label {
+            font-weight: 700;
+            font-size: 11px;
+            line-height: 1;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .contact-value {
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 1.3;
+            color: var(--ink-inverse);
+        }
+
+        .bottom-strip {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 8px;
+            background: var(--accent);
+        }
+
+        .actions {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .actions-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 13px;
+            line-height: 1;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 12px 20px;
+            background: var(--ink-inverse);
+            color: var(--ink);
+            border: 3px solid var(--ink);
+            border-radius: var(--radius-card);
+            box-shadow: 4px 4px 0 0 var(--ink);
+            cursor: pointer;
+            transition: transform var(--t-fast) var(--ease-snap),
+                        box-shadow var(--t-fast) var(--ease-snap);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 5px 5px 0 0 var(--ink);
+        }
+
+        .btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0 0 0 0 var(--ink);
+        }
+
+        .btn--primary {
+            background: var(--accent);
+            color: var(--ink);
+        }
+
+        .qr-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 24px;
+            background: var(--ink-inverse);
+            border: 3px solid var(--ink);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--ink);
+        }
+
+        .qr-title {
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1.2;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        #qrcode {
+            padding: 8px;
+            background: white;
+            border: 3px solid var(--ink);
+        }
+
+        #qrcode canvas,
+        #qrcode img {
+            display: block;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 12px 24px;
+            background: var(--ink);
+            color: var(--ink-inverse);
+            border: 3px solid var(--ink);
+            border-radius: var(--radius-card);
+            box-shadow: 4px 4px 0 0 var(--accent);
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: all var(--t-base) var(--ease-snap);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 480px) {
+            .name {
+                font-size: 28px;
+            }
+
+            .contact-value {
+                font-size: 14px;
+            }
+
+            .actions-row {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+        }
+    
+/* ── MakersCo Spacing Fix ──────────────────────────────────────────────── */
+/* Standardised spacing injected post-build to fix cramped layout           */
+
+/* Page breathing room */
+body {
+  padding: 40px 24px 60px !important;
+  min-height: 100vh;
+}
+@media (max-width: 480px) {
+  body { padding: 32px 16px 48px !important; }
+}
+
+/* Card centring with consistent gap below */
+.card-wrapper,
+.card-scene,
+.scene {
+  margin: 0 auto 28px auto !important;
+  max-width: 380px;
+}
+
+/* Card face inner padding — never let content touch edges */
+.card-face,
+.card__face,
+.flip-card-face {
+  padding: 22px 24px !important;
+}
+
+/* Info / contact panel below card */
+.info-panel,
+.contact-panel,
+.card-info,
+.back-info,
+.detail-panel {
+  margin-top: 20px !important;
+  padding: 20px 20px !important;
+  border-radius: 14px;
+}
+
+/* Contact rows inside info panel */
+.contact-row,
+.info-row,
+.detail-row {
+  padding: 10px 0 !important;
+  gap: 12px !important;
+}
+.contact-row + .contact-row,
+.info-row + .info-row,
+.detail-row + .detail-row {
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+/* Action buttons container */
+.actions,
+.action-row,
+.action-buttons,
+.card-actions,
+.button-group,
+.cta-group,
+.btn-group {
+  margin-top: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+/* Every button — consistent height and tap target */
+.btn,
+.cta-btn,
+.action-btn,
+.wa-btn,
+.vcard-btn,
+.share-btn,
+.copy-btn,
+.primary-btn,
+.secondary-btn,
+button:not(.flip-btn):not([class*="flip"]):not([class*="tab"]) {
+  min-height: 48px !important;
+  padding: 0 24px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+}
+
+/* Share / secondary row — horizontal pills */
+.share-row,
+.share-panel,
+.share-options {
+  display: flex !important;
+  gap: 10px !important;
+  margin-top: 10px !important;
+  flex-wrap: wrap !important;
+}
+.share-row .btn,
+.share-panel .btn,
+.share-options .btn {
+  flex: 1 !important;
+  min-width: 80px !important;
+  min-height: 44px !important;
+  padding: 0 12px !important;
+  font-size: 13px !important;
+}
+
+/* Flip hint text */
+.flip-hint,
+.card__flip-hint,
+.flip-indicator,
+.tap-hint {
+  text-align: center !important;
+  font-size: 11px !important;
+  opacity: 0.5 !important;
+  margin-top: 8px !important;
+  margin-bottom: 4px !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Section labels / headings */
+.section-label,
+.panel-title,
+.section-title {
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  opacity: 0.5 !important;
+  margin-bottom: 12px !important;
+}
+
+/* ── End MakersCo Spacing Fix ─────────────────────────────────────────── */
+
+
+/* ── Phase 4 Extras ─────────────────────────────────────────────────────── */
+.extras-section{width:340px;margin:10px auto 0;display:flex;flex-direction:column;gap:9px}
+.social-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:4px 0}
+.social-btn{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:transform .15s,opacity .15s;flex-shrink:0;
+}
+.social-btn:hover{transform:translateY(-2px);opacity:.85}
+.social-btn svg{width:18px;height:18px;flex-shrink:0}
+.extra-btn{
+  width:100%;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:13px;font-weight:600;
+  text-decoration:none;cursor:pointer;border:none;
+  transition:transform .15s,opacity .15s;
+}
+.extra-btn:hover{transform:translateY(-1px);opacity:.9}
+.extra-btn:active{transform:scale(.98)}
+/* ── End Phase 4 Extras ──────────────────────────────────────────────────── */
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="card-wrapper" id="cardWrapper">
+            <div class="card-inner" id="cardInner">
+                <!-- FRONT FACE -->
+                <div class="card-face card-front">
+                    <div class="face-content">
+                        <div class="badge">AVAILABLE</div>
+                        
+                        <svg class="hatch-decoration" viewBox="0 0 56 56">
+                            <line x1="8" y1="0" x2="56" y2="48"></line>
+                            <line x1="0" y1="8" x2="48" y2="56"></line>
+                            <line x1="16" y1="0" x2="56" y2="40"></line>
+                        </svg>
+
+                        <div class="name-block">
+                            <div class="name" id="nameDisplay"></div>
+                        </div>
+
+                        <div class="meta-block">
+                            <div class="title" id="titleDisplay"></div>
+                            <div class="company" id="companyDisplay"></div>
+                        </div>
+
+                        <div class="anchor-bar"></div>
+
+                        <button class="flip-btn" onclick="event.stopPropagation(); toggleFlip();">FLIP</button>
+                    </div>
+                </div>
+
+                <!-- BACK FACE -->
+                <div class="card-face card-back">
+                    <div class="face-content">
+                        <div class="contact-list">
+                            <a href="" class="contact-row" id="emailRow">
+                                <div class="contact-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                    </svg>
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-label">EMAIL</div>
+                                    <div class="contact-value" id="emailValue"></div>
+                                </div>
+                            </a>
+
+                            <a href="" class="contact-row" id="phoneRow">
+                                <div class="contact-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                                    </svg>
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-label">PHONE</div>
+                                    <div class="contact-value" id="phoneValue"></div>
+                                </div>
+                            </a>
+
+                            <a href="" class="contact-row" id="instagramRow" target="_blank" rel="noopener noreferrer">
+                                <div class="contact-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                    </svg>
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-label">INSTAGRAM</div>
+                                    <div class="contact-value" id="instagramValue"></div>
+                                </div>
+                            </a>
+
+                            <a href="" class="contact-row" id="websiteRow" target="_blank" rel="noopener noreferrer">
+                                <div class="contact-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                    </svg>
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-label">WEBSITE</div>
+                                    <div class="contact-value" id="websiteValue"></div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <svg class="hatch-decoration-inverse" viewBox="0 0 56 56">
+                            <line x1="48" y1="56" x2="0" y2="8"></line>
+                            <line x1="56" y1="48" x2="8" y2="0"></line>
+                            <line x1="40" y1="56" x2="0" y2="16"></line>
+                        </svg>
+
+                        <div class="bottom-strip"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <div class="actions-row">
+                <a href="" class="btn btn--primary" id="whatsappBtn" target="_blank" rel="noopener noreferrer">WHATSAPP</a>
+                <button class="btn" onclick="copyLink()">COPY LINK</button>
+                <button class="btn" onclick="shareCard()">SHARE</button>
+            </div>
+            <button class="btn" onclick="downloadVCard()">DOWNLOAD VCARD</button>
+        </div>
+
+        <div class="qr-section">
+            <div class="qr-title">SCAN TO SAVE CONTACT</div>
+            <div id="qrcode"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const CONFIG = {
+            name: "Ahmad Faris bin Razak",
+            title: "Founder & CEO",
+            company: "Pixel Reka Sdn Bhd",
+            phone: "+60123456789",
+            email: "faris@pixelreka.com.my",
+            website: "https://pixelreka.com.my",
+            location: "Kuala Lumpur, Malaysia",
+            bio: "Building digital solutions for Malaysian SMEs",
+            color: "#FF5C39",
+            whatsapp_message: "Hi Faris, I found your digital card!",
+            social: {
+                linkedin:  "https://linkedin.com/in/",
+                instagram: "https://instagram.com/",
+                twitter:   ""
+            },
+            custom_links: [
+                { icon: "🌐", label: "Visit Website", url: "https://pixelreka.com.my" }
+            ],
+            booking_url: "",
+            maps_url:    ""
+        };
+        window.CONFIG = CONFIG;
+
+        function initCard() {
+            const nameParts = CONFIG.name.split(' ');
+            const firstLine = nameParts.slice(0, Math.ceil(nameParts.length / 2)).join(' ');
+            const secondLine = nameParts.slice(Math.ceil(nameParts.length / 2)).join(' ');
+            
+            document.getElementById('nameDisplay').innerHTML = firstLine + (secondLine ? '<br>' + secondLine : '');
+            document.getElementById('titleDisplay').textContent = CONFIG.title;
+            document.getElementById('companyDisplay').textContent = CONFIG.company;
+            
+            document.getElementById('emailValue').textContent = CONFIG.email;
+            document.getElementById('emailRow').href = `mailto:${CONFIG.email}`;
+            
+            document.getElementById('phoneValue').textContent = CONFIG.phone;
+            document.getElementById('phoneRow').href = `tel:${CONFIG.phone}`;
+            
+            const instagramHandle = '@pixelreka';
+            document.getElementById('instagramValue').textContent = instagramHandle;
+            document.getElementById('instagramRow').href = `https://instagram.com/${instagramHandle.substring(1)}`;
+            
+            const websiteDisplay = CONFIG.website.replace('https://', '').replace('http://', '');
+            document.getElementById('websiteValue').textContent = websiteDisplay;
+            document.getElementById('websiteRow').href = CONFIG.website;
+            
+            const whatsappLink = `https://wa.me/${CONFIG.phone.replace(/\D/g, '')}?text=${encodeURIComponent(CONFIG.whatsapp_message)}`;
+            document.getElementById('whatsappBtn').href = whatsappLink;
+            
+            if (CONFIG.color) {
+                document.documentElement.style.setProperty('--accent', CONFIG.color);
+                document.documentElement.style.setProperty('--card-front', CONFIG.color);
+            }
+        }
+
+        function toggleFlip() {
+            const cardInner = document.getElementById('cardInner');
+            cardInner.classList.toggle('flipped');
+        }
+
+        document.getElementById('cardWrapper').addEventListener('click', function(e) {
+            if (!e.target.closest('.flip-btn') && !e.target.closest('.contact-row')) {
+                toggleFlip();
+            }
+        });
+
+        function generateQRCode() {
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            
+            const vCardData = generateVCardData();
+            
+            new QRCode(qrContainer, {
+                text: vCardData,
+                width: 160,
+                height: 160,
+                colorDark: CONFIG.color || "#FF5C39",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+
+        function generateVCardData() {
+            const vCard = [
+                'BEGIN:VCARD',
+                'VERSION:3.0',
+                `FN:${CONFIG.name}`,
+                `TEL;TYPE=CELL:${CONFIG.phone}`,
+                `EMAIL:${CONFIG.email}`,
+                `URL:${CONFIG.website}`,
+                `TITLE:${CONFIG.title}`,
+                `ORG:${CONFIG.company}`,
+                `ADR;TYPE=WORK:;;${CONFIG.location}`,
+                `NOTE:${CONFIG.bio}`,
+                'END:VCARD'
+            ].join('\n');
+            
+            return vCard;
+        }
+
+        function downloadVCard() {
+            const vCardData = generateVCardData();
+            const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${CONFIG.name.replace(/\s+/g, '_')}.vcf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            showToast('VCARD DOWNLOADED');
+        }
+
+        function copyLink() {
+            const currentUrl = window.location.href;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(currentUrl).then(function() {
+                    showToast('LINK COPIED');
+                }).catch(function(err) {
+                    fallbackCopyTextToClipboard(currentUrl);
+                });
+            } else {
+                fallbackCopyTextToClipboard(currentUrl);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('LINK COPIED');
+                } else {
+                    showToast('COPY FAILED');
+                }
+            } catch (err) {
+                showToast('COPY FAILED');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function shareCard() {
+            const shareData = {
+                title: `${CONFIG.name} - Digital Business Card`,
+                text: `${CONFIG.name}\n${CONFIG.title}\n${CONFIG.company}`,
+                url: window.location.href
+            };
+            
+            if (navigator.share) {
+                navigator.share(shareData)
+                    .then(() => showToast('SHARED'))
+                    .catch((err) => {
+                        if (err.name !== 'AbortError') {
+                            copyLink();
+                        }
+                    });
+            } else {
+                copyLink();
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            initCard();
+            generateQRCode();
+        });
+    </script>
+
+<!-- Phase 4: Social Links, Custom Buttons, Booking/Location -->
+<script>
+(function(){
+  var C = window.CONFIG || {};
+
+  // Social platform definitions
+  var PLATFORMS = [
+    { key:'linkedin',  label:'LinkedIn',  bg:'#0A66C2', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>' },
+    { key:'instagram', label:'Instagram', bg:'#E1306C', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>' },
+    { key:'facebook',  label:'Facebook',  bg:'#1877F2', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>' },
+    { key:'twitter',   label:'X / Twitter', bg:'#000', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.737-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>' },
+    { key:'tiktok',    label:'TikTok',    bg:'#010101', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.77a4.85 4.85 0 01-1.01-.08z"/></svg>' },
+    { key:'youtube',   label:'YouTube',   bg:'#FF0000', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>' },
+    { key:'pinterest', label:'Pinterest', bg:'#E60023', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>' }
+  ];
+
+  // Accent color from CSS variable or fallback
+  function getAccent() {
+    return getComputedStyle(document.documentElement)
+      .getPropertyValue('--accent').trim() || '#6366f1';
+  }
+
+  function hexToRgb(hex) {
+    var r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return r ? [parseInt(r[1],16), parseInt(r[2],16), parseInt(r[3],16)] : [99,102,241];
+  }
+
+  function buildSection() {
+    var social   = C.social || {};
+    var links    = C.custom_links || [];
+    var booking  = C.booking_url || '';
+    var location = C.location || '';
+    var mapsUrl  = C.maps_url || ('https://maps.google.com/?q=' + encodeURIComponent(location));
+
+    var hasSocial  = PLATFORMS.some(function(p){ return social[p.key]; });
+    var hasLinks   = links.length > 0;
+    var hasBooking = !!booking;
+    var hasLoc     = !!location;
+
+    if (!hasSocial && !hasLinks && !hasBooking && !hasLoc) return;
+
+    var accent = getAccent();
+    var rgb    = hexToRgb(accent);
+    var accentRgba = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',';
+
+    var section = document.createElement('div');
+    section.className = 'extras-section';
+
+    // ── Social icons ──
+    if (hasSocial) {
+      var row = document.createElement('div');
+      row.className = 'social-row';
+      PLATFORMS.forEach(function(p) {
+        var url = social[p.key];
+        if (!url) return;
+        var a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'social-btn';
+        a.title = p.label;
+        a.style.cssText = 'background:'+accentRgba+'0.12);border:1px solid '+accentRgba+'0.3);color:'+accent+';';
+        a.innerHTML = p.svg;
+        row.appendChild(a);
+      });
+      section.appendChild(row);
+    }
+
+    // ── Custom link buttons ──
+    links.forEach(function(link) {
+      if (!link.url) return;
+      var a = document.createElement('a');
+      a.href = link.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.className = 'extra-btn';
+      a.style.cssText = 'background:'+accentRgba+'0.1);border:1px solid '+accentRgba+'0.25);color:'+accent+';font-family:inherit;';
+      a.innerHTML = (link.icon ? '<span style="font-size:16px">'+link.icon+'</span> ' : '') + (link.label || link.url);
+      section.appendChild(a);
+    });
+
+    // ── Booking button ──
+    if (hasBooking) {
+      var ab = document.createElement('a');
+      ab.href = booking;
+      ab.target = '_blank';
+      ab.rel = 'noopener noreferrer';
+      ab.className = 'extra-btn';
+      ab.style.cssText = 'background:'+accentRgba+'0.12);border:1px solid '+accentRgba+'0.3);color:'+accent+';font-family:inherit;';
+      ab.innerHTML = '<span style="font-size:16px">📅</span> Book a Meeting';
+      section.appendChild(ab);
+    }
+
+    // ── Location button ──
+    if (hasLoc) {
+      var al = document.createElement('a');
+      al.href = mapsUrl;
+      al.target = '_blank';
+      al.rel = 'noopener noreferrer';
+      al.className = 'extra-btn';
+      al.style.cssText = 'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#10b981;font-family:inherit;';
+      al.innerHTML = '<span style="font-size:16px">📍</span> ' + location;
+      section.appendChild(al);
+    }
+
+    // Insert: find .qr-section and insert before it, or append to body
+    var qr = document.querySelector('.qr-section');
+    if (qr) {
+      qr.parentNode.insertBefore(section, qr);
+    } else {
+      document.body.appendChild(section);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildSection);
+  } else {
+    buildSection();
+  }
+})();
+</script>
+<!-- End Phase 4 Extras -->
+</body>
+</html>

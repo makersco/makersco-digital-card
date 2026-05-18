@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Digital Card — Vibrant Bold</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#EC4899;
+  --accent-deep:#9D2D6B;
+  --accent-glow:rgba(236,72,153,.35);
+  --bg:#0d0d0d;
+  --surface:#1a1a1a;
+  --surface2:#222222;
+  --border:rgba(255,255,255,.08);
+  --text:#FAFAFA;
+  --text2:rgba(250,250,250,.6);
+  --text3:rgba(250,250,250,.35);
+}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:40px 20px 60px;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── Card ── */
+.card-wrap{
+  width:340px;height:200px;
+  perspective:1000px;
+  cursor:pointer;
+  margin:0 auto 10px;
+  flex-shrink:0;
+}
+.card-inner{
+  width:100%;height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform .6s cubic-bezier(.34,1.56,.64,1);
+}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  border-radius:18px;
+  padding:20px 22px;
+  overflow:hidden;
+}
+
+/* ── Front ── */
+.card-front{
+  background:linear-gradient(135deg,var(--accent-deep) 0%,var(--accent) 60%,#F472B6 100%);
+  box-shadow:0 20px 50px var(--accent-glow);
+  display:flex;flex-direction:column;justify-content:space-between;
+  position:relative;
+}
+/* Large decorative letter — clipped inside the card */
+.card-front::before{
+  content:attr(data-letter);
+  position:absolute;
+  right:-8px;bottom:-20px;
+  font-size:140px;font-weight:800;line-height:1;
+  color:rgba(255,255,255,.1);
+  letter-spacing:-.04em;
+  pointer-events:none;
+  user-select:none;
+}
+.front-top{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  position:relative;z-index:1;
+}
+.name-initial{
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(255,255,255,.2);
+  border:1.5px solid rgba(255,255,255,.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;color:#fff;
+  flex-shrink:0;
+}
+.type-badge{
+  background:rgba(255,255,255,.18);
+  color:#fff;
+  padding:3px 10px;border-radius:20px;
+  font-size:10px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+}
+.front-bottom{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;gap:2px;
+}
+.card-name{
+  font-size:20px;font-weight:800;
+  line-height:1.15;color:#fff;
+  text-shadow:0 1px 8px rgba(0,0,0,.2);
+}
+.card-title{
+  font-size:11px;font-weight:300;
+  color:rgba(255,255,255,.75);
+  letter-spacing:.02em;
+}
+.card-company{
+  font-size:10px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.55);margin-top:2px;
+}
+
+/* ── Back ── */
+.card-back{
+  background:var(--surface);
+  border:1px solid rgba(236,72,153,.2);
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+  transform:rotateY(180deg);
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.back-accent-line{
+  width:32px;height:3px;
+  background:var(--accent);
+  border-radius:2px;margin-bottom:2px;
+}
+.back-top{display:flex;flex-direction:column;gap:2px}
+.back-title-label{font-size:8px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--text3)}
+.back-title-val{font-size:12px;font-weight:600;color:var(--text2)}
+.contact-rows{display:flex;flex-direction:column;gap:7px}
+.c-row{display:flex;align-items:center;gap:9px}
+.c-icon{
+  width:26px;height:26px;border-radius:8px;
+  background:rgba(236,72,153,.12);
+  border:1px solid rgba(236,72,153,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;flex-shrink:0;
+}
+.c-info .c-key{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3)}
+.c-info .c-val{font-size:11px;color:var(--text2)}
+.back-wa{
+  font-size:9px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--accent);opacity:.7;
+}
+
+/* ── Flip hint ── */
+.flip-hint{font-size:10px;color:var(--text3);text-align:center;letter-spacing:.04em;margin-bottom:20px}
+
+/* ── Info panel ── */
+.info-panel{
+  width:340px;margin:0 auto 12px;
+  background:var(--surface);
+  border:1px solid rgba(236,72,153,.15);
+  border-radius:14px;padding:16px 20px;
+  display:flex;flex-direction:column;gap:0;
+}
+.info-row{display:flex;align-items:center;gap:12px;padding:9px 0}
+.info-row+.info-row{border-top:1px solid rgba(255,255,255,.06)}
+.info-icon{
+  width:30px;height:30px;border-radius:9px;
+  background:rgba(236,72,153,.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;
+}
+.info-key{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:1px}
+.info-val{font-size:12px;color:var(--text2)}
+
+/* ── Buttons ── */
+.actions{width:340px;margin:0 auto;display:flex;flex-direction:column;gap:9px}
+.btn{
+  width:100%;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:'Outfit',sans-serif;
+  font-size:14px;font-weight:600;
+  cursor:pointer;border:none;text-decoration:none;
+  transition:transform .15s,opacity .15s;
+}
+.btn:hover{transform:translateY(-1px);opacity:.9}
+.btn:active{transform:scale(.98)}
+.btn-accent{background:linear-gradient(135deg,var(--accent-deep),var(--accent));color:#fff;box-shadow:0 4px 16px var(--accent-glow)}
+.btn-wa{background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#25d366}
+.btn-outline{background:var(--surface2);border:1px solid var(--border);color:var(--text2)}
+.share-row{display:flex;gap:8px}
+.share-row .btn{font-size:12px;height:42px}
+
+/* ── QR ── */
+.qr-section{
+  width:340px;margin:12px auto 0;
+  background:var(--surface);border:1px solid rgba(236,72,153,.15);
+  border-radius:14px;padding:16px 20px;
+  display:flex;align-items:center;gap:14px;
+}
+.qr-box{
+  width:60px;height:60px;
+  background:#fff;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;flex-shrink:0;
+}
+.qr-text h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.qr-text p{font-size:11px;color:var(--text3);line-height:1.4}
+
+/* ── Toast ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(60px);
+  background:var(--surface2);
+  border:1px solid rgba(236,72,153,.3);
+  color:var(--text);padding:9px 20px;
+  border-radius:24px;font-size:13px;font-weight:600;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;white-space:nowrap;z-index:999;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── Phase 4 Extras ─────────────────────────────────────────────────────── */
+.extras-section{width:340px;margin:10px auto 0;display:flex;flex-direction:column;gap:9px}
+.social-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:4px 0}
+.social-btn{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:transform .15s,opacity .15s;flex-shrink:0;
+}
+.social-btn:hover{transform:translateY(-2px);opacity:.85}
+.social-btn svg{width:18px;height:18px;flex-shrink:0}
+.extra-btn{
+  width:100%;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:13px;font-weight:600;
+  text-decoration:none;cursor:pointer;border:none;
+  transition:transform .15s,opacity .15s;
+}
+.extra-btn:hover{transform:translateY(-1px);opacity:.9}
+.extra-btn:active{transform:scale(.98)}
+/* ── End Phase 4 Extras ──────────────────────────────────────────────────── */
+</style>
+</head>
+<body>
+
+<div class="card-wrap" id="cardWrap">
+  <div class="card-inner" id="cardInner">
+
+    <!-- Front -->
+    <div class="card-face card-front" id="cardFront" data-letter="S">
+      <div class="front-top">
+        <div class="name-initial" id="fInitial">S</div>
+        <div class="type-badge" id="fBadge">F&B</div>
+      </div>
+      <div class="front-bottom">
+        <div class="card-name" id="fName">Siti Nurhaliza Ibrahim</div>
+        <div class="card-title" id="fTitle">Executive Chef & Owner</div>
+        <div class="card-company" id="fCompany">Rempah Warisan Kitchen</div>
+      </div>
+    </div>
+
+    <!-- Back -->
+    <div class="card-face card-back">
+      <div class="back-top">
+        <div class="back-accent-line"></div>
+        <div class="back-title-label">Specialty</div>
+        <div class="back-title-val" id="bSpecialty">Modern heritage Malay cuisine</div>
+      </div>
+      <div class="contact-rows">
+        <div class="c-row">
+          <div class="c-icon">📞</div>
+          <div class="c-info"><div class="c-key">Phone</div><div class="c-val" id="bPhone">+60 19-772 8334</div></div>
+        </div>
+        <div class="c-row">
+          <div class="c-icon">✉️</div>
+          <div class="c-info"><div class="c-key">Email</div><div class="c-val" id="bEmail">siti@rempahwarisan.com.my</div></div>
+        </div>
+        <div class="c-row">
+          <div class="c-icon">📍</div>
+          <div class="c-info"><div class="c-key">Location</div><div class="c-val" id="bLoc">Shah Alam, Malaysia</div></div>
+        </div>
+      </div>
+      <div class="back-wa" id="bWa">Chat on WhatsApp →</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="flip-hint">Tap card to flip</div>
+
+<div class="info-panel">
+  <div class="info-row">
+    <div class="info-icon">📱</div>
+    <div><div class="info-key">WhatsApp</div><div class="info-val" id="iWa">+60 19-772 8334</div></div>
+  </div>
+  <div class="info-row">
+    <div class="info-icon">✉️</div>
+    <div><div class="info-key">Email</div><div class="info-val" id="iEmail">siti@rempahwarisan.com.my</div></div>
+  </div>
+  <div class="info-row">
+    <div class="info-icon">📍</div>
+    <div><div class="info-key">Location</div><div class="info-val" id="iLoc">Shah Alam, Malaysia</div></div>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="btn btn-accent" onclick="saveContact()">💾 Save Contact</button>
+  <button class="btn btn-wa" onclick="openWhatsApp()">💬 Chat on WhatsApp</button>
+  <div class="share-row">
+    <button class="btn btn-outline" onclick="copyLink()">🔗 Copy Link</button>
+    <button class="btn btn-outline" onclick="shareCard()">↗ Share</button>
+  </div>
+</div>
+
+<div class="qr-section">
+  <div class="qr-box"><div id="qrCode"></div></div>
+  <div class="qr-text">
+    <h4>Scan to Connect</h4>
+    <p>Point your camera to open this card instantly</p>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+const CONFIG = {
+  name:          "Siti Nurhaliza Ibrahim",
+  initial:       "S",
+  badge:         "F&B",
+  title:         "Executive Chef & Owner",
+  company:       "Rempah Warisan Kitchen",
+  specialty:     "Modern heritage Malay cuisine",
+  phone:         "+60197728334",
+  phone_display: "+60 19-772 8334",
+  email:         "siti@rempahwarisan.com.my",
+  location:      "Shah Alam, Malaysia",
+  wa_message:    "Hi Chef Siti, I found your digital card and would love to enquire about your kitchen!",
+  social: {
+    instagram: "https://instagram.com/",
+    facebook:  "https://facebook.com/"
+  },
+  custom_links: [
+    { icon: "🍽️", label: "View Menu", url: "https://rempahwarisan.com.my/menu" }
+  ],
+  booking_url:  "https://wa.me/60197728334?text=Hi%2C%20I%27d%20like%20to%20make%20a%20reservation",
+  maps_url:     "https://maps.google.com/?q=Shah+Alam+Malaysia"
+};
+window.CONFIG = CONFIG;
+
+document.getElementById('fInitial').textContent  = CONFIG.initial;
+document.getElementById('cardFront').dataset.letter = CONFIG.initial;
+document.getElementById('fBadge').textContent    = CONFIG.badge;
+document.getElementById('fName').textContent     = CONFIG.name;
+document.getElementById('fTitle').textContent    = CONFIG.title;
+document.getElementById('fCompany').textContent  = CONFIG.company;
+document.getElementById('bSpecialty').textContent= CONFIG.specialty;
+document.getElementById('bPhone').textContent    = CONFIG.phone_display;
+document.getElementById('bEmail').textContent    = CONFIG.email;
+document.getElementById('bLoc').textContent      = CONFIG.location;
+document.getElementById('iWa').textContent       = CONFIG.phone_display;
+document.getElementById('iEmail').textContent    = CONFIG.email;
+document.getElementById('iLoc').textContent      = CONFIG.location;
+
+document.getElementById('cardWrap').addEventListener('click', () => {
+  document.getElementById('cardInner').classList.toggle('flipped');
+});
+
+new QRCode(document.getElementById('qrCode'), {
+  text: window.location.href,
+  width: 60, height: 60,
+  colorDark:"#000000", colorLight:"#ffffff",
+  correctLevel: QRCode.CorrectLevel.M
+});
+
+function saveContact() {
+  const vcf = ['BEGIN:VCARD','VERSION:3.0',
+    `FN:${CONFIG.name}`,`ORG:${CONFIG.company}`,`TITLE:${CONFIG.title}`,
+    `TEL;TYPE=CELL:${CONFIG.phone}`,`EMAIL:${CONFIG.email}`,
+    `ADR;TYPE=WORK:;;;${CONFIG.location};;;`,`NOTE:${CONFIG.specialty}`,
+    'END:VCARD'].join('\r\n');
+  const a = Object.assign(document.createElement('a'),{
+    href:URL.createObjectURL(new Blob([vcf],{type:'text/vcard'})),
+    download:`${CONFIG.name.replace(/\s+/g,'-')}.vcf`
+  });
+  a.click();
+  showToast('Contact saved!');
+}
+function openWhatsApp(){
+  window.open(`https://wa.me/${CONFIG.phone}?text=${encodeURIComponent(CONFIG.wa_message)}`,'_blank');
+}
+function copyLink(){
+  navigator.clipboard.writeText(window.location.href).then(()=>showToast('Link copied!'));
+}
+function shareCard(){
+  navigator.share?navigator.share({title:CONFIG.name,url:window.location.href}):copyLink();
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+</script>
+
+<!-- Phase 4: Social Links, Custom Buttons, Booking/Location -->
+<script>
+(function(){
+  var C = window.CONFIG || {};
+
+  // Social platform definitions
+  var PLATFORMS = [
+    { key:'linkedin',  label:'LinkedIn',  bg:'#0A66C2', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>' },
+    { key:'instagram', label:'Instagram', bg:'#E1306C', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>' },
+    { key:'facebook',  label:'Facebook',  bg:'#1877F2', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>' },
+    { key:'twitter',   label:'X / Twitter', bg:'#000', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.737-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>' },
+    { key:'tiktok',    label:'TikTok',    bg:'#010101', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.77a4.85 4.85 0 01-1.01-.08z"/></svg>' },
+    { key:'youtube',   label:'YouTube',   bg:'#FF0000', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>' },
+    { key:'pinterest', label:'Pinterest', bg:'#E60023', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>' }
+  ];
+
+  // Accent color from CSS variable or fallback
+  function getAccent() {
+    return getComputedStyle(document.documentElement)
+      .getPropertyValue('--accent').trim() || '#6366f1';
+  }
+
+  function hexToRgb(hex) {
+    var r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return r ? [parseInt(r[1],16), parseInt(r[2],16), parseInt(r[3],16)] : [99,102,241];
+  }
+
+  function buildSection() {
+    var social   = C.social || {};
+    var links    = C.custom_links || [];
+    var booking  = C.booking_url || '';
+    var location = C.location || '';
+    var mapsUrl  = C.maps_url || ('https://maps.google.com/?q=' + encodeURIComponent(location));
+
+    var hasSocial  = PLATFORMS.some(function(p){ return social[p.key]; });
+    var hasLinks   = links.length > 0;
+    var hasBooking = !!booking;
+    var hasLoc     = !!location;
+
+    if (!hasSocial && !hasLinks && !hasBooking && !hasLoc) return;
+
+    var accent = getAccent();
+    var rgb    = hexToRgb(accent);
+    var accentRgba = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',';
+
+    var section = document.createElement('div');
+    section.className = 'extras-section';
+
+    // ── Social icons ──
+    if (hasSocial) {
+      var row = document.createElement('div');
+      row.className = 'social-row';
+      PLATFORMS.forEach(function(p) {
+        var url = social[p.key];
+        if (!url) return;
+        var a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'social-btn';
+        a.title = p.label;
+        a.style.cssText = 'background:'+accentRgba+'0.12);border:1px solid '+accentRgba+'0.3);color:'+accent+';';
+        a.innerHTML = p.svg;
+        row.appendChild(a);
+      });
+      section.appendChild(row);
+    }
+
+    // ── Custom link buttons ──
+    links.forEach(function(link) {
+      if (!link.url) return;
+      var a = document.createElement('a');
+      a.href = link.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.className = 'extra-btn';
+      a.style.cssText = 'background:'+accentRgba+'0.1);border:1px solid '+accentRgba+'0.25);color:'+accent+';font-family:inherit;';
+      a.innerHTML = (link.icon ? '<span style="font-size:16px">'+link.icon+'</span> ' : '') + (link.label || link.url);
+      section.appendChild(a);
+    });
+
+    // ── Booking button ──
+    if (hasBooking) {
+      var ab = document.createElement('a');
+      ab.href = booking;
+      ab.target = '_blank';
+      ab.rel = 'noopener noreferrer';
+      ab.className = 'extra-btn';
+      ab.style.cssText = 'background:'+accentRgba+'0.12);border:1px solid '+accentRgba+'0.3);color:'+accent+';font-family:inherit;';
+      ab.innerHTML = '<span style="font-size:16px">📅</span> Book a Meeting';
+      section.appendChild(ab);
+    }
+
+    // ── Location button ──
+    if (hasLoc) {
+      var al = document.createElement('a');
+      al.href = mapsUrl;
+      al.target = '_blank';
+      al.rel = 'noopener noreferrer';
+      al.className = 'extra-btn';
+      al.style.cssText = 'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#10b981;font-family:inherit;';
+      al.innerHTML = '<span style="font-size:16px">📍</span> ' + location;
+      section.appendChild(al);
+    }
+
+    // Insert: find .qr-section and insert before it, or append to body
+    var qr = document.querySelector('.qr-section');
+    if (qr) {
+      qr.parentNode.insertBefore(section, qr);
+    } else {
+      document.body.appendChild(section);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildSection);
+  } else {
+    buildSection();
+  }
+})();
+</script>
+<!-- End Phase 4 Extras -->
+</body>
+</html>

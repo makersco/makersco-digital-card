@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ahmad Faris bin Razak - Digital Business Card</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            /* Surface */
+            --bg-gradient-from: #302b63;
+            --bg-gradient-to: #0f0c29;
+            --bg-base: #0b0f1a;
+
+            /* Glass layers */
+            --card-front-bg: rgba(255, 255, 255, 0.08);
+            --card-back-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.18);
+            --card-border-hover: rgba(255, 255, 255, 0.28);
+            --glass-highlight: rgba(255, 255, 255, 0.12);
+            --glass-inner-shadow: rgba(255, 255, 255, 0.06);
+
+            /* Accent */
+            --accent: #818cf8;
+            --accent-soft: rgba(129, 140, 248, 0.16);
+            --accent-glow: rgba(129, 140, 248, 0.32);
+
+            /* Text */
+            --text-primary: rgba(255, 255, 255, 0.96);
+            --text-secondary: rgba(229, 231, 240, 0.72);
+            --text-muted: rgba(203, 209, 224, 0.52);
+            --text-label: rgba(255, 255, 255, 0.58);
+
+            /* Status */
+            --status-online: #6ee7b7;
+            --status-online-bg: rgba(110, 231, 183, 0.14);
+
+            /* Shadow */
+            --shadow-card: 0 24px 64px rgba(8, 6, 28, 0.48), 0 2px 8px rgba(0, 0, 0, 0.24);
+
+            /* Radii */
+            --radius-card: 24px;
+            --radius-badge: 20px;
+            --radius-button: 12px;
+            --radius-icon: 12px;
+
+            /* Motion */
+            --ease-glass: cubic-bezier(0.32, 0.72, 0.24, 1);
+            --dur-fast: 180ms;
+            --dur-base: 240ms;
+            --dur-flip: 700ms;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-gradient-from) 0%, var(--bg-gradient-to) 100%);
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(129, 140, 248, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(110, 231, 183, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .card-wrapper {
+            width: 360px;
+            height: 220px;
+            perspective: 1200px;
+            margin: 0 auto 32px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform var(--dur-flip) var(--ease-glass);
+        }
+
+        .card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: var(--radius-card);
+            padding: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-card);
+            transition: transform var(--dur-base) var(--ease-glass),
+                        border-color var(--dur-base) var(--ease-glass);
+        }
+
+        .card-wrapper:hover .card-face {
+            left: 0;
+            top: 0;
+            transform: translateY(-2px) scale(1.005);
+            border-color: var(--card-border-hover);
+        }
+
+        .card-front {
+            background: var(--card-front-bg);
+            backdrop-filter: blur(24px) saturate(140%);
+            -webkit-backdrop-filter: blur(24px) saturate(140%);
+        }
+
+        .card-front::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glass-highlight) 50%, transparent);
+            pointer-events: none;
+        }
+
+        .card-front::after {
+            content: "";
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+            filter: blur(40px);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .card-back {
+            background: var(--card-back-bg);
+            backdrop-filter: blur(24px) saturate(140%);
+            -webkit-backdrop-filter: blur(24px) saturate(140%);
+            transform: rotateY(180deg);
+        }
+
+        .card-back::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glass-highlight) 50%, transparent);
+            pointer-events: none;
+        }
+
+        .avatar {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+            transition: box-shadow var(--dur-base) var(--ease-glass);
+        }
+
+        .avatar:hover {
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 28px;
+            right: 24px;
+            padding: 6px 12px;
+            border-radius: var(--radius-badge);
+            background: var(--status-online-bg);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--status-online);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--status-online);
+            box-shadow: 0 0 8px var(--status-online);
+            animation: pulse 2400ms ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .name-block {
+            position: absolute;
+            bottom: 64px;
+            left: 24px;
+            right: 24px;
+        }
+
+        .name {
+            font-weight: 700;
+            font-size: 28px;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .title-line {
+            font-size: 15px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .title {
+            font-weight: 400;
+        }
+
+        .divider {
+            color: var(--text-muted);
+        }
+
+        .company {
+            font-weight: 600;
+            letter-spacing: -0.005em;
+        }
+
+        .btn-glass {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            height: 44px;
+            padding: 0 18px;
+            border-radius: var(--radius-button);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: -0.005em;
+            cursor: pointer;
+            transition: transform var(--dur-fast) var(--ease-glass),
+                        background var(--dur-fast) var(--ease-glass),
+                        opacity var(--dur-fast) var(--ease-glass);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-glass:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .btn-glass:active {
+            transform: scale(0.97);
+        }
+
+        .contact-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .contact-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .contact-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .contact-icon {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: var(--radius-icon);
+            background: var(--accent-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 16px;
+        }
+
+        .contact-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .contact-label {
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-label);
+        }
+
+        .contact-value {
+            font-weight: 400;
+            font-size: 15px;
+            color: var(--text-primary);
+            cursor: copy;
+            transition: color var(--dur-fast) ease;
+            word-break: break-all;
+        }
+
+        .contact-value:hover {
+            color: var(--accent);
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 360px;
+            margin: 0 auto;
+        }
+
+        .btn-action {
+            height: 52px;
+            border-radius: var(--radius-button);
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: -0.005em;
+            cursor: pointer;
+            transition: transform var(--dur-fast) var(--ease-glass),
+                        box-shadow var(--dur-base) var(--ease-glass),
+                        opacity var(--dur-fast) var(--ease-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-action:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #0b0f1a;
+            box-shadow: 0 4px 16px rgba(129, 140, 248, 0.24);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 24px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .qr-container {
+            width: 360px;
+            margin: 32px auto 0;
+            padding: 24px;
+            border-radius: var(--radius-card);
+            background: var(--card-front-bg);
+            backdrop-filter: blur(24px) saturate(140%);
+            -webkit-backdrop-filter: blur(24px) saturate(140%);
+            border: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .qr-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+            letter-spacing: -0.005em;
+        }
+
+        #qrcode {
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #qrcode canvas,
+        #qrcode img {
+            display: block;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: var(--text-muted);
+            font-weight: 300;
+            font-size: 13px;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity var(--dur-fast) ease;
+        }
+
+        .footer a:hover {
+            opacity: 0.8;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 14px 20px;
+            border-radius: var(--radius-button);
+            background: var(--card-front-bg);
+            backdrop-filter: blur(24px) saturate(140%);
+            -webkit-backdrop-filter: blur(24px) saturate(140%);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
+            opacity: 0;
+            transition: transform var(--dur-base) var(--ease-glass),
+                        opacity var(--dur-base) var(--ease-glass);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 480px) {
+            .card-wrapper,
+            .actions,
+            .qr-container {
+                width: 100%;
+                max-width: 360px;
+            }
+
+            .name {
+                font-size: 24px;
+            }
+
+            .title-line {
+                font-size: 14px;
+            }
+        }
+
+        .icon-svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .contact-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+    
+/* ── MakersCo Spacing Fix ──────────────────────────────────────────────── */
+/* Standardised spacing injected post-build to fix cramped layout           */
+
+/* Page breathing room */
+body {
+  padding: 40px 24px 60px !important;
+  min-height: 100vh;
+}
+@media (max-width: 480px) {
+  body { padding: 32px 16px 48px !important; }
+}
+
+/* Card centring with consistent gap below */
+.card-wrapper,
+.card-scene,
+.scene {
+  margin: 0 auto 28px auto !important;
+  max-width: 380px;
+}
+
+/* Card face inner padding — never let content touch edges */
+.card-face,
+.card__face,
+.flip-card-face {
+  padding: 22px 24px !important;
+}
+
+/* Info / contact panel below card */
+.info-panel,
+.contact-panel,
+.card-info,
+.back-info,
+.detail-panel {
+  margin-top: 20px !important;
+  padding: 20px 20px !important;
+  border-radius: 14px;
+}
+
+/* Contact rows inside info panel */
+.contact-row,
+.info-row,
+.detail-row {
+  padding: 10px 0 !important;
+  gap: 12px !important;
+}
+.contact-row + .contact-row,
+.info-row + .info-row,
+.detail-row + .detail-row {
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+/* Action buttons container */
+.actions,
+.action-row,
+.action-buttons,
+.card-actions,
+.button-group,
+.cta-group,
+.btn-group {
+  margin-top: 20px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+/* Every button — consistent height and tap target */
+.btn,
+.cta-btn,
+.action-btn,
+.wa-btn,
+.vcard-btn,
+.share-btn,
+.copy-btn,
+.primary-btn,
+.secondary-btn,
+button:not(.flip-btn):not([class*="flip"]):not([class*="tab"]) {
+  min-height: 48px !important;
+  padding: 0 24px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+}
+
+/* Share / secondary row — horizontal pills */
+.share-row,
+.share-panel,
+.share-options {
+  display: flex !important;
+  gap: 10px !important;
+  margin-top: 10px !important;
+  flex-wrap: wrap !important;
+}
+.share-row .btn,
+.share-panel .btn,
+.share-options .btn {
+  flex: 1 !important;
+  min-width: 80px !important;
+  min-height: 44px !important;
+  padding: 0 12px !important;
+  font-size: 13px !important;
+}
+
+/* Flip hint text */
+.flip-hint,
+.card__flip-hint,
+.flip-indicator,
+.tap-hint {
+  text-align: center !important;
+  font-size: 11px !important;
+  opacity: 0.5 !important;
+  margin-top: 8px !important;
+  margin-bottom: 4px !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Section labels / headings */
+.section-label,
+.panel-title,
+.section-title {
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  opacity: 0.5 !important;
+  margin-bottom: 12px !important;
+}
+
+/* ── End MakersCo Spacing Fix ─────────────────────────────────────────── */
+
+
+/* ── Phase 4 Extras ─────────────────────────────────────────────────────── */
+.extras-section{width:340px;margin:10px auto 0;display:flex;flex-direction:column;gap:9px}
+.social-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:4px 0}
+.social-btn{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:transform .15s,opacity .15s;flex-shrink:0;
+}
+.social-btn:hover{transform:translateY(-2px);opacity:.85}
+.social-btn svg{width:18px;height:18px;flex-shrink:0}
+.extra-btn{
+  width:100%;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:13px;font-weight:600;
+  text-decoration:none;cursor:pointer;border:none;
+  transition:transform .15s,opacity .15s;
+}
+.extra-btn:hover{transform:translateY(-1px);opacity:.9}
+.extra-btn:active{transform:scale(.98)}
+/* ── End Phase 4 Extras ──────────────────────────────────────────────────── */
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="card-wrapper" id="cardWrapper">
+            <div class="card-inner" id="cardInner">
+                <div class="card-face card-front">
+                    <div class="avatar">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23818cf8;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%236366f1;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23grad)' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='DM Sans, sans-serif' font-weight='700' font-size='80' fill='white'%3EAF%3C/text%3E%3C/svg%3E" alt="Avatar">
+                    </div>
+                    <div class="status-badge">
+                        <span class="status-dot"></span>
+                        Available
+                    </div>
+                    <div class="name-block">
+                        <div class="name" id="nameDisplay"></div>
+                        <div class="title-line">
+                            <span class="title" id="titleDisplay"></span>
+                            <span class="divider">•</span>
+                            <span class="company" id="companyDisplay"></span>
+                        </div>
+                    </div>
+                    <button class="btn-glass" id="flipBtn">
+                        <span>Flip</span>
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13 5L20 12L13 19M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="card-face card-back">
+                    <div class="contact-section">
+                        <div class="contact-row">
+                            <div class="contact-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 5C3 3.89543 3.89543 3 5 3H8.27924C8.70967 3 9.09181 3.27543 9.22792 3.68377L10.7257 8.17721C10.8831 8.64932 10.6694 9.16531 10.2243 9.38787L7.96701 10.5165C9.06925 12.9612 11.0388 14.9308 13.4835 16.033L14.6121 13.7757C14.8347 13.3306 15.3507 13.1169 15.8228 13.2743L20.3162 14.7721C20.7246 14.9082 21 15.2903 21 15.7208V19C21 20.1046 20.1046 21 19 21H18C9.71573 21 3 14.2843 3 6V5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="contact-info">
+                                <div class="contact-label">Phone</div>
+                                <div class="contact-value" data-copy id="phoneDisplay"></div>
+                            </div>
+                        </div>
+
+                        <div class="contact-row">
+                            <div class="contact-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 8L10.89 13.26C11.5417 13.6783 12.4583 13.6783 13.11 13.26L21 8M5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="contact-info">
+                                <div class="contact-label">Email</div>
+                                <div class="contact-value" data-copy id="emailDisplay"></div>
+                            </div>
+                        </div>
+
+                        <div class="contact-row">
+                            <div class="contact-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M3.5 9H20.5M3.5 15H20.5M12 3C14.5 5.5 16 8.5 16 12C16 15.5 14.5 18.5 12 21M12 3C9.5 5.5 8 8.5 8 12C8 15.5 9.5 18.5 12 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="contact-info">
+                                <div class="contact-label">Web</div>
+                                <div class="contact-value" data-copy id="websiteDisplay"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-glass" id="backBtn">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 5L4 12L11 19M20 12H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Back</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn-action btn-primary" id="saveContactBtn">
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H14L21 10V19C21 20.1046 20.1046 21 19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7 3V8H15V3M17 21V13H7V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Save Contact
+            </button>
+
+            <button class="btn-action btn-secondary" id="whatsappBtn">
+                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.472 14.382C17.015 14.153 14.805 13.066 14.405 12.922C14.005 12.778 13.712 12.706 13.419 13.163C13.126 13.62 12.274 14.649 12.011 14.942C11.748 15.235 11.485 15.278 11.028 15.049C10.571 14.82 9.05 14.31 7.255 12.706C5.862 11.461 4.938 9.93 4.675 9.473C4.412 9.016 4.64 8.774 4.869 8.545C5.072 8.342 5.327 8.007 5.556 7.744C5.785 7.481 5.857 7.275 6.001 6.982C6.145 6.689 6.073 6.426 5.959 6.197C5.845 5.968 4.938 3.758 4.581 2.844C4.224 1.93 3.867 2.059 3.603 2.045C3.34 2.031 3.047 2.031 2.754 2.031C2.461 2.031 1.99 2.145 1.59 2.602C1.19 3.059 0.017 4.146 0.017 6.356C0.017 8.566 1.647 10.691 1.876 10.984C2.105 11.277 4.938 15.635 9.273 17.602C13.608 19.569 13.608 18.893 14.577 18.807C15.546 18.721 17.443 17.716 17.8 16.654C18.157 15.592 18.157 14.696 18.029 14.468C17.901 14.24 17.608 14.126 17.015 13.897L17.472 14.382ZM12.039 22H12.036C10.099 22 8.197 21.476 6.54 20.488L6.159 20.255L2.669 21.191L3.622 17.794L3.363 17.397C2.274 15.675 1.695 13.679 1.696 11.624C1.698 5.998 6.231 1.465 11.859 1.465C14.586 1.466 17.153 2.527 19.087 4.464C21.021 6.401 22.079 8.97 22.078 11.697C22.076 17.323 17.543 21.856 11.915 21.856L12.039 22Z" fill="currentColor"/>
+                </svg>
+                WhatsApp Me
+            </button>
+
+            <div style="display: flex; gap: 12px;">
+                <button class="btn-action btn-secondary" id="copyLinkBtn" style="flex: 1;">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 8V5C8 3.89543 8.89543 3 10 3H19C20.1046 3 21 3.89543 21 5V14C21 15.1046 20.1046 16 19 16H16M5 8H14C15.1046 8 16 8.89543 16 10V19C16 20.1046 15.1046 21 14 21H5C3.89543 21 3 20.1046 3 19V10C3 8.89543 3.89543 8 5 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Copy Link
+                </button>
+                <button class="btn-action btn-secondary" id="shareBtn" style="flex: 1;">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 6.65685 16.3431 8 18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M6 15C7.65685 15 9 13.6569 9 12C9 10.3431 7.65685 9 6 9C4.34315 9 3 10.3431 3 12C3 13.6569 4.34315 15 6 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18 22C19.6569 22 21 20.6569 21 19C21 17.3431 19.6569 16 18 16C16.3431 16 15 17.3431 15 19C15 20.6569 16.3431 22 18 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8.59 13.51L15.42 17.49M15.41 6.51L8.59 10.49" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Share
+                </button>
+            </div>
+        </div>
+
+        <div class="qr-container">
+            <div class="qr-title">Scan to Save Contact</div>
+            <div id="qrcode"></div>
+        </div>
+
+        <div class="footer">
+            Powered by <a href="https://pixelreka.com.my" target="_blank">Pixel Reka</a>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const CONFIG = {
+            name: "Ahmad Faris bin Razak",
+            title: "Founder & CEO",
+            company: "Pixel Reka Sdn Bhd",
+            phone: "+60123456789",
+            email: "faris@pixelreka.com.my",
+            website: "https://pixelreka.com.my",
+            location: "Kuala Lumpur, Malaysia",
+            bio: "Building digital solutions for Malaysian SMEs",
+            color: "#818cf8",
+            whatsapp_message: "Hi Faris, I found your digital card!",
+            social: {
+                linkedin:  "https://linkedin.com/in/",
+                instagram: "https://instagram.com/",
+                twitter:   ""
+            },
+            custom_links: [
+                { icon: "🌐", label: "Visit Website", url: "https://pixelreka.com.my" }
+            ],
+            booking_url: "",
+            maps_url:    ""
+        };
+        window.CONFIG = CONFIG;
+
+        // Initialize display
+        document.getElementById('nameDisplay').textContent = CONFIG.name;
+        document.getElementById('titleDisplay').textContent = CONFIG.title;
+        document.getElementById('companyDisplay').textContent = CONFIG.company;
+        document.getElementById('phoneDisplay').textContent = CONFIG.phone;
+        document.getElementById('emailDisplay').textContent = CONFIG.email;
+        document.getElementById('websiteDisplay').textContent = CONFIG.website.replace('https://', '').replace('http://', '');
+
+        // Card flip functionality
+        const cardInner = document.getElementById('cardInner');
+        const flipBtn = document.getElementById('flipBtn');
+        const backBtn = document.getElementById('backBtn');
+        const cardWrapper = document.getElementById('cardWrapper');
+
+        function flipCard() {
+            cardInner.classList.toggle('flipped');
+        }
+
+        flipBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            flipCard();
+        });
+
+        backBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            flipCard();
+        });
+
+        cardWrapper.addEventListener('click', (e) => {
+            if (e.target === cardWrapper || e.target.closest('.card-face')) {
+                flipCard();
+            }
+        });
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Copy to clipboard functionality
+        document.querySelectorAll('[data-copy]').forEach(element => {
+            element.addEventListener('click', () => {
+                const text = element.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Copied to clipboard!');
+                }).catch(() => {
+                    showToast('Failed to copy');
+                });
+            });
+        });
+
+        // Generate vCard
+        function generateVCard() {
+            const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:${CONFIG.name}
+TITLE:${CONFIG.title}
+ORG:${CONFIG.company}
+TEL;TYPE=CELL:${CONFIG.phone}
+EMAIL:${CONFIG.email}
+URL:${CONFIG.website}
+ADR;TYPE=WORK:;;${CONFIG.location}
+NOTE:${CONFIG.bio}
+END:VCARD`;
+            return vcard;
+        }
+
+        // Save contact button
+        document.getElementById('saveContactBtn').addEventListener('click', () => {
+            const vcard = generateVCard();
+            const blob = new Blob([vcard], { type: 'text/vcard' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${CONFIG.name.replace(/\s+/g, '_')}.vcf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast('Contact saved!');
+        });
+
+        // WhatsApp button
+        document.getElementById('whatsappBtn').addEventListener('click', () => {
+            const phoneNumber = CONFIG.phone.replace(/\D/g, '');
+            const message = encodeURIComponent(CONFIG.whatsapp_message);
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        });
+
+        // Copy link button
+        document.getElementById('copyLinkBtn').addEventListener('click', () => {
+            const currentUrl = window.location.href;
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                showToast('Link copied to clipboard!');
+            }).catch(() => {
+                showToast('Failed to copy link');
+            });
+        });
+
+        // Share button
+        document.getElementById('shareBtn').addEventListener('click', async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: `${CONFIG.name} - Digital Business Card`,
+                        text: `Connect with ${CONFIG.name}, ${CONFIG.title} at ${CONFIG.company}`,
+                        url: window.location.href
+                    });
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        showToast('Share failed');
+                    }
+                }
+            } else {
+                const currentUrl = window.location.href;
+                navigator.clipboard.writeText(currentUrl).then(() => {
+                    showToast('Link copied! Share it with others.');
+                });
+            }
+        });
+
+        // Generate QR code
+        window.addEventListener('load', () => {
+            const qrcodeContainer = document.getElementById('qrcode');
+            const vcard = generateVCard();
+            
+            new QRCode(qrcodeContainer, {
+                text: vcard,
+                width: 160,
+                height: 160,
+                colorDark: "#0b0f1a",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        });
+
+        // Update CSS custom property for accent color
+        if (CONFIG.color) {
+            const root = document.documentElement;
+            const r = parseInt(CONFIG.color.slice(1, 3), 16);
+            const g = parseInt(CONFIG.color.slice(3, 5), 16);
+            const b = parseInt(CONFIG.color.slice(5, 7), 16);
+            
+            root.style.setProperty('--accent', CONFIG.color);
+            root.style.setProperty('--accent-soft', `rgba(${r}, ${g}, ${b}, 0.16)`);
+            root.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.32)`);
+        }
+    </script>
+
+<!-- Phase 4: Social Links, Custom Buttons, Booking/Location -->
+<script>
+(function(){
+  var C = window.CONFIG || {};
+
+  // Social platform definitions
+  var PLATFORMS = [
+    { key:'linkedin',  label:'LinkedIn',  bg:'#0A66C2', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>' },
+    { key:'instagram', label:'Instagram', bg:'#E1306C', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>' },
+    { key:'facebook',  label:'Facebook',  bg:'#1877F2', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>' },
+    { key:'twitter',   label:'X / Twitter', bg:'#000', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.737-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>' },
+    { key:'tiktok',    label:'TikTok',    bg:'#010101', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.77a4.85 4.85 0 01-1.01-.08z"/></svg>' },
+    { key:'youtube',   label:'YouTube',   bg:'#FF0000', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>' },
+    { key:'pinterest', label:'Pinterest', bg:'#E60023', fg:'#fff',
+      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>' }
+  ];
+
+  // Accent color from CSS variable or fallback
+  function getAccent() {
+    return getComputedStyle(document.documentElement)
+      .getPropertyValue('--accent').trim() || '#6366f1';
+  }
+
+  function hexToRgb(hex) {
+    var r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return r ? [parseInt(r[1],16), parseInt(r[2],16), parseInt(r[3],16)] : [99,102,241];
+  }
+
+  function buildSection() {
+    var social   = C.social || {};
+    var links    = C.custom_links || [];
+    var booking  = C.booking_url || '';
+    var location = C.location || '';
+    var mapsUrl  = C.maps_url || ('https://maps.google.com/?q=' + encodeURIComponent(location));
+
+    var hasSocial  = PLATFORMS.some(function(p){ return social[p.key]; });
+    var hasLinks   = links.length > 0;
+    var hasBooking = !!booking;
+    var hasLoc     = !!location;
+
+    if (!hasSocial && !hasLinks && !hasBooking && !hasLoc) return;
+
+    var accent = getAccent();
+    var rgb    = hexToRgb(accent);
+    var accentRgba = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',';
+
+    var section = document.createElement('div');
+    section.className = 'extras-section';
+
+    // ── Social icons ──
+    if (hasSocial) {
+      var row = document.createElement('div');
+      row.className = 'social-row';
+      PLATFORMS.forEach(function(p) {
+        var url = social[p.key];
+        if (!url) return;
+        var a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'social-btn';
+        a.title = p.label;
+        a.style.cssText = 'background:'+accentRgba+'0.12);border:1px solid '+accentRgba+'0.3);color:'+accent+';';
+        a.innerHTML = p.svg;
+        row.appendChild(a);
+      });
+      section.appendChild(row);
+    }
+
+    // ── Custom link buttons ──
+    links.forEach(function(link) {
+      if (!link.url) return;
+      var a = document.createElement('a');
+      a.href = link.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.className = 'extra-btn';
+      a.style.cssText = 'background:'+accentRgba+'0.1);border:1px solid '+accentRgba+'0.25);color:'+accent+';font-family:inherit;';
+      a.innerHTML = (link.icon ? '<span style="font-size:16px">'+link.icon+'</span> ' : '') + (link.label || link.url);
+      section.appendChild(a);
+    });
+
+    // ── Booking button ──
+    if (hasBooking) {
+      var ab = document.createElement('a');
+      ab.href = booking;
+      ab.target = '_blank';
+      ab.rel = 'noopener noreferrer';
+      ab.className = 'extra-btn';
+      ab.style.cssText = 'background:'+accentRgba+'0.12);border:1px solid '+accentRgba+'0.3);color:'+accent+';font-family:inherit;';
+      ab.innerHTML = '<span style="font-size:16px">📅</span> Book a Meeting';
+      section.appendChild(ab);
+    }
+
+    // ── Location button ──
+    if (hasLoc) {
+      var al = document.createElement('a');
+      al.href = mapsUrl;
+      al.target = '_blank';
+      al.rel = 'noopener noreferrer';
+      al.className = 'extra-btn';
+      al.style.cssText = 'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#10b981;font-family:inherit;';
+      al.innerHTML = '<span style="font-size:16px">📍</span> ' + location;
+      section.appendChild(al);
+    }
+
+    // Insert: find .qr-section and insert before it, or append to body
+    var qr = document.querySelector('.qr-section');
+    if (qr) {
+      qr.parentNode.insertBefore(section, qr);
+    } else {
+      document.body.appendChild(section);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildSection);
+  } else {
+    buildSection();
+  }
+})();
+</script>
+<!-- End Phase 4 Extras -->
+</body>
+</html>
