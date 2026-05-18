@@ -510,7 +510,7 @@ body::before{{
   <button class="btn btn-wa" onclick="openWhatsApp()">💬 Chat on WhatsApp</button>
 
   <!-- Apple Wallet button -->
-  <button class="btn btn-wallet" onclick="openWalletModal()">
+  <button class="btn btn-wallet" id="walletBtn" onclick="handleWalletBtn()">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="2" y="5" width="20" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/>
       <path d="M2 10h20" stroke="currentColor" stroke-width="1.5"/>
@@ -630,7 +630,22 @@ function shareCard() {{
   }}
 }}
 
-// ── Apple Wallet modal ────────────────────────────────────────────────────────
+// ── Apple Wallet ─────────────────────────────────────────────────────────────
+// Set PKPASS_URL to your hosted .pkpass file to make the button functional.
+// Leave empty ("") to show info modal instead.
+const PKPASS_URL = "";  // e.g. "./wong-soonfook.pkpass" or walletpasses.io URL
+
+function handleWalletBtn() {{
+  if (PKPASS_URL) {{
+    const a = document.createElement('a');
+    a.href = PKPASS_URL;
+    a.download = "wong-soonfook.pkpass";
+    a.click();
+    showToast('Opening Apple Wallet… 🍎');
+  }} else {{
+    openWalletModal();
+  }}
+}}
 function openWalletModal() {{
   document.getElementById('walletModal').classList.add('open');
 }}
