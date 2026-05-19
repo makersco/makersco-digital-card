@@ -68,3 +68,15 @@ For production (when you're ready)
 Buy a .my domain (~RM 30/year), point to Firebase Hosting or GitHub Pages, and cards become yoursite.my/c/clientname. That's Phase 5's custom URL slug feature.
 
 Quickest path right now: Use Option 2 — drag the HTML onto Netlify Drop, get a URL in 10 seconds, send to client.
+
+# Generate a new client card (AI-powered)
+python3 build_card.py
+
+# Regenerate your personal card
+python3 build_my_card.py
+
+# Generate Google Wallet JWT (one-time per update)
+node generate_google_wallet_pass.js
+
+# Generate Apple Wallet pass (one-time per update, needs certs)
+node generate_wallet_pass.js
