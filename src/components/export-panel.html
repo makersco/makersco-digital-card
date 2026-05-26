@@ -277,7 +277,12 @@
         </div>
     </div>
 
+    <!-- qrcode.js — needed for QR export; also loaded by parent card pages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
+        // Pull CONFIG from the parent card if this component is embedded, else use defaults
+        const C = window.CONFIG || {};
+
         const buttons = {
             vcard: document.getElementById('btn-vcard'),
             pdf: document.getElementById('btn-pdf'),
@@ -293,7 +298,7 @@
         function setButtonLoading(button, loading) {
             const icon = button.querySelector('.export-btn__icon');
             const originalIcon = icon.innerHTML;
-            
+
             if (loading) {
                 button.disabled = true;
                 button.dataset.originalIcon = originalIcon;
@@ -307,35 +312,51 @@
 
         async function handleVCardDownload() {
             setButtonLoading(buttons.vcard, true);
-            
+
             setTimeout(() => {
-                const vCardData = `BEGIN:VCARD
-VERSION:3.0
-FN:Your Name
-TEL:+1234567890
-EMAIL:hello@example.com
-END:VCARD`;
-                
+                // Build vCard from CONFIG if available, otherwise fall back to placeholders
+                const name    = C.name    || 'Your Name';
+                const phone   = C.phone   || '';
+                const email   = C.email   || '';
+                const org     = C.company || '';
+                const title   = C.title   || '';
+                const website = C.website || '';
+                const address = C.location || '';
+                const slug    = (name.toLowerCase().replace(/\s+/g, '-'));
+
+                const vCardData = [
+                    'BEGIN:VCARD',
+                    'VERSION:3.0',
+                    `FN:${name}`,
+                    title   ? `TITLE:${title}`               : '',
+                    org     ? `ORG:${org}`                   : '',
+                    phone   ? `TEL;TYPE=CELL:${phone}`       : '',
+                    email   ? `EMAIL:${email}`               : '',
+                    website ? `URL:${website}`               : '',
+                    address ? `ADR:;;${address};;;;`         : '',
+                    'END:VCARD'
+                ].filter(Boolean).join('\r\n');
+
                 const blob = new Blob([vCardData], { type: 'text/vcard' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'contact.vcf';
+                const url  = URL.createObjectURL(blob);
+                const a    = document.createElement('a');
+                a.href     = url;
+                a.download = `${slug}.vcf`;
                 a.click();
                 URL.revokeObjectURL(url);
-                
+
                 setButtonLoading(buttons.vcard, false);
-            }, 800);
+            }, 400);
         }
 
         async function handlePDFDownload() {
             setButtonLoading(buttons.pdf, true);
-            
+
             setTimeout(() => {
                 if (typeof window.generatePDF === 'function') {
                     window.generatePDF();
                 } else {
-                    console.log('PDF export triggered - pdf-export.js not loaded');
+                    alert('PDF export module not loaded. Include pdf-export.html on the card page.');
                 }
                 setButtonLoading(buttons.pdf, false);
             }, 1200);
@@ -347,49 +368,71 @@ END:VCARD`;
             qrChevron.style.transform = qrExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
-        async function handleQRDownload(format) {
+        function handleQRDownload(format) {
             const btn = event.target;
             const originalText = btn.textContent;
-            btn.textContent = 'Generating...';
+            btn.textContent = 'Generating…';
             btn.disabled = true;
-            
-            setTimeout(() => {
-                const canvas = document.createElement('canvas');
-                canvas.width = 400;
-                canvas.height = 400;
-                const ctx = canvas.getContext('2d');
-                
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, 400, 400);
-                ctx.fillStyle = '#000000';
-                ctx.fillRect(50, 50, 300, 300);
-                
-                if (format === 'png') {
-                    canvas.toBlob((blob) => {
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'qr-code.png';
-                        a.click();
-                        URL.revokeObjectURL(url);
-                    });
-                } else if (format === 'svg') {
-                    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400">
-                        <rect width="400" height="400" fill="white"/>
-                        <rect x="50" y="50" width="300" height="300" fill="black"/>
-                    </svg>`;
-                    const blob = new Blob([svg], { type: 'image/svg+xml' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'qr-code.svg';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                }
-                
+
+            const qrUrl  = C.website || window.location.href;
+            const fname  = (C.name || 'card').toLowerCase().replace(/\s+/g, '-');
+            const size   = 1024; // print-quality
+
+            // Hidden scratch div for qrcode.js
+            const scratch = document.createElement('div');
+            scratch.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+            document.body.appendChild(scratch);
+
+            try {
+                const qr = new QRCode(scratch, {
+                    text:           qrUrl,
+                    width:          size,
+                    height:         size,
+                    colorDark:      '#000000',
+                    colorLight:     '#ffffff',
+                    correctLevel:   QRCode.CorrectLevel.H,
+                });
+
+                setTimeout(() => {
+                    if (format === 'png') {
+                        const canvas = scratch.querySelector('canvas');
+                        if (canvas) {
+                            canvas.toBlob((blob) => {
+                                const url = URL.createObjectURL(blob);
+                                const a   = document.createElement('a');
+                                a.href     = url;
+                                a.download = `${fname}-qr.png`;
+                                a.click();
+                                URL.revokeObjectURL(url);
+                            });
+                        }
+                    } else if (format === 'svg') {
+                        // qrcode.js doesn't output SVG natively — use canvas data as SVG image
+                        const canvas = scratch.querySelector('canvas');
+                        if (canvas) {
+                            const dataURL = canvas.toDataURL('image/png');
+                            const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><image width="${size}" height="${size}" xlink:href="${dataURL}"/></svg>`;
+                            const blob = new Blob([svg], { type: 'image/svg+xml' });
+                            const url  = URL.createObjectURL(blob);
+                            const a    = document.createElement('a');
+                            a.href     = url;
+                            a.download = `${fname}-qr.svg`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                        }
+                    }
+
+                    document.body.removeChild(scratch);
+                    btn.textContent = originalText;
+                    btn.disabled    = false;
+                }, 300);
+
+            } catch (err) {
+                console.error('QR generation failed:', err);
+                document.body.removeChild(scratch);
                 btn.textContent = originalText;
-                btn.disabled = false;
-            }, 600);
+                btn.disabled    = false;
+            }
         }
 
         buttons.vcard.addEventListener('click', handleVCardDownload);
