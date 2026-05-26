@@ -1,0 +1,368 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
+
+.share-panel-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9998;
+  opacity: 0;
+  transform: opacity 250ms ease;
+  pointer-events: none;
+}
+
+.share-panel-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.share-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #111827;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px 32px;
+  z-index: 9999;
+  transform: translateY(100%);
+  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.share-panel.active {
+  transform: translateY(0);
+}
+
+.share-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.share-panel-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f9fafb;
+  margin: 0;
+}
+
+.share-panel-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #9ca3af;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 200ms ease, color 200ms ease;
+  padding: 0;
+}
+
+.share-panel-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f9fafb;
+}
+
+.share-link-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #d1d5db;
+  font-family: 'Outfit', monospace;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.share-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.share-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 12px;
+  transition: background 200ms ease;
+  min-height: 44px;
+}
+
+.share-option:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.share-option-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+.share-option:active .share-option-icon {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.share-option-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.share-option-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.share-option.copied .share-option-label {
+  color: #4ade80;
+}
+
+.icon-copy { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+.icon-whatsapp { background: linear-gradient(135deg, #25d366 0%, #128c7e 100%); }
+.icon-telegram { background: linear-gradient(135deg, #0088cc 0%, #229ed9 100%); }
+.icon-sms { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+.icon-email { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+.icon-native { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+
+.share-option-native {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .share-panel {
+    max-width: 480px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    border-radius: 20px;
+    bottom: 20px;
+  }
+  
+  .share-panel.active {
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .share-option-native {
+    display: none;
+  }
+  
+  .share-options-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 380px) {
+  .share-options-grid {
+    gap: 16px;
+  }
+  
+  .share-option-icon {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .share-option-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+</style>
+
+<div class="share-panel-backdrop" id="shareBackdrop"></div>
+
+<div class="share-panel" id="sharePanel">
+  <div class="share-panel-header">
+    <h3 class="share-panel-title">Share Card</h3>
+    <button class="share-panel-close" id="sharePanelClose" aria-label="Close">✕</button>
+  </div>
+  
+  <input 
+    type="text" 
+    class="share-link-input" 
+    id="shareLinkInput" 
+    readonly 
+    value="https://example.com/card/username"
+  >
+  
+  <div class="share-options-grid">
+    <div class="share-option" id="copyLink">
+      <div class="share-option-icon icon-copy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      </div>
+      <span class="share-option-label">Copy Link</span>
+    </div>
+    
+    <div class="share-option" id="shareWhatsApp">
+      <div class="share-option-icon icon-whatsapp">
+        <svg viewBox="0 0 24 24" fill="white">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </div>
+      <span class="share-option-label">WhatsApp</span>
+    </div>
+    
+    <div class="share-option" id="shareTelegram">
+      <div class="share-option-icon icon-telegram">
+        <svg viewBox="0 0 24 24" fill="white">
+          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+        </svg>
+      </div>
+      <span class="share-option-label">Telegram</span>
+    </div>
+    
+    <div class="share-option" id="shareSMS">
+      <div class="share-option-icon icon-sms">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </div>
+      <span class="share-option-label">SMS</span>
+    </div>
+    
+    <div class="share-option" id="shareEmail">
+      <div class="share-option-icon icon-email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </div>
+      <span class="share-option-label">Email</span>
+    </div>
+    
+    <div class="share-option share-option-native" id="shareNative">
+      <div class="share-option-icon icon-native">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+      </div>
+      <span class="share-option-label">Share</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const sharePanel = document.getElementById('sharePanel');
+  const shareBackdrop = document.getElementById('shareBackdrop');
+  const sharePanelClose = document.getElementById('sharePanelClose');
+  const shareLinkInput = document.getElementById('shareLinkInput');
+  const copyLinkBtn = document.getElementById('copyLink');
+  const shareWhatsAppBtn = document.getElementById('shareWhatsApp');
+  const shareTelegramBtn = document.getElementById('shareTelegram');
+  const shareSMSBtn = document.getElementById('shareSMS');
+  const shareEmailBtn = document.getElementById('shareEmail');
+  const shareNativeBtn = document.getElementById('shareNative');
+  
+  // Replace with actual card URL
+  const cardURL = window.location.href;
+  shareLinkInput.value = cardURL;
+  
+  // Open panel function (call this from your "Share" button)
+  window.openSharePanel = function() {
+    shareBackdrop.classList.add('active');
+    sharePanel.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  };
+  
+  // Close panel
+  function closeSharePanel() {
+    shareBackdrop.classList.remove('active');
+    sharePanel.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  
+  sharePanelClose.addEventListener('click', closeSharePanel);
+  shareBackdrop.addEventListener('click', closeSharePanel);
+  
+  // Copy link
+  copyLinkBtn.addEventListener('click', async function() {
+    try {
+      await navigator.clipboard.writeText(cardURL);
+      const label = this.querySelector('.share-option-label');
+      const originalText = label.textContent;
+      label.textContent = 'Copied!';
+      this.classList.add('copied');
+      
+      setTimeout(() => {
+        label.textContent = originalText;
+        this.classList.remove('copied');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  });
+  
+  // WhatsApp
+  shareWhatsAppBtn.addEventListener('click', function() {
+    const message = encodeURIComponent(`Check out my digital business card: ${cardURL}`);
+    window.open(`https://wa.me/?text=${message}`, '_blank');
+  });
+  
+  // Telegram
+  shareTelegramBtn.addEventListener('click', function() {
+    const message = encodeURIComponent(`Check out my digital business card`);
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(cardURL)}&text=${message}`, '_blank');
+  });
+  
+  // SMS
+  shareSMSBtn.addEventListener('click', function() {
+    const message = encodeURIComponent(`Check out my digital business card: ${cardURL}`);
+    window.location.href = `sms:?&body=${message}`;
+  });
+  
+  // Email
+  shareEmailBtn.addEventListener('click', function() {
+    const subject = encodeURIComponent('My Digital Business Card');
+    const body = encodeURIComponent(`I'd like to share my digital business card with you:\n\n${cardURL}`);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  });
+  
+  // Native share
+  if (navigator.share) {
+    shareNativeBtn.addEventListener('click', async function() {
+      try {
+        await navigator.share({
+          title: 'My Digital Business Card',
+          text: 'Check out my digital business card',
+          url: cardURL
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Share failed:', err);
+        }
+      }
+    });
+  }
+})();
+</script>

@@ -1,0 +1,244 @@
+<!-- PDF Export Module - Self-Contained -->
+<!-- Include these CDN scripts in your card HTML -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  .pdf-export-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    font-family: 'Geist', 'Outfit', 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 200ms, opacity 200ms;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .pdf-export-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+
+  .pdf-export-button:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .pdf-export-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .pdf-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: pdf-spin 600ms linear infinite;
+  }
+
+  @keyframes pdf-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .pdf-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  @media (max-width: 380px) {
+    .pdf-export-button {
+      width: 100%;
+      padding: 12px 16px;
+    }
+  }
+</style>
+
+<!-- Button HTML -->
+<button class="pdf-export-button" id="pdfExportBtn" aria-label="Download business card as PDF">
+  <svg class="pdf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+    <polyline points="7 10 12 15 17 10"></polyline>
+    <line x1="12" y1="15" x2="12" y2="3"></line>
+  </svg>
+  <span>Download PDF</span>
+</button>
+
+<script>
+(function() {
+  'use strict';
+
+  const CARD_WIDTH_MM = 85;
+  const CARD_HEIGHT_MM = 54;
+  const MM_TO_PT = 2.834645669;
+
+  // Extract contact data from card
+  function extractCardData() {
+    const card = document.querySelector('.card-wrapper') || document.querySelector('.card');
+    if (!card) return null;
+
+    const data = {
+      firstName: '',
+      lastName: '',
+      phone: '',
+      email: '',
+      website: '',
+      links: []
+    };
+
+    // Extract name
+    const nameEl = card.querySelector('.card-name, [data-name]');
+    if (nameEl) {
+      const fullName = nameEl.textContent.trim();
+      const parts = fullName.split(' ');
+      data.firstName = parts[0] || 'business';
+      data.lastName = parts.slice(1).join('-') || 'card';
+    }
+
+    // Extract phone
+    const phoneEl = card.querySelector('a[href^="tel:"]');
+    if (phoneEl) {
+      data.phone = phoneEl.getAttribute('href').replace('tel:', '');
+    }
+
+    // Extract email
+    const emailEl = card.querySelector('a[href^="mailto:"]');
+    if (emailEl) {
+      data.email = emailEl.getAttribute('href').replace('mailto:', '');
+    }
+
+    // Extract website
+    const websiteEl = card.querySelector('a[href^="http"]');
+    if (websiteEl) {
+      data.website = websiteEl.getAttribute('href');
+    }
+
+    // Find all link elements with their positions
+    const linkElements = card.querySelectorAll('a[href^="tel:"], a[href^="mailto:"], a[href^="http"]');
+    linkElements.forEach(link => {
+      const rect = link.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      data.links.push({
+        url: link.getAttribute('href'),
+        x: rect.left - cardRect.left,
+        y: rect.top - cardRect.top,
+        width: rect.width,
+        height: rect.height
+      });
+    });
+
+    return data;
+  }
+
+  // Generate PDF filename
+  function getFilename(data) {
+    const first = data.firstName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const last = data.lastName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    return `${first}-${last}-card.pdf`;
+  }
+
+  // Export card to PDF
+  async function exportToPDF() {
+    const btn = document.getElementById('pdfExportBtn');
+    const cardWrapper = document.querySelector('.card-wrapper') || document.querySelector('.card');
+
+    if (!cardWrapper) {
+      alert('Card element not found');
+      return;
+    }
+
+    // Extract data before capturing
+    const cardData = extractCardData();
+
+    // Disable button and show spinner
+    btn.disabled = true;
+    const btnText = btn.querySelector('span');
+    const btnIcon = btn.querySelector('.pdf-icon');
+    const originalText = btnText.textContent;
+    btnText.textContent = 'Generating...';
+    btnIcon.style.display = 'none';
+
+    const spinner = document.createElement('div');
+    spinner.className = 'pdf-spinner';
+    btn.insertBefore(spinner, btnText);
+
+    try {
+      // Capture card as canvas
+      const canvas = await html2canvas(cardWrapper, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: null,
+        logging: false,
+        windowWidth: cardWrapper.scrollWidth,
+        windowHeight: cardWrapper.scrollHeight
+      });
+
+      // Initialize jsPDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [CARD_WIDTH_MM, CARD_HEIGHT_MM],
+        compress: true
+      });
+
+      // Add canvas as image
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      pdf.addImage(imgData, 'JPEG', 0, 0, CARD_WIDTH_MM, CARD_HEIGHT_MM);
+
+      // Add clickable links
+      if (cardData && cardData.links.length > 0) {
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const scaleX = CARD_WIDTH_MM / canvasWidth;
+        const scaleY = CARD_HEIGHT_MM / canvasHeight;
+
+        cardData.links.forEach(link => {
+          const x = link.x * scaleX;
+          const y = link.y * scaleY;
+          const width = link.width * scaleX;
+          const height = link.height * scaleY;
+
+          pdf.link(x, y, width, height, { url: link.url });
+        });
+      }
+
+      // Download PDF
+      const filename = cardData ? getFilename(cardData) : 'business-card.pdf';
+      pdf.save(filename);
+
+    } catch (error) {
+      console.error('PDF export failed:', error);
+      alert('Failed to generate PDF. Please try again.');
+    } finally {
+      // Restore button
+      spinner.remove();
+      btnIcon.style.display = 'block';
+      btnText.textContent = originalText;
+      btn.disabled = false;
+    }
+  }
+
+  // Attach event listener
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('pdfExportBtn');
+    if (btn) {
+      btn.addEventListener('click', exportToPDF);
+    }
+  });
+
+  // Also expose globally for manual triggering
+  window.exportCardToPDF = exportToPDF;
+})();
+</script>

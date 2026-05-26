@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Background Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: #0a0a0f;
+  color: #ffffff;
+  line-height: 1.5;
+  min-height: 100vh;
+  font-weight: 400;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+  .container {
+    grid-template-columns: 400px 1fr;
+  }
+}
+
+.panel-left {
+  background: #111827;
+  padding: 32px 24px;
+  overflow-y: auto;
+}
+
+.panel-right {
+  background: #0a0a0f;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 32px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="url"] {
+  width: 100%;
+  padding: 12px 16px;
+  background: #0a0a0f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
+  transition: border-color 200ms;
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+input[type="color"] {
+  width: 100%;
+  height: 48px;
+  padding: 4px;
+  background: #0a0a0f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.layout-toggle {
+  display: flex;
+  gap: 8px;
+  background: #0a0a0f;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.layout-toggle button {
+  flex: 1;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 200ms;
+  min-height: 44px;
+}
+
+.layout-toggle button.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.layout-toggle button:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.canvas-wrapper {
+  width: 100%;
+  max-width: 960px;
+  aspect-ratio: 16/9;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000000;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.download-btn {
+  padding: 16px 32px;
+  background: #ffffff;
+  color: #0a0a0f;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 200ms, transform 200ms;
+  min-height: 44px;
+}
+
+.download-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.download-btn:active {
+  transform: translateY(0);
+}
+
+.resolution-note {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
+#qr-temp {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  visibility: hidden;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="panel-left">
+    <h1>Background Generator</h1>
+    <p class="subtitle">Create custom virtual backgrounds for video calls</p>
+    
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Your Name" value="John Doe">
+    </div>
+    
+    <div class="form-group">
+      <label for="title">Job Title</label>
+      <input type="text" id="title" placeholder="Your Title" value="Product Designer">
+    </div>
+    
+    <div class="form-group">
+      <label for="company">Company</label>
+      <input type="text" id="company" placeholder="Company Name" value="makersco.my">
+    </div>
+    
+    <div class="form-group">
+      <label for="accent">Accent Color</label>
+      <input type="color" id="accent" value="#3b82f6">
+    </div>
+    
+    <div class="form-group">
+      <label for="cardUrl">Card URL</label>
+      <input type="url" id="cardUrl" placeholder="https://example.com/card" value="https://makersco.my/card">
+    </div>
+    
+    <div class="form-group">
+      <label>QR Position</label>
+      <div class="layout-toggle">
+        <button class="active" data-layout="right">QR Right</button>
+        <button data-layout="left">QR Left</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="panel-right">
+    <div class="canvas-wrapper">
+      <canvas id="canvas" width="1920" height="1080"></canvas>
+    </div>
+    <button class="download-btn" id="download">Download Background (PNG)</button>
+    <p class="resolution-note">Optimised for Zoom, Google Meet, and Microsoft Teams</p>
+  </div>
+</div>
+
+<div id="qr-temp"></div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const inputs = {
+  name: document.getElementById('name'),
+  title: document.getElementById('title'),
+  company: document.getElementById('company'),
+  accent: document.getElementById('accent'),
+  cardUrl: document.getElementById('cardUrl')
+};
+
+let currentLayout = 'right';
+let qrDataUrl = null;
+
+// Parse URL parameters
+function parseUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('name')) inputs.name.value = params.get('name');
+  if (params.get('title')) inputs.title.value = params.get('title');
+  if (params.get('company')) inputs.company.value = params.get('company');
+  if (params.get('accent')) inputs.accent.value = '#' + params.get('accent').replace('#', '');
+  if (params.get('url')) inputs.cardUrl.value = params.get('url');
+}
+
+// Generate QR code
+function generateQR(url) {
+  const tempDiv = document.getElementById('qr-temp');
+  tempDiv.innerHTML = '';
+  
+  const qr = new QRCode(tempDiv, {
+    text: url,
+    width: 300,
+    height: 300,
+    colorDark: '#ffffff',
+    colorLight: 'rgba(0,0,0,0)',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+  
+  setTimeout(() => {
+    const img = tempDiv.querySelector('img');
+    if (img) {
+      qrDataUrl = img.src;
+      renderCanvas();
+    }
+  }, 100);
+}
+
+// Darken color for left panel
+function darkenColor(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.max(0, Math.floor((num >> 16) * percent / 100));
+  const g = Math.max(0, Math.floor(((num >> 8) & 0x00FF) * percent / 100));
+  const b = Math.max(0, Math.floor((num & 0x0000FF) * percent / 100));
+  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+}
+
+// Lighten color for right panel
+function lightenColor(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.min(255, Math.floor((num >> 16) + (255 - (num >> 16)) * percent / 100));
+  const g = Math.min(255, Math.floor(((num >> 8) & 0x00FF) + (255 - ((num >> 8) & 0x00FF)) * percent / 100));
+  const b = Math.min(255, Math.floor((num & 0x0000FF) + (255 - (num & 0x0000FF)) * percent / 100));
+  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+}
+
+// Render canvas
+function renderCanvas() {
+  const name = inputs.name.value || 'Your Name';
+  const title = inputs.title.value || 'Job Title';
+  const company = inputs.company.value || 'Company';
+  const accent = inputs.accent.value;
+  const cardUrl = inputs.cardUrl.value || 'https://makersco.my/card';
+  
+  const leftBg = darkenColor(accent, 15);
+  const rightBg = lightenColor(accent, 8);
+  
+  const leftWidth = currentLayout === 'right' ? 1248 : 672;
+  const rightWidth = 1920 - leftWidth;
+  const leftX = currentLayout === 'right' ? 0 : rightWidth;
+  const rightX = currentLayout === 'right' ? leftWidth : 0;
+  
+  // Clear canvas
+  ctx.clearRect(0, 0, 1920, 1080);
+  
+  // Left panel
+  ctx.fillStyle = leftBg;
+  ctx.fillRect(leftX, 0, leftWidth, 1080);
+  
+  // Right panel
+  ctx.fillStyle = rightBg;
+  ctx.fillRect(rightX, 0, rightWidth, 1080);
+  
+  if (currentLayout === 'right') {
+    // Name
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 80px -apple-system, sans-serif';
+    ctx.fillText(name, 80, 460);
+    
+    // Title + Company
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.font = '40px -apple-system, sans-serif';
+    ctx.fillText(`${title} at ${company}`, 80, 540);
+    
+    // Accent line
+    ctx.fillStyle = accent;
+    ctx.fillRect(80, 600, 200, 3);
+    
+    // Watermark
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.font = '20px -apple-system, sans-serif';
+    ctx.fillText('makersco.my', 80, 1000);
+    
+    // Right side - QR
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '24px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Scan to Connect', leftWidth + rightWidth / 2, 300);
+    
+    // QR code
+    if (qrDataUrl) {
+      const qrImg = new Image();
+      qrImg.onload = function() {
+        ctx.drawImage(qrImg, leftWidth + (rightWidth - 300) / 2, 340, 300, 300);
+        
+        // Card URL
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.font = '16px -apple-system, sans-serif';
+        ctx.fillText(cardUrl, leftWidth + rightWidth / 2, 680);
+      };
+      qrImg.src = qrDataUrl;
+    }
+  } else {
+    // QR on left
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '24px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Scan to Connect', rightWidth / 2, 300);
+    
+    // QR code
+    if (qrDataUrl) {
+      const qrImg = new Image();
+      qrImg.onload = function() {
+        ctx.drawImage(qrImg, (rightWidth - 300) / 2, 340, 300, 300);
+        
+        // Card URL
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.font = '16px -apple-system, sans-serif';
+        ctx.fillText(cardUrl, rightWidth / 2, 680);
+      };
+      qrImg.src = qrDataUrl;
+    }
+    
+    // Right side - text
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 80px -apple-system, sans-serif';
+    ctx.fillText(name, rightWidth + 80, 460);
+    
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.font = '40px -apple-system, sans-serif';
+    ctx.fillText(`${title} at ${company}`, rightWidth + 80, 540);
+    
+    ctx.fillStyle = accent;
+    ctx.fillRect(rightWidth + 80, 600, 200, 3);
+    
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.font = '20px -apple-system, sans-serif';
+    ctx.fillText('makersco.my', rightWidth + 80, 1000);
+  }
+  
+  ctx.textAlign = 'left';
+}
+
+// Event listeners
+Object.values(inputs).forEach(input => {
+  input.addEventListener('input', () => {
+    if (input === inputs.cardUrl) {
+      generateQR(input.value);
+    } else {
+      renderCanvas();
+    }
+  });
+});
+
+document.querySelectorAll('.layout-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.layout-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentLayout = btn.dataset.layout;
+    renderCanvas();
+  });
+});
+
+document.getElementById('download').addEventListener('click', () => {
+  const link = document.createElement('a');
+  link.download = 'virtual-background.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+// Initialize
+parseUrlParams();
+generateQR(inputs.cardUrl.value);
+</script>
+</body>
+</html>

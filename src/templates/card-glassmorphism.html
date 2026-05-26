@@ -3,55 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ahmad Faris bin Razak - Digital Business Card</title>
+    <title>Digital Business Card - Glassmorphism</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
-            /* Surface */
-            --bg-gradient-from: #302b63;
-            --bg-gradient-to: #0f0c29;
-            --bg-base: #0b0f1a;
-
-            /* Glass layers */
+            --bg-gradient: radial-gradient(ellipse at 50% 0%, #302b63, #0f0c29);
+            --bg-base: #0f0c29;
             --card-front-bg: rgba(255, 255, 255, 0.08);
             --card-back-bg: rgba(255, 255, 255, 0.05);
             --card-border: rgba(255, 255, 255, 0.18);
             --card-border-hover: rgba(255, 255, 255, 0.28);
-            --glass-highlight: rgba(255, 255, 255, 0.12);
-            --glass-inner-shadow: rgba(255, 255, 255, 0.06);
-
-            /* Accent */
             --accent: #818cf8;
             --accent-soft: rgba(129, 140, 248, 0.16);
-            --accent-glow: rgba(129, 140, 248, 0.32);
-
-            /* Text */
-            --text-primary: rgba(255, 255, 255, 0.96);
-            --text-secondary: rgba(229, 231, 240, 0.72);
-            --text-muted: rgba(203, 209, 224, 0.52);
-            --text-label: rgba(255, 255, 255, 0.58);
-
-            /* Status */
-            --status-online: #6ee7b7;
-            --status-online-bg: rgba(110, 231, 183, 0.14);
-
-            /* Shadow */
-            --shadow-card: 0 24px 64px rgba(8, 6, 28, 0.48), 0 2px 8px rgba(0, 0, 0, 0.24);
-
-            /* Radii */
+            --accent-ring: rgba(129, 140, 248, 0.32);
+            --text-primary: #f5f5f7;
+            --text-secondary: rgba(245, 245, 247, 0.72);
+            --text-muted: rgba(245, 245, 247, 0.52);
+            --divider: rgba(255, 255, 255, 0.10);
+            --shadow-card: 0 24px 48px -12px rgba(15, 12, 41, 0.64);
+            --shadow-inner: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            --blur-card: 24px;
             --radius-card: 24px;
-            --radius-badge: 20px;
-            --radius-button: 12px;
-            --radius-icon: 12px;
-
-            /* Motion */
-            --ease-glass: cubic-bezier(0.32, 0.72, 0.24, 1);
-            --dur-fast: 180ms;
-            --dur-base: 240ms;
-            --dur-flip: 700ms;
+            --radius-pill: 20px;
+            --radius-btn: 12px;
+            --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+            --ease-spring: cubic-bezier(0.34, 1.32, 0.64, 1);
         }
 
         * {
@@ -62,43 +41,76 @@
 
         body {
             font-family: 'DM Sans', sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, var(--bg-gradient-from) 0%, var(--bg-gradient-to) 100%);
-            padding: 40px 20px;
+            padding: 24px;
             position: relative;
             overflow-x: hidden;
         }
 
         body::before {
-            content: "";
+            content: '';
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 40%, rgba(129, 140, 248, 0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 60%, rgba(110, 231, 183, 0.06) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-base);
+            z-index: -2;
         }
 
-        .container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 400px;
+        .orb {
+            position: fixed;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            filter: blur(60px);
+            pointer-events: none;
+            z-index: -1;
+            will-change: transform;
+            animation: drift 18s var(--ease-out) infinite alternate;
+        }
+
+        .orb-1 {
+            background: var(--accent);
+            opacity: 0.22;
+            top: 20%;
+            left: 15%;
+        }
+
+        .orb-2 {
+            background: #e0aaff;
+            opacity: 0.14;
+            bottom: 25%;
+            right: 20%;
+            animation-delay: -8s;
+            animation-duration: 22s;
+        }
+
+        @keyframes drift {
+            to {
+                transform: translate3d(12px, -8px, 0);
+            }
         }
 
         .card-wrapper {
             width: 360px;
-            height: 220px;
-            perspective: 1200px;
-            margin: 0 auto 32px;
+            height: 560px;
+            perspective: 1000px;
+            margin-bottom: 32px;
             cursor: pointer;
+        }
+
+        @media (min-width: 768px) {
+            .card-wrapper {
+                width: 400px;
+                height: 600px;
+            }
         }
 
         .card-inner {
@@ -106,7 +118,7 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform var(--dur-flip) var(--ease-glass);
+            transition: transform 280ms var(--ease-out);
         }
 
         .card-inner.flipped {
@@ -122,235 +134,216 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             border-radius: var(--radius-card);
-            padding: 24px;
+            padding: 32px;
             border: 1px solid var(--card-border);
-            box-shadow: var(--shadow-card);
-            transition: transform var(--dur-base) var(--ease-glass),
-                        border-color var(--dur-base) var(--ease-glass);
+            box-shadow: var(--shadow-card), var(--shadow-inner);
+            backdrop-filter: blur(var(--blur-card)) saturate(140%);
+            will-change: transform;
+            transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out);
         }
 
-        .card-wrapper:hover .card-front {
-            left: 0;
-            top: 0;
-            transform: translateY(-2px) scale(1.005);
+        .card-wrapper:hover .card-face {
             border-color: var(--card-border-hover);
-        }
-        /* Back face always stays rotated — hover must not override it */
-        .card-back {
-            transform: rotateY(180deg) !important;
-        }
-        .card-wrapper:hover .card-inner.flipped .card-back {
-            transform: rotateY(180deg) translateY(-2px) scale(1.005) !important;
         }
 
         .card-front {
             background: var(--card-front-bg);
-            backdrop-filter: blur(24px) saturate(140%);
-            -webkit-backdrop-filter: blur(24px) saturate(140%);
-        }
-
-        .card-front::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--glass-highlight) 50%, transparent);
-            pointer-events: none;
-        }
-
-        .card-front::after {
-            content: "";
-            position: absolute;
-            top: -40px;
-            right: -40px;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--accent-glow), transparent 70%);
-            filter: blur(40px);
-            opacity: 0.6;
-            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .card-back {
             background: var(--card-back-bg);
-            backdrop-filter: blur(24px) saturate(140%);
-            -webkit-backdrop-filter: blur(24px) saturate(140%);
             transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
         }
 
-        .card-back::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--glass-highlight) 50%, transparent);
-            pointer-events: none;
-        }
-
-        .avatar {
-            position: absolute;
-            top: 24px;
-            left: 24px;
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            border: 1px solid var(--card-border);
-            overflow: hidden;
-            transition: box-shadow var(--dur-base) var(--ease-glass);
-        }
-
-        .avatar:hover {
-            box-shadow: 0 0 0 2px var(--accent-soft);
-        }
-
-        .avatar img {
+        .card-header {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 56px;
         }
 
         .status-badge {
-            position: absolute;
-            top: 28px;
-            right: 24px;
-            padding: 6px 12px;
-            border-radius: var(--radius-badge);
-            background: var(--status-online-bg);
+            background: var(--accent-soft);
+            color: var(--accent);
+            padding: 2px 10px;
+            border-radius: var(--radius-pill);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .logo {
+            width: 28px;
+            height: 28px;
+            opacity: 0.72;
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-weight: 700;
-            font-size: 11px;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            color: var(--status-online);
+            justify-content: center;
         }
 
-        .status-dot {
-            width: 6px;
-            height: 6px;
+        .logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .avatar {
+            width: 88px;
+            height: 88px;
             border-radius: 50%;
-            background: var(--status-online);
-            box-shadow: 0 0 8px var(--status-online);
-            animation: pulse 2400ms ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .name-block {
-            position: absolute;
-            bottom: 64px;
-            left: 24px;
-            right: 24px;
+            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            box-shadow: 0 0 0 2px var(--accent-ring), 0 8px 24px rgba(0, 0, 0, 0.32);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
         }
 
         .name {
-            font-weight: 700;
             font-size: 28px;
+            font-weight: 700;
             letter-spacing: -0.02em;
             color: var(--text-primary);
+            text-align: center;
             margin-bottom: 4px;
-            line-height: 1.2;
         }
 
-        .title-line {
-            font-size: 15px;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .title {
+        .job-title {
+            font-size: 14px;
             font-weight: 400;
-        }
-
-        .divider {
-            color: var(--text-muted);
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 8px;
         }
 
         .company {
+            font-size: 13px;
             font-weight: 600;
-            letter-spacing: -0.005em;
+            letter-spacing: 0.01em;
+            color: var(--accent);
+            text-align: center;
+            margin-bottom: 24px;
         }
 
-        .btn-glass {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
+        .divider {
+            width: 48px;
+            height: 1px;
+            background: var(--divider);
+            margin-bottom: 24px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            margin-bottom: auto;
+        }
+
+        .btn {
+            flex: 1;
             height: 44px;
-            padding: 0 18px;
-            border-radius: var(--radius-button);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            color: var(--text-primary);
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 600;
+            border-radius: var(--radius-btn);
             font-size: 14px;
-            letter-spacing: -0.005em;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            border: 0;
             cursor: pointer;
-            transition: transform var(--dur-fast) var(--ease-glass),
-                        background var(--dur-fast) var(--ease-glass),
-                        opacity var(--dur-fast) var(--ease-glass);
+            transition: transform 160ms var(--ease-out), opacity 160ms var(--ease-out);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-base);
+            box-shadow: 0 8px 20px -8px var(--accent-ring), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.10);
+            backdrop-filter: blur(12px);
+            color: var(--text-primary);
+            border: 1px solid var(--card-border);
+        }
+
+        .flip-hint {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 24px;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .btn-glass:hover {
-            transform: translateY(-1px);
-            background: rgba(255, 255, 255, 0.14);
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 24px;
         }
 
-        .btn-glass:active {
-            transform: scale(0.97);
-        }
-
-        .contact-section {
+        .contact-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 8px;
+            margin-bottom: 24px;
         }
 
         .contact-row {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 12px 16px;
             display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            align-items: center;
+            gap: 16px;
+            transition: transform 200ms var(--ease-out), opacity 200ms var(--ease-out);
+            cursor: pointer;
         }
 
-        .contact-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
+        .contact-row:hover {
+            transform: translateX(2px);
+            background: rgba(255, 255, 255, 0.06);
         }
 
         .contact-icon {
             width: 36px;
             height: 36px;
-            min-width: 36px;
-            border-radius: var(--radius-icon);
             background: var(--accent-soft);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-icon svg {
+            width: 20px;
+            height: 20px;
             color: var(--accent);
-            font-size: 16px;
         }
 
         .contact-info {
-            flex: 1;
             display: flex;
             flex-direction: column;
             gap: 2px;
@@ -358,23 +351,55 @@
         }
 
         .contact-label {
+            font-size: 11px;
             font-weight: 600;
-            font-size: 10px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text-label);
+            color: var(--text-muted);
         }
 
         .contact-value {
+            font-size: 14px;
             font-weight: 400;
-            font-size: 15px;
             color: var(--text-primary);
-            cursor: copy;
-            transition: color var(--dur-fast) ease;
             word-break: break-all;
         }
 
-        .contact-value:hover {
+        .social-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: auto;
+        }
+
+        .social-btn {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.10);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-btn);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 160ms var(--ease-out), opacity 160ms var(--ease-out);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .social-btn:active {
+            transform: scale(0.97);
+        }
+
+        .social-btn svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-secondary);
+            transition: color 160ms var(--ease-out);
+        }
+
+        .social-btn:hover svg {
             color: var(--accent);
         }
 
@@ -382,540 +407,303 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            width: 360px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 400px;
         }
 
-        .btn-action {
-            height: 52px;
-            border-radius: var(--radius-button);
-            border: none;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 600;
+        .action-btn {
+            width: 100%;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-btn);
+            color: var(--text-primary);
             font-size: 14px;
-            letter-spacing: -0.005em;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
             cursor: pointer;
-            transition: transform var(--dur-fast) var(--ease-glass),
-                        box-shadow var(--dur-base) var(--ease-glass),
-                        opacity var(--dur-fast) var(--ease-glass);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            transition: transform 160ms var(--ease-out), background 160ms var(--ease-out);
         }
 
-        .btn-action:hover {
+        .action-btn:hover {
             transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.12);
         }
 
-        .btn-action:active {
-            transform: scale(0.97);
+        .action-btn:active {
+            transform: scale(0.99);
         }
 
-        .btn-primary {
-            background: var(--accent);
-            color: #0b0f1a;
-            box-shadow: 0 4px 16px rgba(129, 140, 248, 0.24);
+        .action-btn svg {
+            width: 20px;
+            height: 20px;
         }
 
-        .btn-primary:hover {
-            box-shadow: 0 8px 24px var(--accent-glow);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
+        .qr-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 12, 41, 0.92);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: var(--text-primary);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.14);
-        }
-
-        .qr-container {
-            width: 360px;
-            margin: 32px auto 0;
-            padding: 24px;
-            border-radius: var(--radius-card);
-            background: var(--card-front-bg);
-            backdrop-filter: blur(24px) saturate(140%);
-            -webkit-backdrop-filter: blur(24px) saturate(140%);
-            border: 1px solid var(--card-border);
-            display: flex;
-            flex-direction: column;
+            display: none;
             align-items: center;
-            gap: 16px;
+            justify-content: center;
+            z-index: 1000;
+            padding: 24px;
+        }
+
+        .qr-modal.active {
+            display: flex;
+        }
+
+        .qr-content {
+            background: var(--card-front-bg);
+            backdrop-filter: blur(var(--blur-card)) saturate(140%);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-card);
+            padding: 32px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: var(--shadow-card), var(--shadow-inner);
+        }
+
+        .qr-header {
+            text-align: center;
+            margin-bottom: 24px;
         }
 
         .qr-title {
-            font-weight: 600;
-            font-size: 14px;
+            font-size: 20px;
+            font-weight: 700;
             color: var(--text-primary);
-            letter-spacing: -0.005em;
+            margin-bottom: 8px;
         }
 
-        #qrcode {
-            padding: 16px;
+        .qr-subtitle {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .qr-code-container {
             background: white;
+            padding: 16px;
             border-radius: 12px;
+            margin-bottom: 24px;
             display: flex;
-            align-items: center;
             justify-content: center;
         }
 
-        #qrcode canvas,
-        #qrcode img {
-            display: block;
-        }
-
-        .footer {
-            margin-top: 40px;
-            text-align: center;
-            color: var(--text-muted);
-            font-weight: 300;
-            font-size: 13px;
-        }
-
-        .footer a {
-            color: var(--accent);
-            text-decoration: none;
-            transition: opacity var(--dur-fast) ease;
-        }
-
-        .footer a:hover {
-            opacity: 0.8;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            padding: 14px 20px;
-            border-radius: var(--radius-button);
-            background: var(--card-front-bg);
-            backdrop-filter: blur(24px) saturate(140%);
-            -webkit-backdrop-filter: blur(24px) saturate(140%);
-            border: 1px solid var(--card-border);
-            color: var(--text-primary);
-            font-weight: 600;
+        .qr-close {
+            width: 100%;
+            height: 44px;
+            background: var(--accent);
+            color: var(--bg-base);
+            border: 0;
+            border-radius: var(--radius-btn);
             font-size: 14px;
-            opacity: 0;
-            transition: transform var(--dur-base) var(--ease-glass),
-                        opacity var(--dur-base) var(--ease-glass);
-            z-index: 1000;
-            pointer-events: none;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: transform 160ms var(--ease-out);
         }
 
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        .qr-close:hover {
+            transform: translateY(-1px);
+        }
+
+        .qr-close:active {
+            transform: scale(0.97);
         }
 
         @media (max-width: 480px) {
-            .card-wrapper,
-            .actions,
-            .qr-container {
+            .card-wrapper {
                 width: 100%;
                 max-width: 360px;
             }
 
-            .name {
-                font-size: 24px;
-            }
-
-            .title-line {
-                font-size: 14px;
+            .actions {
+                width: 100%;
             }
         }
-
-        .icon-svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        .contact-icon svg {
-            width: 18px;
-            height: 18px;
-        }
-    
-/* ── MakersCo Spacing Fix ──────────────────────────────────────────────── */
-/* Standardised spacing injected post-build to fix cramped layout           */
-
-/* Page breathing room */
-body {
-  padding: 40px 24px 60px !important;
-  min-height: 100vh;
-}
-@media (max-width: 480px) {
-  body { padding: 32px 16px 48px !important; }
-}
-
-/* Card centring with consistent gap below */
-.card-wrapper,
-.card-scene,
-.scene {
-  margin: 0 auto 28px auto !important;
-  max-width: 380px;
-}
-
-/* Card face inner padding — never let content touch edges */
-.card-face,
-.card__face,
-.flip-card-face {
-  padding: 22px 24px !important;
-}
-
-/* Info / contact panel below card */
-.info-panel,
-.contact-panel,
-.card-info,
-.back-info,
-.detail-panel {
-  margin-top: 20px !important;
-  padding: 20px 20px !important;
-  border-radius: 14px;
-}
-
-/* Contact rows inside info panel */
-.contact-row,
-.info-row,
-.detail-row {
-  padding: 10px 0 !important;
-  gap: 12px !important;
-}
-.contact-row + .contact-row,
-.info-row + .info-row,
-.detail-row + .detail-row {
-  border-top: 1px solid rgba(255,255,255,0.07);
-}
-
-/* Action buttons container */
-.actions,
-.action-row,
-.action-buttons,
-.card-actions,
-.button-group,
-.cta-group,
-.btn-group {
-  margin-top: 20px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 10px !important;
-}
-
-/* Every button — consistent height and tap target */
-.btn,
-.cta-btn,
-.action-btn,
-.wa-btn,
-.vcard-btn,
-.share-btn,
-.copy-btn,
-.primary-btn,
-.secondary-btn,
-button:not(.flip-btn):not([class*="flip"]):not([class*="tab"]) {
-  min-height: 48px !important;
-  padding: 0 24px !important;
-  border-radius: 12px !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  cursor: pointer !important;
-  text-decoration: none !important;
-}
-
-/* Share / secondary row — horizontal pills */
-.share-row,
-.share-panel,
-.share-options {
-  display: flex !important;
-  gap: 10px !important;
-  margin-top: 10px !important;
-  flex-wrap: wrap !important;
-}
-.share-row .btn,
-.share-panel .btn,
-.share-options .btn {
-  flex: 1 !important;
-  min-width: 80px !important;
-  min-height: 44px !important;
-  padding: 0 12px !important;
-  font-size: 13px !important;
-}
-
-/* Flip hint text */
-.flip-hint,
-.card__flip-hint,
-.flip-indicator,
-.tap-hint {
-  text-align: center !important;
-  font-size: 11px !important;
-  opacity: 0.5 !important;
-  margin-top: 8px !important;
-  margin-bottom: 4px !important;
-  letter-spacing: 0.5px !important;
-}
-
-/* Section labels / headings */
-.section-label,
-.panel-title,
-.section-title {
-  font-size: 11px !important;
-  text-transform: uppercase !important;
-  letter-spacing: 1px !important;
-  opacity: 0.5 !important;
-  margin-bottom: 12px !important;
-}
-
-/* ── End MakersCo Spacing Fix ─────────────────────────────────────────── */
-
-/* ── Glassmorphism front + back compact fix ──────────────────────────────── */
-/* Front face: name 28px is too large for 220px card — scale down */
-.card-front .name {
-  font-size: 20px !important;
-  line-height: 1.2 !important;
-  margin-bottom: 2px !important;
-}
-.card-front .title-line {
-  font-size: 12px !important;
-  gap: 5px !important;
-}
-/* Move name-block up slightly so Flip button has clear space */
-.card-front .name-block {
-  bottom: 60px !important;
-}
-/* Flip button: keep absolute position but tighter */
-#flipBtn.btn-glass {
-  height: 32px !important;
-  min-height: 32px !important;
-  padding: 0 14px !important;
-  font-size: 12px !important;
-  width: auto !important;
-  bottom: 16px !important;
-  right: 16px !important;
-}
-
-/* ── Glassmorphism card-back compact fix ──────────────────────────────── */
-/* Card faces must clip overflow — prevents content poking outside the card */
-.card-face {
-  overflow: hidden !important;
-}
-
-/* Back face: flex column so content + button share space properly */
-.card-back {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  padding: 16px 20px !important;
-}
-
-/* Compact the contact section inside the card */
-.card-back .contact-section {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-  flex: 1 !important;
-  justify-content: center !important;
-}
-.card-back .contact-row {
-  padding: 5px 0 !important;
-  padding-bottom: 0 !important;
-  border-bottom: none !important;
-  gap: 10px !important;
-  align-items: center !important;
-}
-.card-back .contact-icon {
-  width: 26px !important;
-  height: 26px !important;
-  flex-shrink: 0 !important;
-}
-.card-back .contact-icon svg {
-  width: 13px !important;
-  height: 13px !important;
-}
-.card-back .contact-label {
-  font-size: 8px !important;
-  line-height: 1.2 !important;
-}
-.card-back .contact-value {
-  font-size: 11px !important;
-  line-height: 1.3 !important;
-}
-
-/* Back button: remove absolute position, sit at bottom of flex column */
-#backBtn.btn-glass {
-  position: relative !important;
-  bottom: auto !important;
-  right: auto !important;
-  top: auto !important;
-  left: auto !important;
-  align-self: flex-end !important;
-  height: 30px !important;
-  min-height: 30px !important;
-  padding: 0 14px !important;
-  font-size: 12px !important;
-  width: auto !important;
-  flex-shrink: 0 !important;
-}
-/* ── End glassmorphism card-back fix ──────────────────────────────────── */
-
-
-/* ── Phase 4 Extras ─────────────────────────────────────────────────────── */
-.extras-section{width:340px;margin:10px auto 0;display:flex;flex-direction:column;gap:9px}
-.social-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:4px 0}
-.social-btn{
-  width:40px;height:40px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  text-decoration:none;border:none;cursor:pointer;
-  transition:transform .15s,opacity .15s;flex-shrink:0;
-}
-.social-btn:hover{transform:translateY(-2px);opacity:.85}
-.social-btn svg{width:18px;height:18px;flex-shrink:0}
-.extra-btn{
-  width:100%;height:44px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  font-size:13px;font-weight:600;
-  text-decoration:none;cursor:pointer;border:none;
-  transition:transform .15s,opacity .15s;
-}
-.extra-btn:hover{transform:translateY(-1px);opacity:.9}
-.extra-btn:active{transform:scale(.98)}
-/* ── End Phase 4 Extras ──────────────────────────────────────────────────── */
-</style>
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card-wrapper" id="cardWrapper">
-            <div class="card-inner" id="cardInner">
-                <div class="card-face card-front">
-                    <div class="avatar">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23818cf8;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%236366f1;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23grad)' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='DM Sans, sans-serif' font-weight='700' font-size='80' fill='white'%3EAF%3C/text%3E%3C/svg%3E" alt="Avatar">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="card-wrapper" id="cardWrapper">
+        <div class="card-inner" id="cardInner">
+            <div class="card-face card-front">
+                <div class="card-header">
+                    <div class="status-badge">AVAILABLE</div>
+                    <div class="logo">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="var(--accent)" opacity="0.3"/>
+                            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        </svg>
                     </div>
-                    <div class="status-badge">
-                        <span class="status-dot"></span>
-                        Available
-                    </div>
-                    <div class="name-block">
-                        <div class="name" id="nameDisplay"></div>
-                        <div class="title-line">
-                            <span class="title" id="titleDisplay"></span>
-                            <span class="divider">•</span>
-                            <span class="company" id="companyDisplay"></span>
+                </div>
+
+                <div class="avatar" id="avatar">AF</div>
+                <div class="name" id="name">Ahmad Faris bin Razak</div>
+                <div class="job-title" id="jobTitle">Founder & CEO</div>
+                <div class="company" id="company">Pixel Reka Sdn Bhd</div>
+
+                <div class="divider"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="handleConnect(event)">Connect</button>
+                    <button class="btn btn-secondary" onclick="handleSave(event)">Save</button>
+                </div>
+
+                <div class="flip-hint">
+                    flip to view contacts
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 4V10H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M23 20V14H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14L18.36 18.36A9 9 0 0 1 3.51 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="card-face card-back">
+                <div class="section-label">CONTACT</div>
+                
+                <div class="contact-list">
+                    <div class="contact-row" onclick="copyToClipboard('faris@pixelreka.com.my', 'Email')">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-label">Email</div>
+                            <div class="contact-value">faris@pixelreka.com.my</div>
                         </div>
                     </div>
-                    <button class="btn-glass" id="flipBtn">
-                        <span>Flip</span>
-                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13 5L20 12L13 19M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+                    <div class="contact-row" onclick="copyToClipboard('+60123456789', 'Phone')">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22 16.92V19.92C22 20.49 21.54 20.97 20.97 21C20.72 21.01 20.47 21.02 20.22 21.02C10.44 21.02 2.48 13.06 2.48 3.28C2.48 3.03 2.49 2.78 2.52 2.53C2.55 1.96 3.03 1.5 3.6 1.5H6.6C7.13 1.5 7.58 1.89 7.64 2.41C7.75 3.44 7.98 4.44 8.35 5.39C8.48 5.74 8.4 6.14 8.13 6.41L6.21 8.33C7.38 10.54 9.54 12.7 11.75 13.87L13.67 11.95C13.94 11.68 14.34 11.6 14.69 11.73C15.64 12.1 16.64 12.33 17.67 12.44C18.19 12.5 18.58 12.95 18.58 13.48V16.48C18.58 17.05 18.17 17.51 17.6 17.54C17.35 17.57 17.1 17.58 16.85 17.58" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-label">Phone</div>
+                            <div class="contact-value">+60 12 345 6789</div>
+                        </div>
+                    </div>
+
+                    <div class="contact-row" onclick="window.open('https://pixelreka.com.my', '_blank')">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 12H22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 2C14.5 4.5 16 8 16 12C16 16 14.5 19.5 12 22C9.5 19.5 8 16 8 12C8 8 9.5 4.5 12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-label">Website</div>
+                            <div class="contact-value">pixelreka.com.my</div>
+                        </div>
+                    </div>
+
+                    <div class="contact-row" onclick="copyToClipboard('Kuala Lumpur, Malaysia', 'Location')">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61 3.95 5.32 5.64 3.64C7.32 1.95 9.61 1 12 1C14.39 1 16.68 1.95 18.36 3.64C20.05 5.32 21 7.61 21 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-label">Location</div>
+                            <div class="contact-value">Kuala Lumpur, Malaysia</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider" style="margin: 24px auto;"></div>
+
+                <div class="social-row">
+                    <button class="social-btn" onclick="window.open('https://linkedin.com', '_blank')" title="LinkedIn">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6 9H2V21H6V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 6C5.10457 6 6 5.10457 6 4C6 2.89543 5.10457 2 4 2C2.89543 2 2 2.89543 2 4C2 5.10457 2.89543 6 4 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button class="social-btn" onclick="window.open('https://twitter.com', '_blank')" title="X/Twitter">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M23 3C22.0424 3.67548 20.9821 4.19211 19.86 4.53C19.2577 3.83751 18.4573 3.34669 17.567 3.12393C16.6767 2.90116 15.7395 2.95718 14.8821 3.28444C14.0247 3.6117 13.2884 4.19439 12.773 4.95372C12.2575 5.71305 11.9877 6.61232 12 7.53V8.53C10.2426 8.57557 8.50127 8.18581 6.93101 7.39545C5.36074 6.60508 4.01032 5.43864 3 4C3 4 -1 13 8 17C5.94053 18.398 3.48716 19.0989 1 19C10 24 21 19 21 7.5C20.9991 7.22145 20.9723 6.94359 20.92 6.67C21.9406 5.66349 22.6608 4.39271 23 3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button class="social-btn" onclick="window.open('https://dribbble.com', '_blank')" title="Dribbble">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8.56 2.75C12.93 8.78 14.58 12.17 16.59 20.47" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12.88C5.2 10.18 10.38 9.5 14.59 10.69" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M15.23 3.23C17.59 6.84 19.42 11.42 19.88 15.67" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <button class="social-btn" onclick="window.open('https://github.com', '_blank')" title="GitHub">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 19C4 20.5 4 16.5 2 16M16 22V18.13C16.0375 17.6532 15.9731 17.1738 15.811 16.7238C15.6489 16.2738 15.3929 15.8634 15.06 15.52C18.2 15.17 21.5 13.98 21.5 8.52C21.4997 7.12383 20.9627 5.7812 20 4.77C20.4559 3.54851 20.4236 2.19835 19.91 1C19.91 1 18.73 0.65 16 2.48C13.708 1.85882 11.292 1.85882 9 2.48C6.27 0.65 5.09 1 5.09 1C4.57638 2.19835 4.54414 3.54851 5 4.77C4.03013 5.7887 3.49252 7.14346 3.5 8.55C3.5 13.97 6.8 15.16 9.94 15.55C9.611 15.89 9.35726 16.2954 9.19531 16.7399C9.03335 17.1844 8.96681 17.6581 9 18.13V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
                 </div>
-
-                <div class="card-face card-back">
-                    <div class="contact-section">
-                        <div class="contact-row">
-                            <div class="contact-icon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 5C3 3.89543 3.89543 3 5 3H8.27924C8.70967 3 9.09181 3.27543 9.22792 3.68377L10.7257 8.17721C10.8831 8.64932 10.6694 9.16531 10.2243 9.38787L7.96701 10.5165C9.06925 12.9612 11.0388 14.9308 13.4835 16.033L14.6121 13.7757C14.8347 13.3306 15.3507 13.1169 15.8228 13.2743L20.3162 14.7721C20.7246 14.9082 21 15.2903 21 15.7208V19C21 20.1046 20.1046 21 19 21H18C9.71573 21 3 14.2843 3 6V5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="contact-info">
-                                <div class="contact-label">Phone</div>
-                                <div class="contact-value" data-copy id="phoneDisplay"></div>
-                            </div>
-                        </div>
-
-                        <div class="contact-row">
-                            <div class="contact-icon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 8L10.89 13.26C11.5417 13.6783 12.4583 13.6783 13.11 13.26L21 8M5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div class="contact-info">
-                                <div class="contact-label">Email</div>
-                                <div class="contact-value" data-copy id="emailDisplay"></div>
-                            </div>
-                        </div>
-
-                        <div class="contact-row">
-                            <div class="contact-icon">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M3.5 9H20.5M3.5 15H20.5M12 3C14.5 5.5 16 8.5 16 12C16 15.5 14.5 18.5 12 21M12 3C9.5 5.5 8 8.5 8 12C8 15.5 9.5 18.5 12 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                            <div class="contact-info">
-                                <div class="contact-label">Web</div>
-                                <div class="contact-value" data-copy id="websiteDisplay"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button class="btn-glass" id="backBtn">
-                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 5L4 12L11 19M20 12H4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span>Back</span>
-                    </button>
-                </div>
             </div>
-        </div>
-
-        <div class="actions">
-            <button class="btn-action btn-primary" id="saveContactBtn">
-                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H14L21 10V19C21 20.1046 20.1046 21 19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M7 3V8H15V3M17 21V13H7V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Save Contact
-            </button>
-
-            <button class="btn-action btn-secondary" id="whatsappBtn">
-                <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.472 14.382C17.015 14.153 14.805 13.066 14.405 12.922C14.005 12.778 13.712 12.706 13.419 13.163C13.126 13.62 12.274 14.649 12.011 14.942C11.748 15.235 11.485 15.278 11.028 15.049C10.571 14.82 9.05 14.31 7.255 12.706C5.862 11.461 4.938 9.93 4.675 9.473C4.412 9.016 4.64 8.774 4.869 8.545C5.072 8.342 5.327 8.007 5.556 7.744C5.785 7.481 5.857 7.275 6.001 6.982C6.145 6.689 6.073 6.426 5.959 6.197C5.845 5.968 4.938 3.758 4.581 2.844C4.224 1.93 3.867 2.059 3.603 2.045C3.34 2.031 3.047 2.031 2.754 2.031C2.461 2.031 1.99 2.145 1.59 2.602C1.19 3.059 0.017 4.146 0.017 6.356C0.017 8.566 1.647 10.691 1.876 10.984C2.105 11.277 4.938 15.635 9.273 17.602C13.608 19.569 13.608 18.893 14.577 18.807C15.546 18.721 17.443 17.716 17.8 16.654C18.157 15.592 18.157 14.696 18.029 14.468C17.901 14.24 17.608 14.126 17.015 13.897L17.472 14.382ZM12.039 22H12.036C10.099 22 8.197 21.476 6.54 20.488L6.159 20.255L2.669 21.191L3.622 17.794L3.363 17.397C2.274 15.675 1.695 13.679 1.696 11.624C1.698 5.998 6.231 1.465 11.859 1.465C14.586 1.466 17.153 2.527 19.087 4.464C21.021 6.401 22.079 8.97 22.078 11.697C22.076 17.323 17.543 21.856 11.915 21.856L12.039 22Z" fill="currentColor"/>
-                </svg>
-                WhatsApp Me
-            </button>
-
-            <div style="display: flex; gap: 12px;">
-                <button class="btn-action btn-secondary" id="copyLinkBtn" style="flex: 1;">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 8V5C8 3.89543 8.89543 3 10 3H19C20.1046 3 21 3.89543 21 5V14C21 15.1046 20.1046 16 19 16H16M5 8H14C15.1046 8 16 8.89543 16 10V19C16 20.1046 15.1046 21 14 21H5C3.89543 21 3 20.1046 3 19V10C3 8.89543 3.89543 8 5 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Copy Link
-                </button>
-                <button class="btn-action btn-secondary" id="shareBtn" style="flex: 1;">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M18 8C19.6569 8 21 6.65685 21 5C21 3.34315 19.6569 2 18 2C16.3431 2 15 3.34315 15 5C15 6.65685 16.3431 8 18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M6 15C7.65685 15 9 13.6569 9 12C9 10.3431 7.65685 9 6 9C4.34315 9 3 10.3431 3 12C3 13.6569 4.34315 15 6 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M18 22C19.6569 22 21 20.6569 21 19C21 17.3431 19.6569 16 18 16C16.3431 16 15 17.3431 15 19C15 20.6569 16.3431 22 18 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M8.59 13.51L15.42 17.49M15.41 6.51L8.59 10.49" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Share
-                </button>
-            </div>
-        </div>
-
-        <div class="qr-container">
-            <div class="qr-title">Scan to Save Contact</div>
-            <div id="qrcode"></div>
-        </div>
-
-        <div class="footer">
-            Powered by <a href="https://pixelreka.com.my" target="_blank">Pixel Reka</a>
         </div>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <div class="actions">
+        <button class="action-btn" onclick="openWhatsApp()">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.472 14.382C17.015 14.153 14.98 13.154 14.574 13.006C14.168 12.858 13.874 12.784 13.58 13.241C13.286 13.698 12.514 14.635 12.252 14.929C11.99 15.223 11.728 15.262 11.271 15.033C10.814 14.804 9.336 14.331 7.588 12.774C6.234 11.561 5.321 10.066 5.059 9.609C4.797 9.152 5.031 8.908 5.26 8.679C5.467 8.472 5.717 8.143 5.946 7.881C6.175 7.619 6.249 7.425 6.397 7.131C6.545 6.837 6.471 6.575 6.357 6.346C6.243 6.117 5.331 4.082 4.963 3.168C4.595 2.254 4.227 2.37 3.971 2.358C3.715 2.346 3.421 2.346 3.127 2.346C2.833 2.346 2.376 2.46 1.97 2.917C1.564 3.374 0.487 4.373 0.487 6.408C0.487 8.443 1.993 10.401 2.222 10.695C2.451 10.989 5.321 15.233 9.55 17.013C13.779 18.793 13.779 18.183 14.574 18.106C15.369 18.029 17.015 17.091 17.345 16.114C17.675 15.137 17.675 14.304 17.561 14.114C17.447 13.924 17.153 13.81 16.696 13.581" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20.52 3.44901C18.245 1.17401 15.24 -0.0759888 12.03 -0.0759888C5.42 -0.0759888 0.03 5.31401 0.03 11.924C0.03 13.994 0.59 16.024 1.66 17.804L0 23.924L6.24 22.294C7.97 23.274 9.98 23.794 12.03 23.794C18.64 23.794 24.03 18.534 24.03 11.924C24.03 8.71401 22.78 5.72401 20.52 3.44901Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Message on WhatsApp
+        </button>
+        
+        <button class="action-btn" onclick="copyLink()">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 13C10.4295 13.5741 10.9774 14.0491 11.6066 14.3929C12.2357 14.7367 12.9315 14.9411 13.6467 14.9923C14.3618 15.0435 15.0796 14.9403 15.7513 14.6897C16.4231 14.4392 17.0331 14.047 17.54 13.54L20.54 10.54C21.4508 9.59695 21.9548 8.33394 21.9434 7.02296C21.932 5.71198 21.4061 4.45791 20.4791 3.53087C19.5521 2.60383 18.298 2.07799 16.987 2.0666C15.676 2.0552 14.413 2.55918 13.47 3.46997L11.75 5.17997" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 11C13.5705 10.4259 13.0226 9.95083 12.3934 9.60704C11.7642 9.26325 11.0685 9.05885 10.3533 9.00768C9.63816 8.95651 8.92037 9.0597 8.24861 9.31026C7.57685 9.56082 6.96684 9.95303 6.45996 10.46L3.45996 13.46C2.54917 14.403 2.04519 15.666 2.05659 16.977C2.06798 18.288 2.59382 19.5421 3.52086 20.4691C4.4479 21.3961 5.70197 21.922 7.01295 21.9334C8.32393 21.9448 9.58694 21.4408 10.53 20.53L12.24 18.82" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Copy Link
+        </button>
+
+        <button class="action-btn" onclick="shareCard()">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.59 13.51L15.42 17.49" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15.41 6.51L8.59 10.49" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Share Card
+        </button>
+    </div>
+
+    <div class="qr-modal" id="qrModal">
+        <div class="qr-content">
+            <div class="qr-header">
+                <div class="qr-title">Scan to Save Contact</div>
+                <div class="qr-subtitle">Scan with your camera to add this contact</div>
+            </div>
+            <div class="qr-code-container" id="qrCode"></div>
+            <button class="qr-close" onclick="closeQR()">Close</button>
+        </div>
+    </div>
 
     <script>
         const CONFIG = {
@@ -928,330 +716,231 @@ button:not(.flip-btn):not([class*="flip"]):not([class*="tab"]) {
             location: "Kuala Lumpur, Malaysia",
             bio: "Building digital solutions for Malaysian SMEs",
             color: "#818cf8",
-            whatsapp_message: "Hi Faris, I found your digital card!",
-            social: {
-                linkedin:  "https://linkedin.com/in/",
-                instagram: "https://instagram.com/",
-                twitter:   ""
-            },
-            custom_links: [
-                { icon: "🌐", label: "Visit Website", url: "https://pixelreka.com.my" }
-            ],
-            booking_url: "",
-            maps_url:    ""
+            whatsapp_message: "Hi Faris, I found your digital card!"
         };
-        window.CONFIG = CONFIG;
 
-        // Initialize display
-        document.getElementById('nameDisplay').textContent = CONFIG.name;
-        document.getElementById('titleDisplay').textContent = CONFIG.title;
-        document.getElementById('companyDisplay').textContent = CONFIG.company;
-        document.getElementById('phoneDisplay').textContent = CONFIG.phone;
-        document.getElementById('emailDisplay').textContent = CONFIG.email;
-        document.getElementById('websiteDisplay').textContent = CONFIG.website.replace('https://', '').replace('http://', '');
-
-        // Card flip functionality
-        const cardInner = document.getElementById('cardInner');
-        const flipBtn = document.getElementById('flipBtn');
-        const backBtn = document.getElementById('backBtn');
         const cardWrapper = document.getElementById('cardWrapper');
+        const cardInner = document.getElementById('cardInner');
+        let isFlipped = false;
 
-        function flipCard() {
-            cardInner.classList.toggle('flipped');
-        }
-
-        flipBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            flipCard();
-        });
-
-        backBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            flipCard();
-        });
-
-        cardWrapper.addEventListener('click', (e) => {
-            if (e.target === cardWrapper || e.target.closest('.card-face')) {
-                flipCard();
+        cardWrapper.addEventListener('click', function(e) {
+            if (e.target.closest('.btn') || e.target.closest('.contact-row') || e.target.closest('.social-btn')) {
+                return;
+            }
+            
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                cardInner.classList.add('flipped');
+            } else {
+                cardInner.classList.remove('flipped');
             }
         });
 
-        // Toast notification
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // Copy to clipboard functionality
-        document.querySelectorAll('[data-copy]').forEach(element => {
-            element.addEventListener('click', () => {
-                const text = element.textContent;
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast('Copied to clipboard!');
-                }).catch(() => {
-                    showToast('Failed to copy');
-                });
+        function handleConnect(event) {
+            event.stopPropagation();
+            const qrModal = document.getElementById('qrModal');
+            const qrCode = document.getElementById('qrCode');
+            
+            qrCode.innerHTML = '';
+            
+            const vCardData = generateVCard();
+            
+            new QRCode(qrCode, {
+                text: vCardData,
+                width: 256,
+                height: 256,
+                colorDark: "#0f0c29",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
             });
-        });
-
-        // Generate vCard
-        function generateVCard() {
-            const vcard = `BEGIN:VCARD
-VERSION:3.0
-FN:${CONFIG.name}
-TITLE:${CONFIG.title}
-ORG:${CONFIG.company}
-TEL;TYPE=CELL:${CONFIG.phone}
-EMAIL:${CONFIG.email}
-URL:${CONFIG.website}
-ADR;TYPE=WORK:;;${CONFIG.location}
-NOTE:${CONFIG.bio}
-END:VCARD`;
-            return vcard;
+            
+            qrModal.classList.add('active');
         }
 
-        // Save contact button
-        document.getElementById('saveContactBtn').addEventListener('click', () => {
-            const vcard = generateVCard();
-            const blob = new Blob([vcard], { type: 'text/vcard' });
-            const url = URL.createObjectURL(blob);
+        function handleSave(event) {
+            event.stopPropagation();
+            downloadVCard();
+        }
+
+        function generateVCard() {
+            const vCard = [
+                'BEGIN:VCARD',
+                'VERSION:3.0',
+                `FN:${CONFIG.name}`,
+                `ORG:${CONFIG.company}`,
+                `TITLE:${CONFIG.title}`,
+                `TEL;TYPE=WORK,VOICE:${CONFIG.phone}`,
+                `EMAIL;TYPE=INTERNET:${CONFIG.email}`,
+                `URL:${CONFIG.website}`,
+                `ADR;TYPE=WORK:;;${CONFIG.location}`,
+                `NOTE:${CONFIG.bio}`,
+                'END:VCARD'
+            ].join('\n');
+            
+            return vCard;
+        }
+
+        function downloadVCard() {
+            const vCardData = generateVCard();
+            const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = `${CONFIG.name.replace(/\s+/g, '_')}.vcf`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            showToast('Contact saved!');
-        });
+            window.URL.revokeObjectURL(url);
+            
+            showNotification('Contact saved successfully!');
+        }
 
-        // WhatsApp button
-        document.getElementById('whatsappBtn').addEventListener('click', () => {
-            const phoneNumber = CONFIG.phone.replace(/\D/g, '');
+        function openWhatsApp() {
             const message = encodeURIComponent(CONFIG.whatsapp_message);
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-            window.open(whatsappUrl, '_blank');
-        });
+            const phone = CONFIG.phone.replace(/\+/g, '').replace(/\s/g, '');
+            const url = `https://wa.me/${phone}?text=${message}`;
+            window.open(url, '_blank');
+        }
 
-        // Copy link button
-        document.getElementById('copyLinkBtn').addEventListener('click', () => {
+        function copyLink() {
             const currentUrl = window.location.href;
-            navigator.clipboard.writeText(currentUrl).then(() => {
-                showToast('Link copied to clipboard!');
-            }).catch(() => {
-                showToast('Failed to copy link');
-            });
-        });
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(currentUrl).then(() => {
+                    showNotification('Link copied to clipboard!');
+                }).catch(() => {
+                    fallbackCopy(currentUrl);
+                });
+            } else {
+                fallbackCopy(currentUrl);
+            }
+        }
 
-        // Share button
-        document.getElementById('shareBtn').addEventListener('click', async () => {
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showNotification('Link copied to clipboard!');
+            } catch (err) {
+                showNotification('Failed to copy link');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function shareCard() {
+            const shareData = {
+                title: CONFIG.name,
+                text: `${CONFIG.name} - ${CONFIG.title} at ${CONFIG.company}`,
+                url: window.location.href
+            };
+            
             if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: `${CONFIG.name} - Digital Business Card`,
-                        text: `Connect with ${CONFIG.name}, ${CONFIG.title} at ${CONFIG.company}`,
-                        url: window.location.href
-                    });
-                } catch (err) {
-                    if (err.name !== 'AbortError') {
-                        showToast('Share failed');
+                navigator.share(shareData).catch(() => {
+                    copyLink();
+                });
+            } else {
+                copyLink();
+            }
+        }
+
+        function copyToClipboard(text, label) {
+            event.stopPropagation();
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification(`${label} copied to clipboard!`);
+                }).catch(() => {
+                    fallbackCopy(text);
+                    showNotification(`${label} copied to clipboard!`);
+                });
+            } else {
+                fallbackCopy(text);
+                showNotification(`${label} copied to clipboard!`);
+            }
+        }
+
+        function closeQR() {
+            const qrModal = document.getElementById('qrModal');
+            qrModal.classList.remove('active');
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 32px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--card-front-bg);
+                backdrop-filter: blur(var(--blur-card)) saturate(140%);
+                border: 1px solid var(--card-border);
+                color: var(--text-primary);
+                padding: 16px 24px;
+                border-radius: var(--radius-btn);
+                font-size: 14px;
+                font-weight: 600;
+                box-shadow: var(--shadow-card), var(--shadow-inner);
+                z-index: 2000;
+                animation: slideUp 0.3s var(--ease-out);
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideUp {
+                    from {
+                        opacity: 0;
+                        transform: translateX(-50%) translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(-50%) translateY(0);
                     }
                 }
-            } else {
-                const currentUrl = window.location.href;
-                navigator.clipboard.writeText(currentUrl).then(() => {
-                    showToast('Link copied! Share it with others.');
-                });
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideDown 0.3s var(--ease-out) forwards';
+                const fadeStyle = document.createElement('style');
+                fadeStyle.textContent = `
+                    @keyframes slideDown {
+                        to {
+                            opacity: 0;
+                            transform: translateX(-50%) translateY(20px);
+                        }
+                    }
+                `;
+                document.head.appendChild(fadeStyle);
+                
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 2500);
+        }
+
+        document.getElementById('qrModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeQR();
             }
         });
 
-        // Generate QR code
-        window.addEventListener('load', () => {
-            const qrcodeContainer = document.getElementById('qrcode');
-            const vcard = generateVCard();
-            
-            new QRCode(qrcodeContainer, {
-                text: vcard,
-                width: 160,
-                height: 160,
-                colorDark: "#0b0f1a",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        });
-
-        // Update CSS custom property for accent color
-        if (CONFIG.color) {
-            const root = document.documentElement;
-            const r = parseInt(CONFIG.color.slice(1, 3), 16);
-            const g = parseInt(CONFIG.color.slice(3, 5), 16);
-            const b = parseInt(CONFIG.color.slice(5, 7), 16);
-            
-            root.style.setProperty('--accent', CONFIG.color);
-            root.style.setProperty('--accent-soft', `rgba(${r}, ${g}, ${b}, 0.16)`);
-            root.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.32)`);
+        const avatar = document.getElementById('avatar');
+        const nameParts = CONFIG.name.split(' ');
+        if (nameParts.length >= 2) {
+            avatar.textContent = nameParts[0][0] + nameParts[1][0];
+        } else if (nameParts.length === 1) {
+            avatar.textContent = nameParts[0].substring(0, 2).toUpperCase();
         }
     </script>
-
-<!-- Phase 4: Social Links, Custom Buttons, Booking/Location -->
-<script>
-(function(){
-  var C = window.CONFIG || {};
-
-  // Social platform definitions
-  var PLATFORMS = [
-    { key:'linkedin',  label:'LinkedIn',  bg:'#0A66C2', fg:'#fff',
-      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>' },
-    { key:'instagram', label:'Instagram', bg:'#E1306C', fg:'#fff',
-      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>' },
-    { key:'facebook',  label:'Facebook',  bg:'#1877F2', fg:'#fff',
-      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>' },
-    { key:'twitter',   label:'X / Twitter', bg:'#000', fg:'#fff',
-      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.737-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>' },
-    { key:'tiktok',    label:'TikTok',    bg:'#010101', fg:'#fff',
-      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.77a4.85 4.85 0 01-1.01-.08z"/></svg>' },
-    { key:'youtube',   label:'YouTube',   bg:'#FF0000', fg:'#fff',
-      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>' },
-    { key:'pinterest', label:'Pinterest', bg:'#E60023', fg:'#fff',
-      svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>' }
-  ];
-
-  // Accent color from CSS variable or fallback
-  function getAccent() {
-    return getComputedStyle(document.documentElement)
-      .getPropertyValue('--accent').trim() || '#6366f1';
-  }
-
-  function hexToRgb(hex) {
-    var r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return r ? [parseInt(r[1],16), parseInt(r[2],16), parseInt(r[3],16)] : [99,102,241];
-  }
-
-  function buildSection() {
-    var social   = C.social || {};
-    var links    = C.custom_links || [];
-    var booking  = C.booking_url || '';
-    var location = C.location || '';
-    var mapsUrl  = C.maps_url || ('https://maps.google.com/?q=' + encodeURIComponent(location));
-
-    var hasSocial  = PLATFORMS.some(function(p){ return social[p.key]; });
-    var hasLinks   = links.length > 0;
-    var hasBooking = !!booking;
-    var hasLoc     = !!location;
-
-    if (!hasSocial && !hasLinks && !hasBooking && !hasLoc) return;
-
-    var accent = getAccent();
-    var rgb    = hexToRgb(accent);
-    var accentRgba = 'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',';
-
-    var section = document.createElement('div');
-    section.className = 'extras-section';
-
-    // ── Social icons ──
-    if (hasSocial) {
-      var row = document.createElement('div');
-      row.className = 'social-row';
-      PLATFORMS.forEach(function(p) {
-        var url = social[p.key];
-        if (!url) return;
-        var a = document.createElement('a');
-        a.href = url;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.className = 'social-btn';
-        a.title = p.label;
-        a.style.cssText = 'background:'+accentRgba+'0.12);border:1px solid '+accentRgba+'0.3);color:'+accent+';';
-        a.innerHTML = p.svg;
-        row.appendChild(a);
-      });
-      section.appendChild(row);
-    }
-
-    // ── Custom link buttons ──
-    links.forEach(function(link) {
-      if (!link.url) return;
-      var a = document.createElement('a');
-      a.href = link.url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.className = 'extra-btn';
-      a.style.cssText = 'background:'+accentRgba+'0.1);border:1px solid '+accentRgba+'0.25);color:'+accent+';font-family:inherit;';
-      a.innerHTML = (link.icon ? '<span style="font-size:16px">'+link.icon+'</span> ' : '') + (link.label || link.url);
-      section.appendChild(a);
-    });
-
-    // ── Booking button ──
-    if (hasBooking) {
-      var ab = document.createElement('a');
-      ab.href = booking;
-      ab.target = '_blank';
-      ab.rel = 'noopener noreferrer';
-      ab.className = 'extra-btn';
-      ab.style.cssText = 'background:'+accentRgba+'0.12);border:1px solid '+accentRgba+'0.3);color:'+accent+';font-family:inherit;';
-      ab.innerHTML = '<span style="font-size:16px">📅</span> Book a Meeting';
-      section.appendChild(ab);
-    }
-
-    // ── Location button ──
-    if (hasLoc) {
-      var al = document.createElement('a');
-      al.href = mapsUrl;
-      al.target = '_blank';
-      al.rel = 'noopener noreferrer';
-      al.className = 'extra-btn';
-      al.style.cssText = 'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#10b981;font-family:inherit;';
-      al.innerHTML = '<span style="font-size:16px">📍</span> ' + location;
-      section.appendChild(al);
-    }
-
-    // Insert: find .qr-section and insert before it, or append to body
-    var qr = document.querySelector('.qr-section');
-    if (qr) {
-      qr.parentNode.insertBefore(section, qr);
-    } else {
-      document.body.appendChild(section);
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', buildSection);
-  } else {
-    buildSection();
-  }
-})();
-</script>
-<!-- End Phase 4 Extras -->
-
-<script>
-/* MakersCo: Make contact values tappable */
-(function(){
-  var C = window.CONFIG || {};
-  function linkify(id, href, text) {
-    var el = document.getElementById(id);
-    if (!el || !href) return;
-    el.innerHTML = '<a href="' + href + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">' + (text || el.textContent) + '</a>';
-  }
-  document.addEventListener('DOMContentLoaded', function(){
-    if (C.phone) {
-      linkify('phoneDisplay', 'tel:' + C.phone.replace(/\D/g,''));
-    }
-    if (C.email) {
-      linkify('emailDisplay', 'mailto:' + C.email);
-    }
-    if (C.website) {
-      var url = C.website.startsWith('http') ? C.website : 'https://' + C.website;
-      linkify('websiteDisplay', url);
-    }
-    if (C.location) {
-      linkify('locationDisplay', 'https://maps.google.com/?q=' + encodeURIComponent(C.location));
-    }
-  });
-})();
-</script>
 </body>
 </html>

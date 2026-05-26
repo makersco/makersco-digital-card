@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MakersCo Digital Card — Preview Hub</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0f;
+      color: #e5e7eb;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 40px;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #4b5563;
+      margin: 32px 0 12px;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 14px;
+      padding: 18px 16px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 180ms, transform 180ms, background 180ms;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: #374151;
+      background: #1a2234;
+      transform: translateY(-2px);
+    }
+    .card-icon { font-size: 24px; line-height: 1; }
+    .card-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+    .card-desc {
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.4;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 99px;
+      margin-top: 2px;
+    }
+    .badge-template { background: #1e3a5f; color: #60a5fa; }
+    .badge-tool    { background: #1a3326; color: #34d399; }
+    .badge-dash    { background: #2d1b4e; color: #a78bfa; }
+  </style>
+</head>
+<body>
+
+  <h1>🪪 MakersCo Digital Card Platform</h1>
+  <p class="subtitle">Preview Hub — click any card to open</p>
+
+  <p class="section-label">Card Templates (6)</p>
+  <div class="grid">
+    <a class="card" href="/src/templates/card-core.html" target="_blank">
+      <span class="card-icon">⚡</span>
+      <span class="card-name">Core</span>
+      <span class="card-desc">Default dark card, base template</span>
+      <span class="badge badge-template">Template</span>
+    </a>
+    <a class="card" href="/src/templates/card-dark-luxury.html" target="_blank">
+      <span class="card-icon">🖤</span>
+      <span class="card-name">Dark Luxury</span>
+      <span class="card-desc">Gold serif — law firm, exec</span>
+      <span class="badge badge-template">Template</span>
+    </a>
+    <a class="card" href="/src/templates/card-glassmorphism.html" target="_blank">
+      <span class="card-icon">💎</span>
+      <span class="card-name">Glassmorphism</span>
+      <span class="card-desc">Frosted glass — tech, SaaS</span>
+      <span class="badge badge-template">Template</span>
+    </a>
+    <a class="card" href="/src/templates/card-minimal-clean.html" target="_blank">
+      <span class="card-icon">🤍</span>
+      <span class="card-name">Minimal Clean</span>
+      <span class="card-desc">White + indigo — doctor, NGO</span>
+      <span class="badge badge-template">Template</span>
+    </a>
+    <a class="card" href="/src/templates/card-neo-brutalist.html" target="_blank">
+      <span class="card-icon">🟠</span>
+      <span class="card-name">Neo Brutalist</span>
+      <span class="card-desc">Bold borders — creative, artist</span>
+      <span class="badge badge-template">Template</span>
+    </a>
+    <a class="card" href="/src/templates/card-vibrant-bold.html" target="_blank">
+      <span class="card-icon">💜</span>
+      <span class="card-name">Vibrant Bold</span>
+      <span class="card-desc">Gradient glow — F&B, fitness</span>
+      <span class="badge badge-template">Template</span>
+    </a>
+  </div>
+
+  <p class="section-label">Tools & Generators (3)</p>
+  <div class="grid">
+    <a class="card" href="/src/utils/email-signature-generator.html" target="_blank">
+      <span class="card-icon">✉️</span>
+      <span class="card-name">Email Signature</span>
+      <span class="card-desc">Generate Gmail / Outlook HTML signature</span>
+      <span class="badge badge-tool">Tool</span>
+    </a>
+    <a class="card" href="/src/utils/zoom-background-generator.html" target="_blank">
+      <span class="card-icon">🖥️</span>
+      <span class="card-name">Zoom Background</span>
+      <span class="card-desc">1920×1080 PNG with QR code</span>
+      <span class="badge badge-tool">Tool</span>
+    </a>
+    <a class="card" href="/src/components/export-panel.html" target="_blank">
+      <span class="card-icon">📤</span>
+      <span class="card-name">Export Panel</span>
+      <span class="card-desc">PDF, QR, Wallet exports UI</span>
+      <span class="badge badge-tool">Tool</span>
+    </a>
+  </div>
+
+  <p class="section-label">Business</p>
+  <div class="grid">
+    <a class="card" href="/customer-dashboard.html" target="_blank">
+      <span class="card-icon">🏢</span>
+      <span class="card-name">Customer Dashboard</span>
+      <span class="card-desc">Pricing page — Starter / Business / Enterprise</span>
+      <span class="badge badge-dash">Dashboard</span>
+    </a>
+  </div>
+
+</body>
+</html>

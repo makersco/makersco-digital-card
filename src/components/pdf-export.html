@@ -1,0 +1,184 @@
+<!-- PDF Export Module - Drop this snippet wherever you want the export button -->
+
+<!-- CDN Dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  .pdf-export-container {
+    margin: 24px 0;
+  }
+
+  .pdf-export-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #ffffff;
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 200ms, opacity 200ms;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.24);
+  }
+
+  .pdf-export-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.32);
+  }
+
+  .pdf-export-btn:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .pdf-export-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .pdf-spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: pdf-spin 600ms linear infinite;
+  }
+
+  .pdf-export-btn:disabled .pdf-spinner {
+    display: block;
+  }
+
+  .pdf-export-btn:disabled .pdf-icon {
+    display: none;
+  }
+
+  @keyframes pdf-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .pdf-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  @media (max-width: 380px) {
+    .pdf-export-btn {
+      width: 100%;
+      padding: 12px 20px;
+    }
+  }
+</style>
+
+<div class="pdf-export-container">
+  <button id="pdfExportBtn" class="pdf-export-btn">
+    <svg class="pdf-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    <span class="pdf-spinner"></span>
+    <span>Download PDF</span>
+  </button>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  const btn = document.getElementById('pdfExportBtn');
+  
+  btn.addEventListener('click', async function() {
+    if (btn.disabled) return;
+    
+    btn.disabled = true;
+    
+    try {
+      const cardWrapper = document.querySelector('.card-wrapper');
+      if (!cardWrapper) {
+        throw new Error('Card wrapper not found');
+      }
+      
+      // Extract contact data from card
+      const extractText = (selector) => {
+        const el = cardWrapper.querySelector(selector);
+        return el ? el.textContent.trim() : '';
+      };
+      
+      const name = extractText('.card-name, [class*="name"]') || 'business-card';
+      const email = extractText('.card-email, [type="email"], [href^="mailto:"]')?.replace('mailto:', '');
+      const phone = extractText('.card-phone, [type="tel"], [href^="tel:"]')?.replace('tel:', '');
+      const website = extractText('.card-website, [class*="website"]') || 
+                     cardWrapper.querySelector('[href^="http"]')?.href;
+      
+      // Generate filename from name
+      const filename = name.toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '') + '-card.pdf';
+      
+      // Capture card as image with high quality
+      const canvas = await html2canvas(cardWrapper, {
+        scale: 3,
+        backgroundColor: null,
+        logging: false,
+        useCORS: true,
+        allowTaint: true
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      
+      // Business card dimensions: 85mm × 54mm
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [85, 54]
+      });
+      
+      // Add image to PDF (fit to page)
+      pdf.addImage(imgData, 'PNG', 0, 0, 85, 54);
+      
+      // Add invisible clickable links
+      const linkY = 45; // Near bottom
+      let linkX = 5;
+      
+      if (phone) {
+        pdf.textWithLink('', linkX, linkY, { 
+          url: `tel:${phone.replace(/\s/g, '')}` 
+        });
+        pdf.link(linkX, linkY - 4, 20, 6, { url: `tel:${phone.replace(/\s/g, '')}` });
+        linkX += 22;
+      }
+      
+      if (email) {
+        pdf.textWithLink('', linkX, linkY, { 
+          url: `mailto:${email}` 
+        });
+        pdf.link(linkX, linkY - 4, 25, 6, { url: `mailto:${email}` });
+        linkX += 27;
+      }
+      
+      if (website) {
+        const url = website.startsWith('http') ? website : `https://${website}`;
+        pdf.textWithLink('', linkX, linkY, { url });
+        pdf.link(linkX, linkY - 4, 30, 6, { url });
+      }
+      
+      // Download PDF
+      pdf.save(filename);
+      
+    } catch (error) {
+      console.error('PDF export failed:', error);
+      alert('Failed to export PDF. Please try again.');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+})();
+</script>
