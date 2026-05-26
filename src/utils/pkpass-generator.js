@@ -19,21 +19,23 @@
 const fs = require("fs");
 const path = require("path");
 const { PKPass } = require("passkit-generator");
-const { createCanvas } = require("canvas");
+const { createCanvas } = require("@napi-rs/canvas");
 
 // ── CONFIG ───────────────────────────────────────────────────────────────────
 const CONFIG = {
-  // Identity
+  // Identity — update these to match your card's CONFIG object
   name:    "Wong Soon Fook",
   title:   "Founder & Digital Builder",
   company: "MakersCo",
   phone:   "+60 19-295 3528",
-  email:   "hello@makersco.example",
-  website: "https://makersco.example",
-  cardUrl: "https://makersco.example/card",
+  email:   "soonfookwong96@gmail.com",
+  website: "https://lousycoder96.github.io/makersco-card-live/",
+  cardUrl: "https://lousycoder96.github.io/makersco-card-live/src/templates/card-dark-luxury.html",
 
-  // Pass identifiers (overridable via env)
-  passTypeId:   process.env.PASS_TYPE_ID || "pass.com.example.card",
+  // Pass identifiers — set via env vars or replace directly
+  // PASS_TYPE_ID: get from developer.apple.com → Certificates, IDs & Profiles → Identifiers → Pass Type IDs
+  // PASS_TEAM_ID: 10-char ID shown top-right on developer.apple.com when logged in
+  passTypeId:   process.env.PASS_TYPE_ID || "pass.co.makersco.soonfook",
   teamId:       process.env.PASS_TEAM_ID || "XXXXXXXXXX",
   serialNumber: "card-001",
   description:  "Digital Business Card",

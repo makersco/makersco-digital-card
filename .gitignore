@@ -1,6 +1,21 @@
 __pycache__/
 *.pyc
 .env
+.env.local
 .DS_Store
 ._*
 /tmp/
+
+# Node
+node_modules/
+
+# Wallet credentials — never commit these
+certs/*.pem
+certs/*.p12
+certs/*.cer
+certs/*.json
+certs/*.key
+
+# Generated wallet output
+output/
+src/utils/google-wallet-jwt.txt

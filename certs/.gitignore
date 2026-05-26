@@ -1,0 +1,7 @@
+# Never commit wallet credentials
+*.pem
+*.p12
+*.cer
+*.key
+*.json
+!.gitignore

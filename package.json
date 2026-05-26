@@ -1,0 +1,22 @@
+{
+  "name": "makersco-digital-card",
+  "version": "1.0.0",
+  "description": "MakersCo Digital Business Card Platform",
+  "private": true,
+  "scripts": {
+    "generate:apple":  "node src/utils/pkpass-generator.js",
+    "generate:google": "node src/utils/google-wallet-generator.js",
+    "generate:icons":  "node scripts/generate-pass-icons.js",
+    "setup":           "npm install && npm run generate:icons",
+    "help": "echo 'Commands: generate:apple | generate:google | generate:icons'"
+  },
+  "dependencies": {
+    "@napi-rs/canvas":     "^0.1.67",
+    "google-auth-library": "^9.14.0",
+    "jsonwebtoken":        "^9.0.2",
+    "passkit-generator":   "^3.5.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
