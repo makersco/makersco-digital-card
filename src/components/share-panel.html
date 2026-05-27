@@ -1,361 +1,364 @@
+<!-- Share Panel Component -->
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
-
-.share-panel-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 9998;
-  opacity: 0;
-  transform: opacity 250ms ease;
-  pointer-events: none;
-}
-
-.share-panel-backdrop.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.share-panel {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #111827;
-  border-radius: 20px 20px 0 0;
-  padding: 24px 20px 32px;
-  z-index: 9999;
-  transform: translateY(100%);
-  transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
-}
-
-.share-panel.active {
-  transform: translateY(0);
-}
-
-.share-panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.share-panel-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #f9fafb;
-  margin: 0;
-}
-
-.share-panel-close {
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  color: #9ca3af;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 200ms ease, color 200ms ease;
-  padding: 0;
-}
-
-.share-panel-close:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #f9fafb;
-}
-
-.share-link-input {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-size: 14px;
-  font-weight: 400;
-  color: #d1d5db;
-  font-family: 'Outfit', monospace;
-  margin-bottom: 24px;
-  box-sizing: border-box;
-  outline: none;
-}
-
-.share-options-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-.share-option {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 12px;
-  transition: background 200ms ease;
-  min-height: 44px;
-}
-
-.share-option:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.share-option-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 200ms ease, opacity 200ms ease;
-}
-
-.share-option:active .share-option-icon {
-  transform: scale(0.95);
-  opacity: 0.8;
-}
-
-.share-option-icon svg {
-  width: 28px;
-  height: 28px;
-}
-
-.share-option-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #e5e7eb;
-}
-
-.share-option.copied .share-option-label {
-  color: #4ade80;
-}
-
-.icon-copy { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
-.icon-whatsapp { background: linear-gradient(135deg, #25d366 0%, #128c7e 100%); }
-.icon-telegram { background: linear-gradient(135deg, #0088cc 0%, #229ed9 100%); }
-.icon-sms { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
-.icon-email { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-.icon-native { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
-
-.share-option-native {
-  display: flex;
-}
-
-@media (min-width: 768px) {
+  @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600;700;800&display=swap');
+  
+  .share-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 250ms ease;
+    pointer-events: none;
+  }
+  
+  .share-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
   .share-panel {
-    max-width: 480px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100%);
-    border-radius: 20px;
-    bottom: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #111827;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 32px;
+    z-index: 9999;
+    transform: translateY(100%);
+    transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
   }
   
   .share-panel.active {
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
   }
   
-  .share-option-native {
+  .share-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .share-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+  }
+  
+  .share-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 200ms ease, transform 150ms ease;
+    padding: 0;
+  }
+  
+  .share-close:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+  
+  .share-close:active {
+    transform: scale(0.95);
+  }
+  
+  .share-link-display {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 24px;
+    outline: none;
+    font-family: 'Geist', monospace;
+  }
+  
+  .share-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .share-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 12px;
+    transition: background 200ms ease, transform 150ms ease;
+    background: transparent;
+    border: none;
+    min-height: 44px;
+  }
+  
+  .share-option:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+  
+  .share-option:active {
+    transform: scale(0.97);
+  }
+  
+  .share-option.hidden {
     display: none;
   }
   
-  .share-options-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 380px) {
-  .share-options-grid {
-    gap: 16px;
-  }
-  
-  .share-option-icon {
-    width: 48px;
-    height: 48px;
+  .share-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 200ms ease;
   }
   
-  .share-option-icon svg {
-    width: 24px;
-    height: 24px;
+  .share-option:hover .share-icon {
+    transform: scale(1.05);
   }
-}
+  
+  .share-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+  }
+  
+  .copy-confirmation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(34, 197, 94, 0.95);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+    z-index: 10000;
+  }
+  
+  .copy-confirmation.show {
+    opacity: 1;
+  }
+  
+  @media (min-width: 768px) {
+    .share-panel {
+      left: 50%;
+      transform: translate(-50%, 100%);
+      width: 90%;
+    }
+    
+    .share-panel.active {
+      transform: translate(-50%, 0);
+    }
+  }
 </style>
 
-<div class="share-panel-backdrop" id="shareBackdrop"></div>
+<div class="share-backdrop" id="shareBackdrop"></div>
 
 <div class="share-panel" id="sharePanel">
-  <div class="share-panel-header">
-    <h3 class="share-panel-title">Share Card</h3>
-    <button class="share-panel-close" id="sharePanelClose" aria-label="Close">✕</button>
+  <div class="share-header">
+    <h3 class="share-title">Share Card</h3>
+    <button class="share-close" id="shareClose" aria-label="Close">✕</button>
   </div>
   
   <input 
     type="text" 
-    class="share-link-input" 
-    id="shareLinkInput" 
+    class="share-link-display" 
+    id="shareLinkDisplay" 
     readonly 
-    value="https://example.com/card/username"
-  >
+    value="https://yourcard.app/card/abc123"
+  />
   
-  <div class="share-options-grid">
-    <div class="share-option" id="copyLink">
-      <div class="share-option-icon icon-copy">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+  <div class="share-options">
+    <button class="share-option" id="shareCopy">
+      <div class="share-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="9" y="9" width="13" height="13" rx="2" stroke="white" stroke-width="2"/>
+          <path d="M5 15H4C2.89543 15 2 14.1046 2 13V4C2 2.89543 2.89543 2 4 2H13C14.1046 2 15 2.89543 15 4V5" stroke="white" stroke-width="2"/>
         </svg>
       </div>
-      <span class="share-option-label">Copy Link</span>
-    </div>
+      <span class="share-label">Copy Link</span>
+    </button>
     
-    <div class="share-option" id="shareWhatsApp">
-      <div class="share-option-icon icon-whatsapp">
-        <svg viewBox="0 0 24 24" fill="white">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    <button class="share-option" id="shareWhatsApp">
+      <div class="share-icon" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="white"/>
         </svg>
       </div>
-      <span class="share-option-label">WhatsApp</span>
-    </div>
+      <span class="share-label">WhatsApp</span>
+    </button>
     
-    <div class="share-option" id="shareTelegram">
-      <div class="share-option-icon icon-telegram">
-        <svg viewBox="0 0 24 24" fill="white">
-          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+    <button class="share-option" id="shareTelegram">
+      <div class="share-icon" style="background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 8.8C16.49 10.38 15.84 14.22 15.51 15.99C15.37 16.74 15.09 16.99 14.83 17.02C14.25 17.07 13.81 16.64 13.25 16.27C12.37 15.69 11.87 15.33 11.02 14.77C10.03 14.12 10.67 13.76 11.24 13.18C11.39 13.03 13.95 10.7 14 10.49C14.0069 10.4582 14.006 10.4252 13.9973 10.3938C13.9886 10.3624 13.9724 10.3337 13.95 10.31C13.89 10.26 13.81 10.28 13.74 10.29C13.65 10.31 12.25 11.24 9.52 13.08C9.12 13.35 8.76 13.49 8.44 13.48C8.08 13.47 7.4 13.28 6.89 13.11C6.26 12.91 5.77 12.8 5.81 12.45C5.83 12.27 6.08 12.09 6.55 11.9C9.47 10.63 11.41 9.79 12.38 9.39C15.16 8.23 15.73 8.03 16.11 8.03C16.19 8.03 16.38 8.05 16.5 8.15C16.6 8.23 16.63 8.34 16.64 8.42C16.63 8.48 16.65 8.66 16.64 8.8Z" fill="white"/>
         </svg>
       </div>
-      <span class="share-option-label">Telegram</span>
-    </div>
+      <span class="share-label">Telegram</span>
+    </button>
     
-    <div class="share-option" id="shareSMS">
-      <div class="share-option-icon icon-sms">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    <button class="share-option" id="shareSMS">
+      <div class="share-icon" style="background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 2H4C2.9 2 2.01 2.9 2.01 4L2 22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM9 11H7V9H9V11ZM13 11H11V9H13V11ZM17 11H15V9H17V11Z" fill="white"/>
         </svg>
       </div>
-      <span class="share-option-label">SMS</span>
-    </div>
+      <span class="share-label">SMS</span>
+    </button>
     
-    <div class="share-option" id="shareEmail">
-      <div class="share-option-icon icon-email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-          <polyline points="22,6 12,13 2,6"></polyline>
+    <button class="share-option" id="shareEmail">
+      <div class="share-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="white"/>
         </svg>
       </div>
-      <span class="share-option-label">Email</span>
-    </div>
+      <span class="share-label">Email</span>
+    </button>
     
-    <div class="share-option share-option-native" id="shareNative">
-      <div class="share-option-icon icon-native">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="18" cy="5" r="3"></circle>
-          <circle cx="6" cy="12" r="3"></circle>
-          <circle cx="18" cy="19" r="3"></circle>
-          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+    <button class="share-option hidden" id="shareNative">
+      <div class="share-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12C9 11.76 8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5C21 3.34 19.66 2 18 2C16.34 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12C3 13.66 4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.16 18.35C15.11 18.56 15.08 18.78 15.08 19C15.08 20.61 16.39 21.92 18 21.92C19.61 21.92 20.92 20.61 20.92 19C20.92 17.39 19.61 16.08 18 16.08Z" fill="white"/>
         </svg>
       </div>
-      <span class="share-option-label">Share</span>
-    </div>
+      <span class="share-label">Share</span>
+    </button>
   </div>
 </div>
 
+<div class="copy-confirmation" id="copyConfirmation">Copied!</div>
+
 <script>
 (function() {
-  const sharePanel = document.getElementById('sharePanel');
-  const shareBackdrop = document.getElementById('shareBackdrop');
-  const sharePanelClose = document.getElementById('sharePanelClose');
-  const shareLinkInput = document.getElementById('shareLinkInput');
-  const copyLinkBtn = document.getElementById('copyLink');
-  const shareWhatsAppBtn = document.getElementById('shareWhatsApp');
-  const shareTelegramBtn = document.getElementById('shareTelegram');
-  const shareSMSBtn = document.getElementById('shareSMS');
-  const shareEmailBtn = document.getElementById('shareEmail');
-  const shareNativeBtn = document.getElementById('shareNative');
+  const backdrop = document.getElementById('shareBackdrop');
+  const panel = document.getElementById('sharePanel');
+  const closeBtn = document.getElementById('shareClose');
+  const linkDisplay = document.getElementById('shareLinkDisplay');
+  const copyConfirmation = document.getElementById('copyConfirmation');
   
-  // Replace with actual card URL
-  const cardURL = window.location.href;
-  shareLinkInput.value = cardURL;
+  // Share buttons
+  const copyBtn = document.getElementById('shareCopy');
+  const whatsappBtn = document.getElementById('shareWhatsApp');
+  const telegramBtn = document.getElementById('shareTelegram');
+  const smsBtn = document.getElementById('shareSMS');
+  const emailBtn = document.getElementById('shareEmail');
+  const nativeBtn = document.getElementById('shareNative');
+  
+  // Card data - customize these
+  const cardData = {
+    url: window.location.href || 'https://yourcard.app/card/abc123',
+    name: 'John Doe',
+    title: 'Product Designer',
+    message: 'Check out my digital business card!'
+  };
+  
+  // Update link display
+  linkDisplay.value = cardData.url;
+  
+  // Show native share only on mobile
+  if (navigator.share) {
+    nativeBtn.classList.remove('hidden');
+  }
   
   // Open panel function (call this from your "Share" button)
   window.openSharePanel = function() {
-    shareBackdrop.classList.add('active');
-    sharePanel.classList.add('active');
+    backdrop.classList.add('active');
+    panel.classList.add('active');
     document.body.style.overflow = 'hidden';
   };
   
   // Close panel
   function closeSharePanel() {
-    shareBackdrop.classList.remove('active');
-    sharePanel.classList.remove('active');
+    backdrop.classList.remove('active');
+    panel.classList.remove('active');
     document.body.style.overflow = '';
   }
   
-  sharePanelClose.addEventListener('click', closeSharePanel);
-  shareBackdrop.addEventListener('click', closeSharePanel);
+  closeBtn.addEventListener('click', closeSharePanel);
+  backdrop.addEventListener('click', closeSharePanel);
   
   // Copy link
-  copyLinkBtn.addEventListener('click', async function() {
+  copyBtn.addEventListener('click', async function() {
     try {
-      await navigator.clipboard.writeText(cardURL);
-      const label = this.querySelector('.share-option-label');
-      const originalText = label.textContent;
-      label.textContent = 'Copied!';
-      this.classList.add('copied');
-      
+      await navigator.clipboard.writeText(cardData.url);
+      copyConfirmation.classList.add('show');
       setTimeout(() => {
-        label.textContent = originalText;
-        this.classList.remove('copied');
+        copyConfirmation.classList.remove('show');
       }, 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      // Fallback for older browsers
+      linkDisplay.select();
+      document.execCommand('copy');
+      copyConfirmation.classList.add('show');
+      setTimeout(() => {
+        copyConfirmation.classList.remove('show');
+      }, 2000);
     }
   });
   
   // WhatsApp
-  shareWhatsAppBtn.addEventListener('click', function() {
-    const message = encodeURIComponent(`Check out my digital business card: ${cardURL}`);
-    window.open(`https://wa.me/?text=${message}`, '_blank');
+  whatsappBtn.addEventListener('click', function() {
+    const text = encodeURIComponent(`${cardData.message} ${cardData.url}`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
   });
   
   // Telegram
-  shareTelegramBtn.addEventListener('click', function() {
-    const message = encodeURIComponent(`Check out my digital business card`);
-    window.open(`https://t.me/share/url?url=${encodeURIComponent(cardURL)}&text=${message}`, '_blank');
+  telegramBtn.addEventListener('click', function() {
+    const text = encodeURIComponent(cardData.message);
+    const url = encodeURIComponent(cardData.url);
+    window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
   });
   
   // SMS
-  shareSMSBtn.addEventListener('click', function() {
-    const message = encodeURIComponent(`Check out my digital business card: ${cardURL}`);
-    window.location.href = `sms:?&body=${message}`;
+  smsBtn.addEventListener('click', function() {
+    const body = encodeURIComponent(`${cardData.message} ${cardData.url}`);
+    window.location.href = `sms:?&body=${body}`;
   });
   
   // Email
-  shareEmailBtn.addEventListener('click', function() {
-    const subject = encodeURIComponent('My Digital Business Card');
-    const body = encodeURIComponent(`I'd like to share my digital business card with you:\n\n${cardURL}`);
+  emailBtn.addEventListener('click', function() {
+    const subject = encodeURIComponent(`${cardData.name} - ${cardData.title}`);
+    const body = encodeURIComponent(`${cardData.message}\n\n${cardData.url}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   });
   
   // Native share
   if (navigator.share) {
-    shareNativeBtn.addEventListener('click', async function() {
+    nativeBtn.addEventListener('click', async function() {
       try {
         await navigator.share({
-          title: 'My Digital Business Card',
-          text: 'Check out my digital business card',
-          url: cardURL
+          title: `${cardData.name} - ${cardData.title}`,
+          text: cardData.message,
+          url: cardData.url
         });
       } catch (err) {
         if (err.name !== 'AbortError') {

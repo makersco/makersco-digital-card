@@ -1,65 +1,145 @@
-export function initVideoEmbed(containerId) {
-  const container = document.getElementById(containerId);
-  if (!container || !window.CONFIG?.video_url) return;
+/**
+ * Video Embed Component for Digital Business Card
+ * Supports YouTube and Vimeo embeds with click-to-play functionality
+ */
 
-  function extractVideoId(url) {
-    if (!url) return null;
-
-    const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    const vimeoRegex = /vimeo\.com\/(\d+)/;
-
-    const youtubeMatch = url.match(youtubeRegex);
-    if (youtubeMatch) {
-      return { platform: 'youtube', id: youtubeMatch[1] };
-    }
-
-    const vimeoMatch = url.match(vimeoRegex);
-    if (vimeoMatch) {
-      return { platform: 'vimeo', id: vimeoMatch[1] };
-    }
-
-    return null;
+function extractVideoId(url) {
+  if (!url) return null;
+  
+  // YouTube patterns
+  const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const youtubeMatch = url.match(youtubeRegex);
+  if (youtubeMatch) {
+    return { platform: 'youtube', id: youtubeMatch[1] };
   }
+  
+  // Vimeo patterns
+  const vimeoRegex = /vimeo\.com\/(\d+)/;
+  const vimeoMatch = url.match(vimeoRegex);
+  if (vimeoMatch) {
+    return { platform: 'vimeo', id: vimeoMatch[1] };
+  }
+  
+  return null;
+}
 
-  const videoData = extractVideoId(window.CONFIG.video_url);
-  if (!videoData) return;
+function getYouTubeThumbnailUrl(videoId) {
+  return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+}
 
-  const styles = `
+function getVimeoPlaceholder() {
+  return 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+}
+
+function getYouTubeEmbedUrl(videoId) {
+  return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+}
+
+function getVimeoEmbedUrl(videoId) {
+  return `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+}
+
+function createPlayButton() {
+  const button = document.createElement('button');
+  button.className = 'video-play-button';
+  button.setAttribute('aria-label', 'Play video');
+  
+  // SVG play icon
+  button.innerHTML = `
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 5.14v13.72L19 12L8 5.14z" fill="currentColor"/>
+    </svg>
+  `;
+  
+  return button;
+}
+
+function createVideoThumbnail(videoInfo) {
+  const thumbnail = document.createElement('div');
+  thumbnail.className = 'video-thumbnail';
+  
+  if (videoInfo.platform === 'youtube') {
+    const img = document.createElement('img');
+    img.src = getYouTubeThumbnailUrl(videoInfo.id);
+    img.alt = 'Video thumbnail';
+    img.loading = 'lazy';
+    thumbnail.appendChild(img);
+  } else {
+    thumbnail.style.background = getVimeoPlaceholder();
+  }
+  
+  const playButton = createPlayButton();
+  thumbnail.appendChild(playButton);
+  
+  return thumbnail;
+}
+
+function createVideoIframe(videoInfo) {
+  const iframe = document.createElement('iframe');
+  iframe.className = 'video-iframe';
+  iframe.setAttribute('frameborder', '0');
+  iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+  iframe.setAttribute('allowfullscreen', '');
+  
+  if (videoInfo.platform === 'youtube') {
+    iframe.src = getYouTubeEmbedUrl(videoInfo.id);
+  } else if (videoInfo.platform === 'vimeo') {
+    iframe.src = getVimeoEmbedUrl(videoInfo.id);
+  }
+  
+  return iframe;
+}
+
+function createStyles() {
+  const styleId = 'video-embed-styles';
+  
+  if (document.getElementById(styleId)) {
+    return;
+  }
+  
+  const style = document.createElement('style');
+  style.id = styleId;
+  style.textContent = `
     .video-embed-container {
       margin-top: 16px;
-    }
-
-    .video-embed-label {
-      display: block;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--color-accent, #6366f1);
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .video-embed-card {
-      position: relative;
       border-radius: 12px;
       overflow: hidden;
-      background: #111827;
-      cursor: pointer;
+      background: #0b0f1a;
     }
-
-    .video-embed-card.playing {
-      cursor: default;
+    
+    .video-embed-header {
+      padding: 12px 16px 8px;
     }
-
-    .video-embed-thumbnail {
+    
+    .video-embed-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--accent-color, #6366f1);
+      margin: 0;
+    }
+    
+    .video-aspect-wrapper {
       position: relative;
       width: 100%;
       padding-top: 56.25%;
-      background: #0a0a0f;
-      overflow: hidden;
+      background: #111827;
     }
-
-    .video-embed-thumbnail-img {
+    
+    .video-thumbnail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .video-thumbnail img {
       position: absolute;
       top: 0;
       left: 0;
@@ -67,47 +147,37 @@ export function initVideoEmbed(containerId) {
       height: 100%;
       object-fit: cover;
     }
-
-    .video-embed-gradient {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      opacity: 0.6;
-    }
-
-    .video-embed-play-btn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+    
+    .video-play-button {
+      position: relative;
       width: 56px;
       height: 56px;
-      background: rgba(10, 10, 15, 0.7);
       border-radius: 50%;
+      background: rgba(0, 0, 0, 0.7);
+      border: none;
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: opacity 200ms, transform 200ms;
-      pointer-events: none;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      z-index: 1;
     }
-
-    .video-embed-card:hover .video-embed-play-btn {
-      transform: translate(-50%, -50%) scale(1.1);
+    
+    .video-play-button:hover {
+      transform: scale(1.1);
+      opacity: 0.9;
     }
-
-    .video-embed-play-icon {
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 10px 0 10px 16px;
-      border-color: transparent transparent transparent #ffffff;
-      margin-left: 4px;
+    
+    .video-play-button:active {
+      transform: scale(1.05);
     }
-
-    .video-embed-iframe {
+    
+    .video-play-button svg {
+      margin-left: 2px;
+    }
+    
+    .video-iframe {
       position: absolute;
       top: 0;
       left: 0;
@@ -115,98 +185,102 @@ export function initVideoEmbed(containerId) {
       height: 100%;
       border: none;
     }
-
-    .video-embed-caption {
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--color-muted, #9ca3af);
-      font-weight: 400;
+    
+    .video-caption {
+      padding: 12px 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0;
     }
-
+    
     @media (max-width: 768px) {
-      .video-embed-play-btn {
+      .video-embed-container {
+        margin-top: 12px;
+        border-radius: 8px;
+      }
+      
+      .video-embed-header {
+        padding: 8px 12px 4px;
+      }
+      
+      .video-play-button {
         width: 48px;
         height: 48px;
       }
-
-      .video-embed-play-icon {
-        border-width: 8px 0 8px 14px;
+      
+      .video-caption {
+        padding: 8px 12px;
+        font-size: 13px;
       }
     }
-
+    
     @media (max-width: 380px) {
-      .video-embed-container {
-        margin-top: 12px;
-      }
-
-      .video-embed-play-btn {
+      .video-play-button {
         width: 44px;
         height: 44px;
       }
     }
   `;
+  
+  document.head.appendChild(style);
+}
 
-  if (!document.getElementById('video-embed-styles')) {
-    const styleEl = document.createElement('style');
-    styleEl.id = 'video-embed-styles';
-    styleEl.textContent = styles;
-    document.head.appendChild(styleEl);
+function initVideoEmbed(containerId) {
+  if (typeof CONFIG === 'undefined' || !CONFIG.video_url) {
+    return;
   }
-
-  let html = `
-    <div class="video-embed-container">
-      <span class="video-embed-label">Watch</span>
-      <div class="video-embed-card" id="video-embed-player">
-        <div class="video-embed-thumbnail">
-  `;
-
-  if (videoData.platform === 'youtube') {
-    html += `<img class="video-embed-thumbnail-img" src="https://img.youtube.com/vi/${videoData.id}/hqdefault.jpg" alt="Video thumbnail" loading="lazy">`;
-  } else {
-    html += `<div class="video-embed-gradient"></div>`;
+  
+  const videoInfo = extractVideoId(CONFIG.video_url);
+  if (!videoInfo) {
+    console.warn('Invalid video URL format:', CONFIG.video_url);
+    return;
   }
-
-  html += `
-          <div class="video-embed-play-btn">
-            <div class="video-embed-play-icon"></div>
-          </div>
-        </div>
-      </div>
-  `;
-
-  if (window.CONFIG.video_caption) {
-    html += `<div class="video-embed-caption">${window.CONFIG.video_caption}</div>`;
+  
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.warn('Video container not found:', containerId);
+    return;
   }
-
-  html += `</div>`;
-
-  container.innerHTML = html;
-
-  const card = document.getElementById('video-embed-player');
-  const thumbnail = card.querySelector('.video-embed-thumbnail');
-  let isPlaying = false;
-
-  card.addEventListener('click', () => {
-    if (isPlaying) return;
-
-    isPlaying = true;
-    card.classList.add('playing');
-
-    let embedUrl = '';
-    if (videoData.platform === 'youtube') {
-      embedUrl = `https://www.youtube-nocookie.com/embed/${videoData.id}?autoplay=1&rel=0`;
-    } else if (videoData.platform === 'vimeo') {
-      embedUrl = `https://player.vimeo.com/video/${videoData.id}?autoplay=1`;
-    }
-
-    const iframe = document.createElement('iframe');
-    iframe.className = 'video-embed-iframe';
-    iframe.src = embedUrl;
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-    iframe.allowFullscreen = true;
-    iframe.title = 'Video player';
-
-    thumbnail.innerHTML = '';
-    thumbnail.appendChild(iframe);
+  
+  createStyles();
+  
+  const videoContainer = document.createElement('div');
+  videoContainer.className = 'video-embed-container';
+  
+  const header = document.createElement('div');
+  header.className = 'video-embed-header';
+  
+  const label = document.createElement('p');
+  label.className = 'video-embed-label';
+  label.textContent = 'Watch';
+  header.appendChild(label);
+  
+  const aspectWrapper = document.createElement('div');
+  aspectWrapper.className = 'video-aspect-wrapper';
+  
+  const thumbnail = createVideoThumbnail(videoInfo);
+  aspectWrapper.appendChild(thumbnail);
+  
+  thumbnail.addEventListener('click', function() {
+    const iframe = createVideoIframe(videoInfo);
+    aspectWrapper.innerHTML = '';
+    aspectWrapper.appendChild(iframe);
   });
+  
+  videoContainer.appendChild(header);
+  videoContainer.appendChild(aspectWrapper);
+  
+  if (CONFIG.video_caption) {
+    const caption = document.createElement('p');
+    caption.className = 'video-caption';
+    caption.textContent = CONFIG.video_caption;
+    videoContainer.appendChild(caption);
+  }
+  
+  container.appendChild(videoContainer);
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initVideoEmbed, extractVideoId };
 }

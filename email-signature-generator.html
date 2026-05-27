@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Signature Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            color: #e4e4e7;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        .panel {
+            padding: 40px;
+        }
+
+        .panel-left {
+            background: #111827;
+            border-right: 1px solid #1f2937;
+            overflow-y: auto;
+        }
+
+        .panel-right {
+            background: #0b0f1a;
+            overflow-y: auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #f9fafb;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            font-weight: 400;
+            color: #9ca3af;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #d1d5db;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="url"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #f9fafb;
+            font-size: 14px;
+            font-weight: 400;
+            font-family: 'Outfit', sans-serif;
+            transition: border-color 150ms, transform 150ms, opacity 150ms;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        input::placeholder {
+            color: #6b7280;
+        }
+
+        .color-picker-group {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .color-picker-wrapper {
+            flex: 0 0 60px;
+        }
+
+        input[type="color"] {
+            width: 60px;
+            height: 44px;
+            padding: 4px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 150ms, opacity 150ms;
+        }
+
+        input[type="color"]:hover {
+            transform: translateY(-2px);
+        }
+
+        .color-hex {
+            flex: 1;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px 24px;
+            background: #6366f1;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: transform 150ms, opacity 150ms;
+            min-height: 44px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button-secondary {
+            background: #374151;
+            margin-top: 12px;
+        }
+
+        .preview-section {
+            margin-top: 32px;
+        }
+
+        .preview-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f9fafb;
+            margin-bottom: 16px;
+        }
+
+        .preview-container {
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .warning {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 400;
+            color: #fbbf24;
+            margin-top: 16px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #374151;
+            margin: 32px 0;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #10b981;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: transform 200ms, opacity 200ms;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .panel-left {
+                border-right: none;
+                border-bottom: 1px solid #1f2937;
+            }
+
+            .panel {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .panel {
+                padding: 16px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* Email signature preview styles */
+        #signature-output {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel panel-left">
+            <h1>Email Signature Generator</h1>
+            <p class="subtitle">Create a professional email signature in seconds</p>
+
+            <form id="signature-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="John Smith" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Job Title</label>
+                    <input type="text" id="title" placeholder="Senior Product Designer">
+                </div>
+
+                <div class="form-group">
+                    <label for="company">Company</label>
+                    <input type="text" id="company" placeholder="Acme Inc.">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="john@acme.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="website">Website</label>
+                    <input type="url" id="website" placeholder="https://acme.com">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-group">
+                    <label for="linkedin">LinkedIn URL</label>
+                    <input type="url" id="linkedin" placeholder="https://linkedin.com/in/johnsmith">
+                </div>
+
+                <div class="form-group">
+                    <label for="whatsapp">WhatsApp Number</label>
+                    <input type="tel" id="whatsapp" placeholder="+15551234567">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-group">
+                    <label for="card-url">Digital Card URL</label>
+                    <input type="url" id="card-url" placeholder="https://yourcard.com/john" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Accent Color</label>
+                    <div class="color-picker-group">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="accent-color" value="#6366f1">
+                        </div>
+                        <div class="color-hex">
+                            <input type="text" id="accent-hex" value="#6366f1" placeholder="#6366f1">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel panel-right">
+            <div class="preview-title">Live Preview</div>
+            <div class="preview-container">
+                <div id="signature-output"></div>
+            </div>
+
+            <button class="button" id="copy-btn">Copy Signature HTML</button>
+            <button class="button button-secondary" id="preview-btn">Preview in New Window</button>
+
+            <div class="warning">
+                Test your signature in Gmail, Outlook, and Apple Mail before using. Email clients handle HTML differently.
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        const form = document.getElementById('signature-form');
+        const signatureOutput = document.getElementById('signature-output');
+        const copyBtn = document.getElementById('copy-btn');
+        const previewBtn = document.getElementById('preview-btn');
+        const toast = document.getElementById('toast');
+        const accentColorInput = document.getElementById('accent-color');
+        const accentHexInput = document.getElementById('accent-hex');
+
+        // Sync color picker and hex input
+        accentColorInput.addEventListener('input', (e) => {
+            accentHexInput.value = e.target.value;
+            generateSignature();
+        });
+
+        accentHexInput.addEventListener('input', (e) => {
+            const hex = e.target.value;
+            if (/^#[0-9A-F]{6}$/i.test(hex)) {
+                accentColorInput.value = hex;
+                generateSignature();
+            }
+        });
+
+        // Generate signature on input change
+        const inputs = form.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', generateSignature);
+        });
+
+        function getInitials(name) {
+            if (!name) return '?';
+            const parts = name.trim().split(' ');
+            if (parts.length === 1) return parts[0][0].toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
+
+        function lightenColor(hex, percent) {
+            const num = parseInt(hex.replace('#', ''), 16);
+            const r = Math.min(255, Math.floor((num >> 16) + (255 - (num >> 16)) * percent));
+            const g = Math.min(255, Math.floor(((num >> 8) & 0x00FF) + (255 - ((num >> 8) & 0x00FF)) * percent));
+            const b = Math.min(255, Math.floor((num & 0x0000FF) + (255 - (num & 0x0000FF)) * percent));
+            return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+
+        async function generateQRCode(url) {
+            if (!url) return '';
+            try {
+                const canvas = document.createElement('canvas');
+                await QRCode.toCanvas(canvas, url, {
+                    width: 64,
+                    margin: 1,
+                    color: {
+                        dark: '#000000',
+                        light: '#ffffff'
+                    }
+                });
+                return canvas.toDataURL();
+            } catch (err) {
+                console.error('QR generation failed:', err);
+                return '';
+            }
+        }
+
+        async function generateSignature() {
+            const name = document.getElementById('name').value || 'Your Name';
+            const title = document.getElementById('title').value || '';
+            const company = document.getElementById('company').value || '';
+            const phone = document.getElementById('phone').value || '';
+            const email = document.getElementById('email').value || '';
+            const website = document.getElementById('website').value || '';
+            const linkedin = document.getElementById('linkedin').value || '';
+            const whatsapp = document.getElementById('whatsapp').value || '';
+            const cardUrl = document.getElementById('card-url').value || '';
+            const accentColor = accentColorInput.value || '#6366f1';
+
+            const initials = getInitials(name);
+            const qrDataUrl = await generateQRCode(cardUrl);
+            const lightAccent = lightenColor(accentColor, 0.15);
+
+            const html = `
+<table cellpadding="0" cellspacing="0" border="0" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; max-width: 600px; color: #1f2937;">
+    <tr>
+        <td style="padding: 16px 0;">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td style="vertical-align: top; padding-right: 12px;">
+                        <div style="width: 40px; height: 40px; background: ${accentColor}; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #ffffff; text-align: center; line-height: 40px;">${initials}</div>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <div style="font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 2px;">${name}</div>
+                        ${title ? `<div style="font-size: 13px; color: #4b5563; margin-bottom: 2px;">${title}</div>` : ''}
+                        ${company ? `<div style="font-size: 12px; color: #6b7280;">${company}</div>` : ''}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    ${(phone || email || website) ? `
+    <tr>
+        <td style="padding: 8px 0;">
+            <div style="height: 1px; background: ${accentColor}; margin: 4px 0;"></div>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 8px 0;">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    ${phone ? `<td style="font-size: 12px; color: #4b5563; padding-right: 12px;"><a href="tel:${phone}" style="color: #4b5563; text-decoration: none;">📞 ${phone}</a></td>` : ''}
+                    ${email ? `<td style="font-size: 12px; color: #4b5563; padding-right: 12px;"><a href="mailto:${email}" style="color: #4b5563; text-decoration: none;">✉️ ${email}</a></td>` : ''}
+                    ${website ? `<td style="font-size: 12px; color: #4b5563;"><a href="${website}" style="color: #4b5563; text-decoration: none;">🌐 ${website.replace(/^https?:\/\//, '')}</a></td>` : ''}
+                </tr>
+            </table>
+        </td>
+    </tr>
+    ` : ''}
+    ${(linkedin || whatsapp) ? `
+    <tr>
+        <td style="padding: 8px 0;">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    ${linkedin ? `<td style="font-size: 12px; color: #4b5563; padding-right: 12px;"><a href="${linkedin}" style="color: ${accentColor}; text-decoration: none;">LinkedIn</a></td>` : ''}
+                    ${whatsapp ? `<td style="font-size: 12px; color: #4b5563;"><a href="https://wa.me/${whatsapp.replace(/\D/g, '')}" style="color: ${accentColor}; text-decoration: none;">WhatsApp</a></td>` : ''}
+                </tr>
+            </table>
+        </td>
+    </tr>
+    ` : ''}
+    ${cardUrl ? `
+    <tr>
+        <td style="padding: 12px 0 0 0;">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    ${qrDataUrl ? `<td style="vertical-align: middle; padding-right: 12px;"><img src="${qrDataUrl}" width="64" height="64" alt="QR Code" style="display: block; border-radius: 4px;"></td>` : ''}
+                    <td style="vertical-align: middle;">
+                        <a href="${cardUrl}" style="display: inline-block; background: ${accentColor}; color: #ffffff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 700;">View Digital Card →</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    ` : ''}
+</table>
+            `.trim();
+
+            signatureOutput.innerHTML = html;
+            window.currentSignatureHTML = html;
+        }
+
+        copyBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(window.currentSignatureHTML);
+                showToast('Copied to clipboard!');
+            } catch (err) {
+                console.error('Copy failed:', err);
+                showToast('Copy failed - check console');
+            }
+        });
+
+        previewBtn.addEventListener('click', () => {
+            const previewWindow = window.open('', '_blank', 'width=800,height=600');
+            previewWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Email Signature Preview</title>
+                    <style>
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+                            padding: 40px;
+                            background: #f3f4f6;
+                        }
+                        .preview-container {
+                            background: #ffffff;
+                            padding: 32px;
+                            border-radius: 8px;
+                            max-width: 700px;
+                            margin: 0 auto;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="preview-container">
+                        ${window.currentSignatureHTML}
+                    </div>
+                </body>
+                </html>
+            `);
+            previewWindow.document.close();
+        });
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // Initial generation
+        generateSignature();
+    </script>
+</body>
+</html>
