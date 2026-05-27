@@ -138,13 +138,24 @@ function generateJWT() {
 
   const serviceAccount = JSON.parse(fs.readFileSync(CONFIG.keyFile, "utf8"));
   const passObject     = buildPassObject(issuerId);
+  const classId        = `${issuerId}.${CONFIG.classSuffix}`;
+
+  // Pass class definition — included in JWT so Google auto-creates it if it
+  // doesn't exist yet. This fixes "Something Went Wrong" errors in demo mode.
+  const passClass = {
+    id:         classId,
+    issuerName: CONFIG.company,
+  };
 
   const payload = {
     iss:     serviceAccount.client_email,
     aud:     "google",
     typ:     "savetowallet",
     iat:     Math.floor(Date.now() / 1000),
-    payload: { genericObjects: [passObject] },
+    payload: {
+      genericClasses: [passClass],   // ← auto-creates class if absent
+      genericObjects: [passObject],
+    },
   };
 
   const token     = jwt.sign(payload, serviceAccount.private_key, { algorithm: "RS256" });
