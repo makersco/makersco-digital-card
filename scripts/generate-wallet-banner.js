@@ -21,8 +21,6 @@ const CONFIG = {
   name:    "Wong Soon Fook",
   title:   "Founder & Digital Builder",
   company: "MakersCo",
-  tagline: "Digital Business Card",
-
   // Colours
   bg:           "#0a0a0f",
   gold:         "#C9A962",
@@ -99,19 +97,6 @@ function drawBanner() {
   ctx.font         = `400 17px Georgia, serif`;
   ctx.letterSpacing = "0.06em";
   ctx.fillText(CONFIG.title, 80, 228);
-
-  // ── Tagline / divider ───────────────────────────────────────────────────────
-  ctx.strokeStyle = CONFIG.goldDim;
-  ctx.lineWidth   = 0.5;
-  ctx.beginPath();
-  ctx.moveTo(80, 255);
-  ctx.lineTo(340, 255);
-  ctx.stroke();
-
-  ctx.fillStyle    = CONFIG.textMuted;
-  ctx.font         = `400 12px Arial`;
-  ctx.letterSpacing = "0.18em";
-  drawSpaced(ctx, CONFIG.tagline.toUpperCase(), 80, 276, 10);
 
   // ── Right-side decorative monogram ──────────────────────────────────────────
   const cx = W - 140, cy = H / 2, r = 72;
