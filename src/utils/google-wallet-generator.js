@@ -58,7 +58,7 @@ const CONFIG = {
   // Unique IDs for this pass class and object
   // classId format: {issuerId}.{yourSuffix}  — only created once
   classSuffix: "makersco_biz_card",
-  objectSuffix: "wsf_card_001",      // increment for each unique cardholder
+  objectSuffix: "wsf_card_002",      // increment for each unique cardholder
 
   // Path to service account JSON key (gitignored)
   keyFile: path.join(__dirname, "..", "..", "certs", "google-service-account.json"),
@@ -108,6 +108,16 @@ function buildPassObject(issuerId) {
         { id: "website",  uri: CONFIG.website,             description: "🌐  Digital Card" },
         { id: "whatsapp", uri: CONFIG.whatsapp,            description: "💬  WhatsApp Me" },
       ],
+    },
+
+    // Hero banner — wide image shown at top of pass
+    heroImage: {
+      sourceUri: {
+        uri: "https://lousycoder96.github.io/makersco-card-live/src/assets/wallet-hero-banner.png"
+      },
+      contentDescription: {
+        defaultValue: { language: "en-US", value: "MakersCo Digital Business Card" }
+      }
     },
 
     // QR code on pass → opens card URL

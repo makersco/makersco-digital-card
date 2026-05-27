@@ -7,8 +7,10 @@
     "generate:apple":  "node src/utils/pkpass-generator.js",
     "generate:google": "node src/utils/google-wallet-generator.js",
     "generate:icons":  "node scripts/generate-pass-icons.js",
+    "generate:banner": "node scripts/generate-wallet-banner.js",
+    "setup:wallet":    "node scripts/setup-wallet-class.js",
     "setup":           "npm install && npm run generate:icons",
-    "help": "echo 'Commands: generate:apple | generate:google | generate:icons'"
+    "help": "echo 'Commands: generate:apple | generate:google | generate:icons | setup:wallet'"
   },
   "dependencies": {
     "@napi-rs/canvas":     "^0.1.67",
