@@ -53,7 +53,7 @@ const CONFIG = {
 
   // Google Wallet Issuer ID — get from pay.google.com/business/console
   // Replace the X's with your actual 19-digit Issuer ID
-  issuerId: process.env.GOOGLE_WALLET_ISSUER_ID || "XXXXXXXXXXXXXXXXXXX",
+  issuerId: process.env.GOOGLE_WALLET_ISSUER_ID || "3388000000023148661",
 
   // Unique IDs for this pass class and object
   // classId format: {issuerId}.{yourSuffix}  — only created once
