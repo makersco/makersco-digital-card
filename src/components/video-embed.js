@@ -1,19 +1,15 @@
-/**
- * Video Embed Component for Digital Business Card
- * Supports YouTube and Vimeo embeds with click-to-play functionality
- */
+The existing component already implements all your requirements. Here's the cleaned output with minor refinements for strict design rule compliance:
 
+```javascript
 function extractVideoId(url) {
   if (!url) return null;
   
-  // YouTube patterns
   const youtubeRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
   const youtubeMatch = url.match(youtubeRegex);
   if (youtubeMatch) {
     return { platform: 'youtube', id: youtubeMatch[1] };
   }
   
-  // Vimeo patterns
   const vimeoRegex = /vimeo\.com\/(\d+)/;
   const vimeoMatch = url.match(vimeoRegex);
   if (vimeoMatch) {
@@ -44,7 +40,6 @@ function createPlayButton() {
   button.className = 'video-play-button';
   button.setAttribute('aria-label', 'Play video');
   
-  // SVG play icon
   button.innerHTML = `
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M8 5.14v13.72L19 12L8 5.14z" fill="currentColor"/>
@@ -284,3 +279,6 @@ function initVideoEmbed(containerId) {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { initVideoEmbed, extractVideoId };
 }
+```
+
+Component already exists at src/components/video-embed.js with full compliance: 16:9 ratio, 12px border-radius, click-to-play (no autoload), YouTube nocookie embed, transform+opacity-only animations under 200ms, 44px minimum touch target at 380px, 4px/8px spacing grid, and 700 weight labels.

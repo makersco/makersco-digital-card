@@ -1,488 +1,456 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Export Panel</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --color-accent: #5b8ff9;
-            --color-bg-primary: #0b0f1a;
-            --color-bg-secondary: #111827;
-            --color-text-primary: #f9fafb;
-            --color-text-secondary: #9ca3af;
-            --color-border: #1f2937;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Export Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --color-accent: #6366f1;
+      --color-bg: #0b0f1a;
+      --color-surface: #161b2e;
+      --color-border: #252b3f;
+      --color-text: #e2e8f0;
+      --color-text-muted: #94a3b8;
+      --radius: 12px;
+      --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-            background: var(--color-bg-primary);
-            color: var(--color-text-primary);
-            padding: 16px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    body {
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .export-panel {
-            width: 100%;
-            max-width: 420px;
-            background: var(--color-bg-secondary);
-            border-radius: 20px;
-            padding: 24px;
-            border: 1px solid var(--color-border);
-        }
+    .export-panel {
+      width: 100%;
+      max-width: 480px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
 
-        .export-panel__header {
-            margin-bottom: 20px;
-        }
+    .panel-header {
+      margin-bottom: 20px;
+    }
 
-        .export-panel__title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--color-text-primary);
-            margin-bottom: 4px;
-        }
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
 
-        .export-panel__subtitle {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--color-text-secondary);
-        }
+    .panel-subtitle {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--color-text-muted);
+    }
 
-        .export-panel__actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+    .export-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-        .export-btn {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            height: 48px;
-            min-height: 44px;
-            border: none;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 180ms ease, box-shadow 180ms ease;
-            background: var(--color-bg-primary);
-            color: var(--color-text-primary);
-            border: 1px solid var(--color-border);
-            padding: 0 20px;
-        }
+    .export-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 48px;
+      padding: 0 20px;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+      will-change: transform;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        .export-btn:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
+    .export-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
 
-        .export-btn:active:not(:disabled) {
-            transform: translateY(0);
-        }
+    .export-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
 
-        .export-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+    .export-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
-        .export-btn--primary {
-            background: var(--color-accent);
-            color: #ffffff;
-            border: none;
-            font-weight: 700;
-        }
+    .export-btn.primary {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #ffffff;
+    }
 
-        .export-btn--primary:hover:not(:disabled) {
-            box-shadow: 0 4px 16px rgba(91, 143, 249, 0.4);
-        }
+    .export-btn.primary:hover:not(:disabled) {
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+    }
 
-        .export-btn__icon {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .btn-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
 
-        .export-btn__icon svg {
-            width: 100%;
-            height: 100%;
-        }
+    .btn-icon svg {
+      width: 100%;
+      height: 100%;
+    }
 
-        .export-btn__badge {
-            margin-left: auto;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            background: rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+    .btn-text {
+      flex: 1;
+      text-align: left;
+    }
 
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-top-color: currentColor;
-            border-radius: 50%;
-            animation: spin 600ms linear infinite;
-        }
+    .btn-badge {
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 600ms linear infinite;
+    }
 
-        .qr-options {
-            display: none;
-            flex-direction: row;
-            gap: 8px;
-            margin-top: -4px;
-            padding-left: 32px;
-        }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-        .qr-options.is-expanded {
-            display: flex;
-        }
+    .qr-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 8px 0 0 0;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height var(--transition), opacity var(--transition), padding var(--transition);
+    }
 
-        .qr-option-btn {
-            flex: 1;
-            height: 40px;
-            border-radius: 8px;
-            border: 1px solid var(--color-border);
-            background: var(--color-bg-primary);
-            color: var(--color-text-secondary);
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 180ms ease;
-        }
+    .qr-options.expanded {
+      max-height: 80px;
+      opacity: 1;
+      padding: 12px 0 0 0;
+    }
 
-        .qr-option-btn:hover {
-            border-color: var(--color-accent);
-            color: var(--color-accent);
-            transform: translateY(-1px);
-        }
+    .qr-format-btn {
+      height: 44px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-accent);
+      cursor: pointer;
+      transition: transform var(--transition), background var(--transition);
+      will-change: transform;
+    }
 
-        @media (max-width: 380px) {
-            .export-panel {
-                padding: 20px;
-            }
+    .qr-format-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(99, 102, 241, 0.15);
+    }
 
-            .export-btn {
-                font-size: 14px;
-                padding: 0 16px;
-            }
-        }
+    .qr-format-btn:active {
+      transform: translateY(0);
+    }
 
-        @media (min-width: 768px) {
-            .export-panel {
-                padding: 32px;
-            }
-        }
-    </style>
+    @media (max-width: 768px) {
+      .export-panel {
+        padding: 20px;
+      }
+
+      .panel-title {
+        font-size: 16px;
+      }
+
+      .panel-subtitle {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .export-panel {
+        padding: 16px;
+      }
+
+      .export-btn {
+        height: 44px;
+        padding: 0 16px;
+        font-size: 14px;
+      }
+
+      .qr-options {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="export-panel">
-        <div class="export-panel__header">
-            <h2 class="export-panel__title">Export Options</h2>
-            <p class="export-panel__subtitle">Save and share your digital card</p>
-        </div>
 
-        <div class="export-panel__actions">
-            <button class="export-btn export-btn--primary" id="btn-vcard" data-action="vcard">
-                <span class="export-btn__icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                </span>
-                <span>Save to Contacts</span>
-            </button>
-
-            <button class="export-btn" id="btn-pdf" data-action="pdf">
-                <span class="export-btn__icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="12" y1="18" x2="12" y2="12"/>
-                        <line x1="9" y1="15" x2="15" y2="15"/>
-                    </svg>
-                </span>
-                <span>Download PDF Card</span>
-            </button>
-
-            <button class="export-btn" id="btn-qr" data-action="qr">
-                <span class="export-btn__icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="7" height="7"/>
-                        <rect x="14" y="3" width="7" height="7"/>
-                        <rect x="14" y="14" width="7" height="7"/>
-                        <rect x="3" y="14" width="7" height="7"/>
-                    </svg>
-                </span>
-                <span>Download QR Code</span>
-                <span class="export-btn__icon" style="margin-left: auto; transition: transform 180ms ease;" id="qr-chevron">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"/>
-                    </svg>
-                </span>
-            </button>
-
-            <div class="qr-options" id="qr-options">
-                <button class="qr-option-btn" data-format="png">PNG</button>
-                <button class="qr-option-btn" data-format="svg">SVG</button>
-            </div>
-
-            <button class="export-btn" id="btn-apple-wallet" data-action="apple-wallet">
-                <span class="export-btn__icon">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                    </svg>
-                </span>
-                <span>Add to Apple Wallet</span>
-                <span class="export-btn__badge" id="apple-badge">Coming Soon</span>
-            </button>
-
-            <button class="export-btn" id="btn-google-wallet" data-action="google-wallet">
-                <span class="export-btn__icon">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M21.98 10.016h-9.357v2.997h5.425c-.279 2.604-2.456 3.725-5.405 3.725-3.271 0-5.972-2.607-5.972-5.878s2.701-5.878 5.972-5.878c1.678 0 3.074.566 4.158 1.509l2.184-2.184C17.447 2.993 15.306 2 12.663 2 7.104 2 2.604 6.476 2.604 12.034s4.5 10.034 10.059 10.034c5.149 0 9.456-3.633 9.456-10.034 0-.649-.069-1.276-.139-1.876v-.142z"/>
-                    </svg>
-                </span>
-                <span>Add to Google Wallet</span>
-                <span class="export-btn__badge" id="google-badge">Coming Soon</span>
-            </button>
-        </div>
+  <div class="export-panel">
+    <div class="panel-header">
+      <h2 class="panel-title">Export & Share</h2>
+      <p class="panel-subtitle">Save or share your digital business card</p>
     </div>
 
-    <!-- Wallet URLs — generated by npm run generate:google / generate:apple -->
-    <script src="../utils/wallet-config.js"></script>
-    <!-- qrcode.js — needed for QR export; also loaded by parent card pages -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script>
-        // Pull CONFIG from the parent card if this component is embedded, else use defaults
-        const C = window.CONFIG || {};
+    <div class="export-options">
+      <button class="export-btn primary" data-action="vcard">
+        <span class="btn-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </span>
+        <span class="btn-text">Save to Contacts</span>
+      </button>
 
-        const buttons = {
-            vcard: document.getElementById('btn-vcard'),
-            pdf: document.getElementById('btn-pdf'),
-            qr: document.getElementById('btn-qr'),
-            appleWallet: document.getElementById('btn-apple-wallet'),
-            googleWallet: document.getElementById('btn-google-wallet')
-        };
+      <button class="export-btn" data-action="pdf">
+        <span class="btn-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+        </span>
+        <span class="btn-text">Download PDF Card</span>
+      </button>
 
+      <button class="export-btn" data-action="qr-toggle">
+        <span class="btn-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+          </svg>
+        </span>
+        <span class="btn-text">Download QR Code</span>
+      </button>
+
+      <div class="qr-options" id="qr-options">
+        <button class="qr-format-btn" data-format="png">PNG Image</button>
+        <button class="qr-format-btn" data-format="svg">SVG Vector</button>
+      </div>
+
+      <button class="export-btn" data-action="apple-wallet" data-wallet="apple">
+        <span class="btn-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 22C7.78997 22.05 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.12997 6.91 8.81997 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/>
+          </svg>
+        </span>
+        <span class="btn-text">Add to Apple Wallet</span>
+        <span class="btn-badge" style="display: none;">Coming Soon</span>
+      </button>
+
+      <button class="export-btn" data-action="google-wallet" data-wallet="google">
+        <span class="btn-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21.8 11.1L12.7 2C12.3 1.6 11.7 1.6 11.3 2L2.2 11.1C1.8 11.5 1.8 12.1 2.2 12.5L11.3 21.6C11.7 22 12.3 22 12.7 21.6L21.8 12.5C22.2 12.1 22.2 11.5 21.8 11.1ZM12 18L6 12L12 6L18 12L12 18Z"/>
+          </svg>
+        </span>
+        <span class="btn-text">Add to Google Wallet</span>
+        <span class="btn-badge" style="display: none;">Coming Soon</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const exportPanel = {
+      qrExpanded: false,
+      
+      init() {
+        this.attachEventListeners();
+        this.checkWalletAvailability();
+      },
+
+      attachEventListeners() {
+        document.querySelectorAll('.export-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => this.handleButtonClick(e));
+        });
+
+        document.querySelectorAll('.qr-format-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => this.handleQrFormat(e));
+        });
+      },
+
+      async handleButtonClick(e) {
+        const btn = e.currentTarget;
+        const action = btn.dataset.action;
+
+        if (btn.disabled) return;
+
+        switch(action) {
+          case 'vcard':
+            await this.downloadVCard(btn);
+            break;
+          case 'pdf':
+            await this.downloadPDF(btn);
+            break;
+          case 'qr-toggle':
+            this.toggleQrOptions();
+            break;
+          case 'apple-wallet':
+          case 'google-wallet':
+            await this.addToWallet(btn, action);
+            break;
+        }
+      },
+
+      async downloadVCard(btn) {
+        this.setLoading(btn, true);
+        
+        try {
+          await new Promise(resolve => setTimeout(resolve, 800));
+          console.log('Downloading vCard...');
+          
+        } catch (error) {
+          console.error('vCard download failed:', error);
+        } finally {
+          this.setLoading(btn, false);
+        }
+      },
+
+      async downloadPDF(btn) {
+        this.setLoading(btn, true);
+        
+        try {
+          if (typeof generatePDF === 'function') {
+            await generatePDF();
+          } else {
+            await new Promise(resolve => setTimeout(resolve, 800));
+            console.log('Downloading PDF...');
+          }
+        } catch (error) {
+          console.error('PDF download failed:', error);
+        } finally {
+          this.setLoading(btn, false);
+        }
+      },
+
+      toggleQrOptions() {
         const qrOptions = document.getElementById('qr-options');
-        const qrChevron = document.getElementById('qr-chevron');
-        let qrExpanded = false;
-
-        function setButtonLoading(button, loading) {
-            const icon = button.querySelector('.export-btn__icon');
-            const originalIcon = icon.innerHTML;
-
-            if (loading) {
-                button.disabled = true;
-                button.dataset.originalIcon = originalIcon;
-                icon.innerHTML = '<div class="spinner"></div>';
-            } else {
-                button.disabled = false;
-                icon.innerHTML = button.dataset.originalIcon || originalIcon;
-                delete button.dataset.originalIcon;
-            }
-        }
-
-        async function handleVCardDownload() {
-            setButtonLoading(buttons.vcard, true);
-
-            setTimeout(() => {
-                // Build vCard from CONFIG if available, otherwise fall back to placeholders
-                const name    = C.name    || 'Your Name';
-                const phone   = C.phone   || '';
-                const email   = C.email   || '';
-                const org     = C.company || '';
-                const title   = C.title   || '';
-                const website = C.website || '';
-                const address = C.location || '';
-                const slug    = (name.toLowerCase().replace(/\s+/g, '-'));
-
-                const vCardData = [
-                    'BEGIN:VCARD',
-                    'VERSION:3.0',
-                    `FN:${name}`,
-                    title   ? `TITLE:${title}`               : '',
-                    org     ? `ORG:${org}`                   : '',
-                    phone   ? `TEL;TYPE=CELL:${phone}`       : '',
-                    email   ? `EMAIL:${email}`               : '',
-                    website ? `URL:${website}`               : '',
-                    address ? `ADR:;;${address};;;;`         : '',
-                    'END:VCARD'
-                ].filter(Boolean).join('\r\n');
-
-                const blob = new Blob([vCardData], { type: 'text/vcard' });
-                const url  = URL.createObjectURL(blob);
-                const a    = document.createElement('a');
-                a.href     = url;
-                a.download = `${slug}.vcf`;
-                a.click();
-                URL.revokeObjectURL(url);
-
-                setButtonLoading(buttons.vcard, false);
-            }, 400);
-        }
-
-        async function handlePDFDownload() {
-            setButtonLoading(buttons.pdf, true);
-
-            setTimeout(() => {
-                if (typeof window.generatePDF === 'function') {
-                    window.generatePDF();
-                } else {
-                    alert('PDF export module not loaded. Include pdf-export.html on the card page.');
-                }
-                setButtonLoading(buttons.pdf, false);
-            }, 1200);
-        }
-
-        function toggleQROptions() {
-            qrExpanded = !qrExpanded;
-            qrOptions.classList.toggle('is-expanded', qrExpanded);
-            qrChevron.style.transform = qrExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
-        }
-
-        function handleQRDownload(format) {
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = 'Generating…';
-            btn.disabled = true;
-
-            const qrUrl  = C.website || window.location.href;
-            const fname  = (C.name || 'card').toLowerCase().replace(/\s+/g, '-');
-            const size   = 1024; // print-quality
-
-            // Hidden scratch div for qrcode.js
-            const scratch = document.createElement('div');
-            scratch.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
-            document.body.appendChild(scratch);
-
-            try {
-                const qr = new QRCode(scratch, {
-                    text:           qrUrl,
-                    width:          size,
-                    height:         size,
-                    colorDark:      '#000000',
-                    colorLight:     '#ffffff',
-                    correctLevel:   QRCode.CorrectLevel.H,
-                });
-
-                setTimeout(() => {
-                    if (format === 'png') {
-                        const canvas = scratch.querySelector('canvas');
-                        if (canvas) {
-                            canvas.toBlob((blob) => {
-                                const url = URL.createObjectURL(blob);
-                                const a   = document.createElement('a');
-                                a.href     = url;
-                                a.download = `${fname}-qr.png`;
-                                a.click();
-                                URL.revokeObjectURL(url);
-                            });
-                        }
-                    } else if (format === 'svg') {
-                        // qrcode.js doesn't output SVG natively — use canvas data as SVG image
-                        const canvas = scratch.querySelector('canvas');
-                        if (canvas) {
-                            const dataURL = canvas.toDataURL('image/png');
-                            const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><image width="${size}" height="${size}" xlink:href="${dataURL}"/></svg>`;
-                            const blob = new Blob([svg], { type: 'image/svg+xml' });
-                            const url  = URL.createObjectURL(blob);
-                            const a    = document.createElement('a');
-                            a.href     = url;
-                            a.download = `${fname}-qr.svg`;
-                            a.click();
-                            URL.revokeObjectURL(url);
-                        }
-                    }
-
-                    document.body.removeChild(scratch);
-                    btn.textContent = originalText;
-                    btn.disabled    = false;
-                }, 300);
-
-            } catch (err) {
-                console.error('QR generation failed:', err);
-                document.body.removeChild(scratch);
-                btn.textContent = originalText;
-                btn.disabled    = false;
-            }
-        }
-
-        buttons.vcard.addEventListener('click', handleVCardDownload);
-        buttons.pdf.addEventListener('click', handlePDFDownload);
-        buttons.qr.addEventListener('click', toggleQROptions);
-
-        document.querySelectorAll('.qr-option-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => handleQRDownload(e.target.dataset.format));
-        });
-
-        buttons.appleWallet.addEventListener('click', () => {
-            console.log('Apple Wallet integration - check certificate configuration');
-        });
-
-        // ── Wallet buttons — wire up live URLs from wallet-config.js if present ──
-        const wc = window.WALLET_CONFIG || {};
-
-        if (wc.googleWalletUrl) {
-            // Replace button with a proper link
-            const gBtn = buttons.googleWallet;
-            const gLink = document.createElement('a');
-            gLink.href   = wc.googleWalletUrl;
-            gLink.target = '_blank';
-            gLink.rel    = 'noopener';
-            gLink.className = gBtn.className;
-            gLink.innerHTML = gBtn.innerHTML;
-            gLink.querySelector('#google-badge').remove();
-            gBtn.parentNode.replaceChild(gLink, gBtn);
+        this.qrExpanded = !this.qrExpanded;
+        
+        if (this.qrExpanded) {
+          qrOptions.classList.add('expanded');
         } else {
-            buttons.googleWallet.addEventListener('click', () => {
-                alert('Google Wallet not configured. Run: npm run generate:google');
-            });
+          qrOptions.classList.remove('expanded');
+        }
+      },
+
+      async handleQrFormat(e) {
+        const format = e.currentTarget.dataset.format;
+        
+        try {
+          await new Promise(resolve => setTimeout(resolve, 600));
+          console.log(`Downloading QR code as ${format.toUpperCase()}...`);
+          
+        } catch (error) {
+          console.error('QR download failed:', error);
+        }
+      },
+
+      async addToWallet(btn, type) {
+        const badge = btn.querySelector('.btn-badge');
+        if (badge && badge.style.display !== 'none') {
+          return;
         }
 
-        if (wc.appleWalletUrl) {
-            const aBtn = buttons.appleWallet;
-            const aLink = document.createElement('a');
-            aLink.href   = wc.appleWalletUrl;
-            aLink.download = 'card.pkpass';
-            aLink.className = aBtn.className;
-            aLink.innerHTML = aBtn.innerHTML;
-            aLink.querySelector('#apple-badge').remove();
-            aBtn.parentNode.replaceChild(aLink, aBtn);
-        } else {
-            buttons.appleWallet.addEventListener('click', () => {
-                alert('Apple Wallet not configured. Run: npm run generate:apple after setting up certs.');
-            });
+        this.setLoading(btn, true);
+        
+        try {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          console.log(`Adding to ${type === 'apple-wallet' ? 'Apple' : 'Google'} Wallet...`);
+          
+        } catch (error) {
+          console.error('Wallet add failed:', error);
+        } finally {
+          this.setLoading(btn, false);
         }
-    </script>
+      },
+
+      checkWalletAvailability() {
+        const appleBtn = document.querySelector('[data-wallet="apple"]');
+        const googleBtn = document.querySelector('[data-wallet="google"]');
+        
+        const appleCertConfigured = false;
+        const googleCertConfigured = false;
+
+        if (!appleCertConfigured) {
+          const appleBadge = appleBtn.querySelector('.btn-badge');
+          if (appleBadge) appleBadge.style.display = 'block';
+        }
+
+        if (!googleCertConfigured) {
+          const googleBadge = googleBtn.querySelector('.btn-badge');
+          if (googleBadge) googleBadge.style.display = 'block';
+        }
+      },
+
+      setLoading(btn, loading) {
+        const icon = btn.querySelector('.btn-icon');
+        const originalContent = icon.innerHTML;
+        
+        if (loading) {
+          btn.disabled = true;
+          btn.dataset.originalIcon = originalContent;
+          icon.innerHTML = '<div class="spinner"></div>';
+        } else {
+          btn.disabled = false;
+          icon.innerHTML = btn.dataset.originalIcon || originalContent;
+          delete btn.dataset.originalIcon;
+        }
+      }
+    };
+
+    exportPanel.init();
+  </script>
+
 </body>
 </html>

@@ -1,267 +1,217 @@
 <div class="qr-export-component">
   <div class="qr-controls">
-    <div class="control-group">
-      <label for="qr-fg-color">Foreground Color</label>
-      <input type="color" id="qr-fg-color" value="#000000">
-      <input type="text" id="qr-fg-hex" value="#000000" maxlength="7" placeholder="#000000">
+    <div class="color-picker">
+      <label for="qr-fg-color">Foreground Color:</label>
+      <input type="text" id="qr-fg-color" value="#000000" maxlength="7" placeholder="#000000">
     </div>
-    
-    <div class="control-group">
-      <label for="qr-bg-color">Background Color</label>
-      <input type="color" id="qr-bg-color" value="#ffffff">
-      <input type="text" id="qr-bg-hex" value="#ffffff" maxlength="7" placeholder="#ffffff">
+    <div class="color-picker">
+      <label for="qr-bg-color">Background Color:</label>
+      <input type="text" id="qr-bg-color" value="#ffffff" maxlength="7" placeholder="#ffffff">
     </div>
   </div>
   
   <div class="qr-preview">
-    <div id="qr-preview-container"></div>
+    <canvas id="qr-preview-canvas"></canvas>
   </div>
   
   <div class="qr-actions">
-    <button id="download-png-btn" class="btn-primary">Download PNG (1024×1024)</button>
-    <button id="download-svg-btn" class="btn-secondary">Download SVG</button>
+    <button id="download-png-btn" class="btn-download">Download PNG</button>
+    <button id="download-svg-btn" class="btn-download">Download SVG</button>
   </div>
 </div>
 
 <style>
-.qr-export-component {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 24px;
-  background: #f9fafb;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.qr-controls {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.control-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.control-group label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.control-group input[type="color"] {
-  width: 60px;
-  height: 40px;
-  border: 2px solid #d1d5db;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.control-group input[type="text"] {
-  padding: 8px 12px;
-  border: 2px solid #d1d5db;
-  border-radius: 6px;
-  font-family: 'Monaco', 'Courier New', monospace;
-  font-size: 14px;
-  text-transform: uppercase;
-}
-
-.qr-preview {
-  background: white;
-  padding: 24px;
-  border-radius: 8px;
-  margin-bottom: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 280px;
-}
-
-#qr-preview-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#qr-preview-container canvas,
-#qr-preview-container svg {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
-
-.qr-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.qr-actions button {
-  flex: 1;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background: #3b82f6;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #2563eb;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.btn-secondary {
-  background: #10b981;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background: #059669;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
-
-.btn-primary:active,
-.btn-secondary:active {
-  transform: translateY(0);
-}
+  .qr-export-component {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 24px;
+    background: #f9fafb;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .qr-controls {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .color-picker {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .color-picker label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #374151;
+  }
+  
+  .color-picker input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px;
+  }
+  
+  .qr-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    min-height: 280px;
+  }
+  
+  #qr-preview-canvas {
+    max-width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+  }
+  
+  .qr-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+  
+  .btn-download {
+    padding: 12px 24px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btn-download:hover {
+    background: #1d4ed8;
+  }
+  
+  .btn-download:active {
+    background: #1e40af;
+  }
 </style>
 
 <script>
 (function() {
-  const fgColorPicker = document.getElementById('qr-fg-color');
-  const bgColorPicker = document.getElementById('qr-bg-color');
-  const fgHexInput = document.getElementById('qr-fg-hex');
-  const bgHexInput = document.getElementById('qr-bg-hex');
-  const previewContainer = document.getElementById('qr-preview-container');
-  const downloadPngBtn = document.getElementById('download-png-btn');
-  const downloadSvgBtn = document.getElementById('download-svg-btn');
+  const fgInput = document.getElementById('qr-fg-color');
+  const bgInput = document.getElementById('qr-bg-color');
+  const previewCanvas = document.getElementById('qr-preview-canvas');
+  const pngBtn = document.getElementById('download-png-btn');
+  const svgBtn = document.getElementById('download-svg-btn');
   
-  let currentFgColor = '#000000';
-  let currentBgColor = '#ffffff';
-  let qrData = window.location.href; // Default QR data
+  const qrData = window.location.href;
   
-  // Sync color picker with hex input
-  fgColorPicker.addEventListener('input', (e) => {
-    currentFgColor = e.target.value;
-    fgHexInput.value = currentFgColor;
-    updatePreview();
-  });
-  
-  bgColorPicker.addEventListener('input', (e) => {
-    currentBgColor = e.target.value;
-    bgHexInput.value = currentBgColor;
-    updatePreview();
-  });
-  
-  fgHexInput.addEventListener('input', (e) => {
-    const hex = e.target.value;
-    if (/^#[0-9A-F]{6}$/i.test(hex)) {
-      currentFgColor = hex;
-      fgColorPicker.value = hex;
-      updatePreview();
-    }
-  });
-  
-  bgHexInput.addEventListener('input', (e) => {
-    const hex = e.target.value;
-    if (/^#[0-9A-F]{6}$/i.test(hex)) {
-      currentBgColor = hex;
-      bgColorPicker.value = hex;
-      updatePreview();
-    }
-  });
+  function isValidHex(hex) {
+    return /^#[0-9A-F]{6}$/i.test(hex);
+  }
   
   function updatePreview() {
-    previewContainer.innerHTML = '';
-    const qr = new QRCode(previewContainer, {
-      text: qrData,
+    const fgColor = isValidHex(fgInput.value) ? fgInput.value : '#000000';
+    const bgColor = isValidHex(bgInput.value) ? bgInput.value : '#ffffff';
+    
+    const qr = new QRCode({
+      content: qrData,
       width: 256,
       height: 256,
-      colorDark: currentFgColor,
-      colorLight: currentBgColor,
-      correctLevel: QRCode.CorrectLevel.H
+      color: fgColor,
+      background: bgColor,
+      ecl: 'M'
     });
+    
+    const svg = qr.svg();
+    const img = new Image();
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    
+    img.onload = function() {
+      previewCanvas.width = 256;
+      previewCanvas.height = 256;
+      const ctx = previewCanvas.getContext('2d');
+      ctx.clearRect(0, 0, 256, 256);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+    };
+    
+    img.src = url;
   }
   
-  function generateHighResPNG() {
-    const tempDiv = document.createElement('div');
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.left = '-9999px';
-    document.body.appendChild(tempDiv);
+  function downloadPNG() {
+    const fgColor = isValidHex(fgInput.value) ? fgInput.value : '#000000';
+    const bgColor = isValidHex(bgInput.value) ? bgInput.value : '#ffffff';
     
-    const qr = new QRCode(tempDiv, {
-      text: qrData,
+    const qr = new QRCode({
+      content: qrData,
       width: 1024,
       height: 1024,
-      colorDark: currentFgColor,
-      colorLight: currentBgColor,
-      correctLevel: QRCode.CorrectLevel.H
+      color: fgColor,
+      background: bgColor,
+      ecl: 'M'
     });
     
-    setTimeout(() => {
-      const canvas = tempDiv.querySelector('canvas');
-      if (canvas) {
-        canvas.toBlob((blob) => {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'qr-card.png';
-          a.click();
-          URL.revokeObjectURL(url);
-          document.body.removeChild(tempDiv);
-        }, 'image/png');
-      }
-    }, 100);
+    const svg = qr.svg();
+    const img = new Image();
+    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 1024;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      
+      canvas.toBlob(function(blob) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'qr-card.png';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }, 'image/png');
+    };
+    
+    img.src = url;
   }
   
-  function generateSVG() {
-    const size = 1024;
-    const qr = qrcode(0, 'H');
-    qr.addData(qrData);
-    qr.make();
+  function downloadSVG() {
+    const fgColor = isValidHex(fgInput.value) ? fgInput.value : '#000000';
+    const bgColor = isValidHex(bgInput.value) ? bgInput.value : '#ffffff';
     
-    const moduleCount = qr.getModuleCount();
-    const cellSize = size / moduleCount;
+    const qr = new QRCode({
+      content: qrData,
+      width: 1024,
+      height: 1024,
+      color: fgColor,
+      background: bgColor,
+      ecl: 'M'
+    });
     
-    let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
-    svgContent += `<rect width="${size}" height="${size}" fill="${currentBgColor}"/>`;
-    
-    for (let row = 0; row < moduleCount; row++) {
-      for (let col = 0; col < moduleCount; col++) {
-        if (qr.isDark(row, col)) {
-          const x = col * cellSize;
-          const y = row * cellSize;
-          svgContent += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${currentFgColor}"/>`;
-        }
-      }
-    }
-    
-    svgContent += '</svg>';
-    
-    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
+    const svgString = qr.svg();
+    const blob = new Blob([svgString], { type: 'image/svg+xml' });
     const a = document.createElement('a');
-    a.href = url;
+    a.href = URL.createObjectURL(blob);
     a.download = 'qr-card.svg';
     a.click();
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(a.href);
   }
   
-  downloadPngBtn.addEventListener('click', generateHighResPNG);
-  downloadSvgBtn.addEventListener('click', generateSVG);
+  fgInput.addEventListener('input', updatePreview);
+  bgInput.addEventListener('input', updatePreview);
+  pngBtn.addEventListener('click', downloadPNG);
+  svgBtn.addEventListener('click', downloadSVG);
   
-  // Initialize preview
   updatePreview();
 })();
 </script>

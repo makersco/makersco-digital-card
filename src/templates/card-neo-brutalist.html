@@ -3,27 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Business Card - Neo Brutalist</title>
+    <title>Neo-Brutalist Digital Business Card</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             --bg-page: #FFFBF0;
             --card-front: #FF5C39;
             --card-back: #0a0a0f;
+            --ink: #0a0a0f;
+            --ink-inverse: #FFFBF0;
+            --paper-shadow: #0a0a0f;
             --accent: #FF5C39;
-            --ink: #000000;
-            --ink-soft: #1a1a1a;
-            --paper: #FFFBF0;
-            --paper-shade: #F2EBD9;
-            --border-w: 3px;
-            --shadow-hard: 8px 8px 0 0 #000000;
-            --shadow-hard-sm: 4px 4px 0 0 #000000;
-            --radius-card: 4px;
+            --accent-shadow: #C2421F;
+            --tag-bg: #F5E6A8;
+            --tag-ink: #0a0a0f;
+            --divider: #0a0a0f;
+            --border-card: 3px solid #0a0a0f;
+            --border-chunky: 2px solid #0a0a0f;
+            --offset-shadow: 8px 8px 0 0 #0a0a0f;
+            --offset-shadow-sm: 4px 4px 0 0 #0a0a0f;
+            --radius-card: 0;
             --radius-badge: 20px;
-            --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1);
+            --radius-btn: 0;
+            --ease-snap: cubic-bezier(0.2, 0.8, 0.2, 1);
+            --t-fast: 120ms;
+            --t-base: 180ms;
         }
 
         * {
@@ -35,34 +42,42 @@
         body {
             font-family: 'Space Grotesk', sans-serif;
             background: var(--bg-page);
+            color: var(--ink);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
-            color: var(--ink);
+            padding: 32px 16px;
+            overflow-x: hidden;
         }
 
-        .container {
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-            align-items: center;
+        .page-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            font-size: 14px;
+            font-weight: 400;
+            opacity: 0.7;
         }
 
         .card-wrapper {
             width: 340px;
-            height: 200px;
+            height: 540px;
+            max-width: calc(100vw - 32px);
             perspective: 1000px;
+            margin: 0 auto 32px;
             cursor: pointer;
-            transition: transform 220ms var(--ease-snap);
-        }
-
-        .card-wrapper:hover {
-            transform: translate(-2px, -2px);
         }
 
         .card-inner {
@@ -70,21 +85,14 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: var(--border-w) solid var(--ink);
-            border-radius: var(--radius-card);
-            box-shadow: var(--shadow-hard);
-        }
-
-        .card-wrapper:hover .card-inner {
-            box-shadow: 10px 10px 0 0 var(--ink);
+            transition: transform 280ms var(--ease-snap);
         }
 
         .card-inner.flipped {
             transform: rotateY(180deg);
         }
 
-        .face {
+        .card-face {
             position: absolute;
             top: 0;
             left: 0;
@@ -92,348 +100,396 @@
             height: 100%;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            border-radius: var(--radius-card);
+            border: var(--border-card);
+            box-shadow: var(--offset-shadow);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
             overflow: hidden;
         }
 
-        .face-front {
+        .card-front {
             background: var(--card-front);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
+            position: relative;
         }
 
-        .face-back {
+        .card-front::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #0a0a0f 1px, transparent 1px) 0 0 / 6px 6px;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .card-back {
             background: var(--card-back);
+            color: var(--ink-inverse);
             transform: rotateY(180deg);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
         }
 
-        .front-header {
+        .top-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: auto;
+            height: 48px;
+            position: relative;
+            z-index: 10;
         }
 
-        .monogram {
-            width: 44px;
-            height: 44px;
-            background: var(--card-back);
+        .tag-badge {
+            background: var(--tag-bg);
+            color: var(--tag-ink);
+            border: 2px solid #0a0a0f;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            transition: transform var(--t-base) var(--ease-snap);
+        }
+
+        .tag-badge:hover {
+            transform: rotate(-2deg);
+        }
+
+        .index-number {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .registration-mark {
+            position: absolute;
+            top: 8px;
+            right: 50%;
+            width: 12px;
+            height: 12px;
+            border: 1px solid var(--ink);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 2px;
+        }
+
+        .registration-mark::before,
+        .registration-mark::after {
+            content: '';
+            position: absolute;
+            background: var(--ink);
+        }
+
+        .registration-mark::before {
+            width: 8px;
+            height: 1px;
+        }
+
+        .registration-mark::after {
+            width: 1px;
+            height: 8px;
+        }
+
+        .divider-rule {
+            width: 100%;
+            height: 3px;
+            background: var(--ink);
+            margin-top: 8px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .name-block {
+            position: absolute;
+            bottom: 72px;
+            left: 24px;
+            right: 80px;
+            z-index: 5;
+        }
+
+        .name-text-wrapper {
+            position: relative;
+        }
+
+        .name-ghost {
+            font-size: 44px;
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -0.02em;
+            color: #1B4DE8;
+            transform: translate(-3px, 3px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .name-main {
+            font-size: 44px;
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -0.02em;
+            color: var(--ink);
             position: relative;
             z-index: 2;
         }
 
-        .monogram-text {
-            font-weight: 800;
-            font-size: 18px;
-            color: var(--paper);
-            letter-spacing: -0.02em;
+        .title-text {
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 12px;
+            color: var(--ink);
         }
 
-        .tape-label {
+        .company-text {
+            font-size: 14px;
+            font-weight: 400;
+            margin-top: 4px;
+            color: var(--ink);
+        }
+
+        .geometric-mark {
             position: absolute;
-            top: -4px;
-            left: -8px;
-            width: 60px;
-            height: 18px;
-            background: var(--paper);
-            border: 2px solid var(--ink);
-            transform: rotate(-4deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 9px;
-            letter-spacing: 0.08em;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: var(--ink);
             z-index: 10;
         }
 
-        .status-badge {
-            background: var(--paper);
-            color: var(--ink);
-            border: 2px solid var(--ink);
-            border-radius: var(--radius-badge);
-            padding: 4px 12px;
-            font-weight: 700;
-            font-size: 9px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            transition: transform 180ms var(--ease-snap);
-        }
-
-        .status-badge:hover {
-            transform: translate(-1px, -1px);
-        }
-
-        .front-footer {
-            margin-top: auto;
-            position: relative;
-        }
-
-        .name-hero {
-            font-weight: 700;
-            font-size: 32px;
-            line-height: 0.95;
-            letter-spacing: -0.02em;
-            text-transform: uppercase;
-            color: var(--ink);
-            margin-bottom: 6px;
-        }
-
-        .title-role {
-            font-weight: 600;
-            font-size: 12px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--ink);
-            margin-bottom: 2px;
-        }
-
-        .company-name {
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--ink);
-        }
-
-        .decorative-strip {
+        .edge-label {
             position: absolute;
-            bottom: -20px;
-            right: -20px;
-            width: 80px;
-            height: 8px;
-            background: var(--card-back);
+            right: 8px;
+            bottom: 120px;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink);
+            opacity: 0.8;
         }
 
         .back-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .section-label {
-            font-weight: 700;
-            font-size: 11px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--accent);
-        }
-
-        .accent-square {
-            width: 12px;
-            height: 12px;
+            width: calc(100% + 48px);
+            height: 48px;
             background: var(--accent);
+            margin: -24px -24px 24px -24px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
         }
 
-        .contact-grid {
+        .back-header-name {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--ink);
+            letter-spacing: 0.04em;
+        }
+
+        .contact-rows {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 16px;
             flex: 1;
+            margin-bottom: 24px;
         }
 
         .contact-row {
-            display: grid;
-            grid-template-columns: 20px 70px 1fr;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            min-height: 28px;
+            min-height: 48px;
+            padding: 12px 0;
+            border-bottom: 1px dashed rgba(255, 251, 240, 0.2);
+            gap: 12px;
+        }
+
+        .contact-row:last-child {
+            border-bottom: none;
         }
 
         .contact-icon {
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            stroke: var(--ink-inverse);
+            stroke-width: 2;
+            fill: none;
         }
 
         .contact-label {
+            font-size: 11px;
             font-weight: 700;
-            font-size: 9px;
-            letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: var(--accent);
+            letter-spacing: 0.1em;
+            opacity: 0.6;
+            min-width: 60px;
         }
 
         .contact-value {
+            font-size: 14px;
             font-weight: 400;
-            font-size: 13px;
-            letter-spacing: -0.005em;
-            color: var(--paper);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            flex: 1;
+            word-break: break-word;
         }
 
         .back-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
             margin-top: auto;
-            padding-top: 12px;
-            border-top: 2px solid var(--accent);
         }
 
-        .footer-text {
+        .signature-svg {
+            width: 80px;
+            height: 40px;
+        }
+
+        .flip-prompt {
+            font-size: 11px;
             font-weight: 600;
-            font-size: 9px;
-            letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: var(--paper);
+            opacity: 0.8;
+            letter-spacing: 0.04em;
+        }
+
+        .qr-section {
             text-align: center;
+            margin: 32px 0;
+            padding: 24px;
+            background: var(--ink-inverse);
+            border: var(--border-chunky);
+            box-shadow: var(--offset-shadow-sm);
+            max-width: 340px;
+            width: calc(100vw - 32px);
         }
 
-        .actions-grid {
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+        .qr-section h3 {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 16px;
         }
 
-        .btn {
-            display: inline-flex;
+        #qrcode {
+            display: inline-block;
+            padding: 16px;
+            background: white;
+            border: 2px solid var(--ink);
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 340px;
+            width: calc(100vw - 32px);
+            margin: 0 auto;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-brutal {
+            background: var(--ink-inverse);
+            color: var(--ink);
+            border: 3px solid var(--ink);
+            border-radius: 0;
+            padding: 16px 24px;
+            font: 700 14px/1 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            box-shadow: var(--offset-shadow-sm);
+            transition: transform var(--t-fast) var(--ease-snap),
+                        box-shadow var(--t-fast) var(--ease-snap);
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             min-height: 44px;
-            padding: 12px 20px;
-            background: var(--paper);
-            color: var(--ink);
-            border: var(--border-w) solid var(--ink);
-            border-radius: var(--radius-card);
-            box-shadow: var(--shadow-hard-sm);
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 13px;
-            line-height: 1;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 140ms var(--ease-snap), opacity 140ms linear;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        .btn:hover {
-            transform: translate(-1px, -1px);
-            box-shadow: 5px 5px 0 0 var(--ink);
+        .btn-brutal:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 0 var(--ink);
         }
 
-        .btn:active {
+        .btn-brutal:active {
             transform: translate(4px, 4px);
             box-shadow: 0 0 0 0 var(--ink);
         }
 
-        .btn--primary {
+        .btn-brutal--accent {
             background: var(--accent);
             color: var(--ink);
         }
 
-        .btn--ghost {
-            background: transparent;
-            color: var(--ink);
-        }
-
-        .btn--full {
-            grid-column: 1 / -1;
-        }
-
-        .qr-section {
+        .btn-brutal--full {
             width: 100%;
-            padding: 24px;
-            background: var(--paper);
-            border: var(--border-w) solid var(--ink);
-            border-radius: var(--radius-card);
-            box-shadow: var(--shadow-hard-sm);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
         }
 
-        .qr-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .qr-marker {
-            width: 12px;
-            height: 12px;
-            background: var(--accent);
-        }
-
-        .qr-title {
-            font-weight: 700;
-            font-size: 11px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--ink);
-        }
-
-        #qr-code {
-            padding: 16px;
-            background: white;
-            border: var(--border-w) solid var(--ink);
-            border-radius: var(--radius-card);
-        }
-
-        #qr-code canvas {
-            display: block;
-        }
-
-        .notification {
+        .toast {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
             background: var(--ink);
-            color: var(--paper);
+            color: var(--ink-inverse);
             padding: 16px 24px;
-            border: var(--border-w) solid var(--ink);
-            border-radius: var(--radius-card);
-            box-shadow: var(--shadow-hard-sm);
-            font-weight: 600;
-            font-size: 13px;
+            border: 3px solid var(--ink);
+            box-shadow: var(--offset-shadow-sm);
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
             letter-spacing: 0.04em;
-            transform: translateX(400px);
-            transition: transform 220ms var(--ease-snap);
+            opacity: 0;
+            transition: transform var(--t-base) var(--ease-snap),
+                        opacity var(--t-base) var(--ease-snap);
             z-index: 1000;
+            pointer-events: none;
         }
 
-        .notification.show {
-            transform: translateX(0);
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
 
         @media (max-width: 400px) {
             .card-wrapper {
-                width: 300px;
-                height: 176px;
+                width: calc(100vw - 32px);
+                height: calc((100vw - 32px) * 1.588);
             }
 
-            .name-hero {
-                font-size: 26px;
+            .name-ghost,
+            .name-main {
+                font-size: 32px;
             }
 
-            .title-role {
-                font-size: 10px;
+            .title-text {
+                font-size: 14px;
             }
 
-            .company-name {
-                font-size: 12px;
+            .company-text {
+                font-size: 13px;
             }
 
-            .contact-row {
-                grid-template-columns: 18px 60px 1fr;
-                gap: 6px;
-            }
-
-            .contact-value {
-                font-size: 11px;
+            .geometric-mark {
+                width: 48px;
+                height: 48px;
             }
         }
 
@@ -447,78 +503,108 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card-wrapper" id="cardWrapper">
-            <div class="card-inner" id="cardInner">
-                <div class="face face-front">
-                    <div class="front-header">
-                        <div class="monogram">
-                            <div class="tape-label">№ 047</div>
-                            <span class="monogram-text" id="monogramText">AF</span>
-                        </div>
-                        <div class="status-badge">AVAILABLE FOR WORK</div>
+    <div class="page-header">
+        <h1>Digital Business Card</h1>
+        <p>Tap card to flip · Scan QR to save contact</p>
+    </div>
+
+    <div class="card-wrapper" id="cardWrapper">
+        <div class="card-inner" id="cardInner">
+            <div class="card-face card-front">
+                <div class="top-row">
+                    <div class="tag-badge" id="statusBadge">AVAILABLE FOR WORK</div>
+                    <div class="index-number">№ 047</div>
+                    <div class="registration-mark"></div>
+                </div>
+                <div class="divider-rule"></div>
+                <div class="name-block">
+                    <div class="name-text-wrapper">
+                        <div class="name-ghost" id="nameGhost"></div>
+                        <div class="name-main" id="nameMain"></div>
                     </div>
-                    <div class="front-footer">
-                        <div class="name-hero" id="nameDisplay">AHMAD FARIS</div>
-                        <div class="title-role" id="titleDisplay">FOUNDER & CEO</div>
-                        <div class="company-name" id="companyDisplay">Pixel Reka Sdn Bhd</div>
-                        <div class="decorative-strip"></div>
+                    <div class="title-text" id="titleText"></div>
+                    <div class="company-text" id="companyText"></div>
+                </div>
+                <div class="geometric-mark"></div>
+                <div class="edge-label">BUSINESS CARD · 2026 · EST</div>
+            </div>
+
+            <div class="card-face card-back">
+                <div class="back-header">
+                    <div class="back-header-name" id="backHeaderName"></div>
+                </div>
+                <div class="contact-rows">
+                    <div class="contact-row">
+                        <svg class="contact-icon" viewBox="0 0 24 24">
+                            <rect x="3" y="5" width="18" height="14" rx="0" ry="0"/>
+                            <polyline points="3 5 12 13 21 5"/>
+                        </svg>
+                        <div class="contact-label">EMAIL</div>
+                        <div class="contact-value" id="emailValue"></div>
+                    </div>
+                    <div class="contact-row">
+                        <svg class="contact-icon" viewBox="0 0 24 24">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        <div class="contact-label">PHONE</div>
+                        <div class="contact-value" id="phoneValue"></div>
+                    </div>
+                    <div class="contact-row">
+                        <svg class="contact-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                        <div class="contact-label">WEBSITE</div>
+                        <div class="contact-value" id="websiteValue"></div>
+                    </div>
+                    <div class="contact-row">
+                        <svg class="contact-icon" viewBox="0 0 24 24">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <div class="contact-label">STUDIO</div>
+                        <div class="contact-value" id="locationValue"></div>
+                    </div>
+                    <div class="contact-row">
+                        <svg class="contact-icon" viewBox="0 0 24 24">
+                            <rect x="2" y="2" width="20" height="20" rx="0" ry="0"/>
+                            <circle cx="12" cy="12" r="4"/>
+                            <line x1="16.5" y1="7.5" x2="16.51" y2="7.5"/>
+                        </svg>
+                        <div class="contact-label">SOCIAL</div>
+                        <div class="contact-value" id="instagramValue">@pixelreka</div>
                     </div>
                 </div>
-
-                <div class="face face-back">
-                    <div class="back-header">
-                        <span class="section-label">CONTACT</span>
-                        <div class="accent-square"></div>
-                    </div>
-                    <div class="contact-grid">
-                        <div class="contact-row">
-                            <div class="contact-icon">📧</div>
-                            <span class="contact-label">EMAIL</span>
-                            <span class="contact-value" id="emailDisplay">faris@pixelreka.com.my</span>
-                        </div>
-                        <div class="contact-row">
-                            <div class="contact-icon">📱</div>
-                            <span class="contact-label">PHONE</span>
-                            <span class="contact-value" id="phoneDisplay">+60123456789</span>
-                        </div>
-                        <div class="contact-row">
-                            <div class="contact-icon">🌐</div>
-                            <span class="contact-label">SITE</span>
-                            <span class="contact-value" id="websiteDisplay">pixelreka.com.my</span>
-                        </div>
-                        <div class="contact-row">
-                            <div class="contact-icon">📍</div>
-                            <span class="contact-label">CITY</span>
-                            <span class="contact-value" id="locationDisplay">KUALA LUMPUR, MALAYSIA</span>
-                        </div>
-                    </div>
-                    <div class="back-footer">
-                        <div class="footer-text">© 2026 — PRESS THE CARD</div>
-                    </div>
+                <div class="back-footer">
+                    <svg class="signature-svg" viewBox="0 0 80 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 30 Q10 15 20 25 T40 20"/>
+                        <path d="M45 15 L50 30 L55 15"/>
+                        <path d="M60 15 Q65 30 75 20"/>
+                    </svg>
+                    <div class="flip-prompt">FLIP →</div>
                 </div>
             </div>
-        </div>
-
-        <div class="actions-grid">
-            <button class="btn btn--primary" id="flipBtn">FLIP CARD</button>
-            <button class="btn" id="downloadBtn">SAVE CONTACT</button>
-            <button class="btn btn--ghost" id="whatsappBtn">WHATSAPP</button>
-            <button class="btn btn--ghost" id="copyBtn">COPY LINK</button>
-            <button class="btn btn--full" id="shareBtn">SHARE CARD</button>
-        </div>
-
-        <div class="qr-section">
-            <div class="qr-header">
-                <div class="qr-marker"></div>
-                <span class="qr-title">SCAN TO CONNECT</span>
-                <div class="qr-marker"></div>
-            </div>
-            <div id="qr-code"></div>
         </div>
     </div>
 
-    <div class="notification" id="notification"></div>
+    <div class="qr-section">
+        <h3>Scan to Save Contact</h3>
+        <div id="qrcode"></div>
+    </div>
+
+    <div class="action-buttons">
+        <div class="button-row">
+            <button class="btn-brutal btn-brutal--accent" id="saveBtn">Save Contact</button>
+            <button class="btn-brutal" id="shareBtn">Share</button>
+        </div>
+        <button class="btn-brutal btn-brutal--full" id="whatsappBtn">
+            <span>Message on WhatsApp</span>
+        </button>
+        <button class="btn-brutal btn-brutal--full" id="copyBtn">Copy Card Link</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
 
     <script>
         const CONFIG = {
@@ -534,54 +620,25 @@
             whatsapp_message: "Hi Faris, I found your digital card!"
         };
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeCard();
-            generateQRCode();
-            attachEventListeners();
-        });
+        function initCard() {
+            document.getElementById('nameGhost').textContent = CONFIG.name;
+            document.getElementById('nameMain').textContent = CONFIG.name;
+            document.getElementById('titleText').textContent = CONFIG.title;
+            document.getElementById('companyText').textContent = CONFIG.company;
+            document.getElementById('backHeaderName').textContent = CONFIG.name.toUpperCase();
+            document.getElementById('emailValue').textContent = CONFIG.email;
+            document.getElementById('phoneValue').textContent = CONFIG.phone;
+            document.getElementById('websiteValue').textContent = CONFIG.website.replace('https://', '');
+            document.getElementById('locationValue').textContent = CONFIG.location;
 
-        function initializeCard() {
-            // Extract initials
-            const nameParts = CONFIG.name.split(' ');
-            const initials = nameParts[0][0] + (nameParts[1] ? nameParts[1][0] : nameParts[0][1]);
-            document.getElementById('monogramText').textContent = initials.toUpperCase();
-
-            // Display name (first and second word only for front)
-            const displayName = nameParts.slice(0, 2).join(' ').toUpperCase();
-            document.getElementById('nameDisplay').textContent = displayName;
-            document.getElementById('titleDisplay').textContent = CONFIG.title.toUpperCase();
-            document.getElementById('companyDisplay').textContent = CONFIG.company;
-
-            // Back card details
-            document.getElementById('emailDisplay').textContent = CONFIG.email;
-            document.getElementById('phoneDisplay').textContent = CONFIG.phone;
-            document.getElementById('websiteDisplay').textContent = CONFIG.website.replace('https://', '').replace('http://', '');
-            document.getElementById('locationDisplay').textContent = CONFIG.location.toUpperCase();
-
-            // Apply custom color
-            document.documentElement.style.setProperty('--card-front', CONFIG.color);
-            document.documentElement.style.setProperty('--accent', CONFIG.color);
+            if (CONFIG.color && CONFIG.color !== '#FF5C39') {
+                document.documentElement.style.setProperty('--card-front', CONFIG.color);
+                document.documentElement.style.setProperty('--accent', CONFIG.color);
+            }
         }
 
-        function generateQRCode() {
-            const qrContainer = document.getElementById('qr-code');
-            qrContainer.innerHTML = '';
-
-            const vCardData = generateVCardData();
-            
-            new QRCode(qrContainer, {
-                text: vCardData,
-                width: 160,
-                height: 160,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-
-        function generateVCardData() {
-            const vCard = [
+        function generateVCard() {
+            const vcard = [
                 'BEGIN:VCARD',
                 'VERSION:3.0',
                 `FN:${CONFIG.name}`,
@@ -594,223 +651,163 @@
                 `ADR;TYPE=WORK:;;${CONFIG.location}`,
                 'END:VCARD'
             ].join('\n');
-            
-            return vCard;
-        }
-
-        function attachEventListeners() {
-            const cardWrapper = document.getElementById('cardWrapper');
-            const cardInner = document.getElementById('cardInner');
-            const flipBtn = document.getElementById('flipBtn');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const whatsappBtn = document.getElementById('whatsappBtn');
-            const copyBtn = document.getElementById('copyBtn');
-            const shareBtn = document.getElementById('shareBtn');
-
-            // Flip card on click
-            cardWrapper.addEventListener('click', function() {
-                cardInner.classList.toggle('flipped');
-            });
-
-            // Flip button
-            flipBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                cardInner.classList.toggle('flipped');
-            });
-
-            // Download vCard
-            downloadBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                downloadVCard();
-            });
-
-            // WhatsApp
-            whatsappBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                openWhatsApp();
-            });
-
-            // Copy link
-            copyBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                copyToClipboard();
-            });
-
-            // Share
-            shareBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                shareCard();
-            });
+            return vcard;
         }
 
         function downloadVCard() {
-            const vCardData = generateVCardData();
-            const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
-            const url = window.URL.createObjectURL(blob);
+            const vcard = generateVCard();
+            const blob = new Blob([vcard], { type: 'text/vcard' });
+            const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = `${CONFIG.name.replace(/\s+/g, '_')}.vcf`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-            
-            showNotification('Contact saved to device');
+            URL.revokeObjectURL(url);
+            showToast('Contact saved!');
         }
 
-        function openWhatsApp() {
-            const phoneNumber = CONFIG.phone.replace(/\D/g, '');
-            const message = encodeURIComponent(CONFIG.whatsapp_message);
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-            window.open(whatsappUrl, '_blank');
+        function generateQRCode() {
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
             
-            showNotification('Opening WhatsApp...');
+            const vcard = generateVCard();
+            
+            new QRCode(qrContainer, {
+                text: vcard,
+                width: 160,
+                height: 160,
+                colorDark: '#0a0a0f',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
         }
 
-        function copyToClipboard() {
-            const currentUrl = window.location.href;
+        function setupFlipCard() {
+            const cardWrapper = document.getElementById('cardWrapper');
+            const cardInner = document.getElementById('cardInner');
             
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(currentUrl).then(function() {
-                    showNotification('Link copied to clipboard');
-                }).catch(function() {
-                    fallbackCopy(currentUrl);
-                });
-            } else {
-                fallbackCopy(currentUrl);
-            }
+            cardWrapper.addEventListener('click', function() {
+                cardInner.classList.toggle('flipped');
+            });
         }
 
-        function fallbackCopy(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
+        function setupActionButtons() {
+            document.getElementById('saveBtn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                downloadVCard();
+            });
+
+            document.getElementById('whatsappBtn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                const message = encodeURIComponent(CONFIG.whatsapp_message);
+                const phone = CONFIG.phone.replace(/\D/g, '');
+                const url = `https://wa.me/${phone}?text=${message}`;
+                window.open(url, '_blank');
+            });
+
+            document.getElementById('copyBtn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                const currentUrl = window.location.href;
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(currentUrl).then(function() {
+                        showToast('Link copied!');
+                    }).catch(function() {
+                        fallbackCopyToClipboard(currentUrl);
+                    });
+                } else {
+                    fallbackCopyToClipboard(currentUrl);
+                }
+            });
+
+            document.getElementById('shareBtn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: `${CONFIG.name} - ${CONFIG.title}`,
+                        text: `Check out ${CONFIG.name}'s digital business card`,
+                        url: window.location.href
+                    }).catch(function(error) {
+                        if (error.name !== 'AbortError') {
+                            console.log('Share failed:', error);
+                        }
+                    });
+                } else {
+                    const currentUrl = window.location.href;
+                    fallbackCopyToClipboard(currentUrl);
+                    showToast('Link copied! Share manually.');
+                }
+            });
+        }
+
+        function fallbackCopyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
             
             try {
                 document.execCommand('copy');
-                showNotification('Link copied to clipboard');
+                showToast('Link copied!');
             } catch (err) {
-                showNotification('Copy failed - please copy manually');
+                showToast('Copy failed. Please try again.');
             }
             
-            document.body.removeChild(textArea);
+            document.body.removeChild(textarea);
         }
 
-        function shareCard() {
-            const shareData = {
-                title: `${CONFIG.name} - Digital Business Card`,
-                text: `Connect with ${CONFIG.name}, ${CONFIG.title} at ${CONFIG.company}`,
-                url: window.location.href
-            };
-
-            if (navigator.share) {
-                navigator.share(shareData)
-                    .then(() => showNotification('Shared successfully'))
-                    .catch((err) => {
-                        if (err.name !== 'AbortError') {
-                            copyToClipboard();
-                        }
-                    });
-            } else {
-                copyToClipboard();
-            }
-        }
-
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.classList.add('show');
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
             
             setTimeout(function() {
-                notification.classList.remove('show');
-            }, 2500);
+                toast.classList.remove('show');
+            }, 2000);
         }
 
-        // Prevent default touch behavior on buttons for better mobile experience
-        document.querySelectorAll('.btn').forEach(function(btn) {
-            btn.addEventListener('touchstart', function(e) {
-                e.stopPropagation();
-            }, { passive: true });
-        });
-
-        // Add keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === ' ' || e.key === 'Enter') {
-                const cardInner = document.getElementById('cardInner');
-                if (e.target === document.body) {
-                    e.preventDefault();
-                    cardInner.classList.toggle('flipped');
-                }
-            }
-        });
-
-        // Handle visibility change to pause/resume animations
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                document.body.style.setProperty('--ease-snap', 'none');
+        function updateStatusBadge() {
+            const hour = new Date().getHours();
+            const badge = document.getElementById('statusBadge');
+            
+            if (hour >= 9 && hour < 18) {
+                badge.textContent = 'AVAILABLE NOW';
+            } else if (hour >= 18 && hour < 22) {
+                badge.textContent = 'EVENING HOURS';
             } else {
-                document.body.style.setProperty('--ease-snap', 'cubic-bezier(0.2, 0.9, 0.3, 1)');
+                badge.textContent = 'AVAILABLE FOR WORK';
             }
-        });
-
-        // Responsive QR code regeneration on orientation change
-        window.addEventListener('orientationchange', function() {
-            setTimeout(generateQRCode, 300);
-        });
-
-        // Add touch feedback for card wrapper
-        const cardWrapper = document.getElementById('cardWrapper');
-        cardWrapper.addEventListener('touchstart', function() {
-            this.style.opacity = '0.95';
-        }, { passive: true });
-
-        cardWrapper.addEventListener('touchend', function() {
-            this.style.opacity = '1';
-        }, { passive: true });
-
-        // Preload hover states
-        const style = document.createElement('style');
-        style.textContent = `
-            .btn::after,
-            .card-wrapper::after,
-            .status-badge::after {
-                content: '';
-                position: absolute;
-                opacity: 0;
-                pointer-events: none;
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Analytics stub (ready for integration)
-        function trackEvent(eventName, eventData) {
-            console.log('Event:', eventName, eventData);
-            // Integration point for analytics (GA4, Mixpanel, etc.)
         }
 
-        // Track card interactions
-        document.getElementById('cardWrapper').addEventListener('click', function() {
-            trackEvent('card_flip', { flipped: document.getElementById('cardInner').classList.contains('flipped') });
+        document.addEventListener('DOMContentLoaded', function() {
+            initCard();
+            generateQRCode();
+            setupFlipCard();
+            setupActionButtons();
+            updateStatusBadge();
+            
+            setInterval(updateStatusBadge, 60000);
         });
 
-        document.getElementById('downloadBtn').addEventListener('click', function() {
-            trackEvent('vcard_download', { name: CONFIG.name });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'f' || e.key === 'F' || e.key === ' ') {
+                e.preventDefault();
+                document.getElementById('cardInner').classList.toggle('flipped');
+            }
         });
 
-        document.getElementById('whatsappBtn').addEventListener('click', function() {
-            trackEvent('whatsapp_open', { phone: CONFIG.phone });
-        });
-
-        document.getElementById('copyBtn').addEventListener('click', function() {
-            trackEvent('link_copy', { url: window.location.href });
-        });
-
-        document.getElementById('shareBtn').addEventListener('click', function() {
-            trackEvent('card_share', { method: navigator.share ? 'native' : 'fallback' });
+        window.addEventListener('orientationchange', function() {
+            setTimeout(function() {
+                const qrContainer = document.getElementById('qrcode');
+                if (qrContainer.innerHTML === '') {
+                    generateQRCode();
+                }
+            }, 300);
         });
     </script>
 </body>
