@@ -21,7 +21,7 @@ If Opus tokens run out mid-session:
   - Qwen is NEVER used for primary work — only true last resort fallback
 
 ### Rule 3 — Private GitHub Repo
-  - Repo is PRIVATE: github.com/lousycoder96/makersco-digital-card
+  - Repo is PRIVATE: github.com/makersco/makersco-digital-card
   - Do NOT publish or make public until owner decides
   - Phase 6 (Analytics) REMOVED from week 1 — descoped, add in Month 2
   - Phase 4 (Interactive Elements) KEPT — social links, gallery, video, custom buttons

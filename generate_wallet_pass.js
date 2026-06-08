@@ -118,7 +118,7 @@ async function generate() {
           {
             key:   "website",
             label: "Portfolio",
-            value: "https://lousycoder96.github.io/Makers-Co-Website/",
+            value: "https://makersco.github.io/Makers-Co-Website/",
             dataDetectorTypes: ["PKDataDetectorTypeLink"],
           },
           {
@@ -138,7 +138,7 @@ async function generate() {
       // ── Barcodes ─────────────────────────────────────────────────────────
       barcodes: [
         {
-          message:         "https://lousycoder96.github.io/Makers-Co-Website/",
+          message:         "https://makersco.github.io/Makers-Co-Website/",
           format:          "PKBarcodeFormatQR",
           messageEncoding: "iso-8859-1",
           altText:         "Scan to visit portfolio",
@@ -148,7 +148,7 @@ async function generate() {
       // ── NFC (iPhone 7+ with NFC entitlement) ─────────────────────────────
       // Uncomment if you have NFC entitlement on your developer account
       // nfc: {
-      //   message: "https://lousycoder96.github.io/Makers-Co-Website/",
+      //   message: "https://makersco.github.io/Makers-Co-Website/",
       // }
     }
   );

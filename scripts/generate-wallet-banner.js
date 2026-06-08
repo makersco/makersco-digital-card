@@ -8,7 +8,7 @@
  * Or:   npm run generate:banner
  *
  * Output: src/assets/wallet-hero-banner.png
- * Host:   https://lousycoder96.github.io/makersco-card-live/src/assets/wallet-hero-banner.png
+ * Host:   https://makersco.github.io/makersco-card-live/src/assets/wallet-hero-banner.png
  */
 
 "use strict";
@@ -155,4 +155,4 @@ fs.writeFileSync(OUT, buf);
 console.log(`\n✅  Hero banner written: ${OUT}`);
 console.log(`   Size: ${buf.length} bytes  (${W}×${H}px)`);
 console.log(`\n   Live URL (after git push):`);
-console.log(`   https://lousycoder96.github.io/makersco-card-live/src/assets/wallet-hero-banner.png\n`);
+console.log(`   https://makersco.github.io/makersco-card-live/src/assets/wallet-hero-banner.png\n`);

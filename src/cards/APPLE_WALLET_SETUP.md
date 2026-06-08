@@ -17,7 +17,7 @@ No code. No Apple Developer account needed.
    - Company: `MakersCo`
    - Phone: `+60192953528`
    - Email: `soonfookwong96@gmail.com`
-   - Website: `https://lousycoder96.github.io/Makers-Co-Website/`
+   - Website: `https://makersco.github.io/Makers-Co-Website/`
 5. Download or copy the hosted `.pkpass` URL they provide
 6. Open `wong-soonfook.html` in a text editor
 7. Find this line near the bottom of the `<script>` section:

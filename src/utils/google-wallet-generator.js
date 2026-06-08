@@ -41,12 +41,12 @@ const CONFIG = {
   company: "MakersCo",
   phone:   "+60 19-295 3528",
   email:   "soonfookwong96@gmail.com",
-  website: "https://lousycoder96.github.io/makersco-card-live/",
-  cardUrl: "https://lousycoder96.github.io/makersco-card-live/src/templates/card-dark-luxury.html",
+  website: "https://makersco.github.io/makersco-card-live/",
+  cardUrl: "https://makersco.github.io/makersco-card-live/src/templates/card-dark-luxury.html",
   whatsapp:"https://wa.me/60192953528?text=Hi+Soon+Fook%2C+I+found+your+digital+card!",
 
   // Logo — must be a publicly accessible HTTPS URL, min 660×660px recommended
-  logoUrl: "https://lousycoder96.github.io/makersco-card-live/src/assets/icons/icon-512.png",
+  logoUrl: "https://makersco.github.io/makersco-card-live/src/assets/icons/icon-512.png",
 
   // Background colour (hex, shown on the pass card)
   bgColor: "#0a0a0f",
@@ -113,7 +113,7 @@ function buildPassObject(issuerId) {
     // Hero banner — wide image shown at top of pass
     heroImage: {
       sourceUri: {
-        uri: "https://lousycoder96.github.io/makersco-card-live/src/assets/wallet-hero-banner.png"
+        uri: "https://makersco.github.io/makersco-card-live/src/assets/wallet-hero-banner.png"
       },
       contentDescription: {
         defaultValue: { language: "en-US", value: "MakersCo Digital Business Card" }

@@ -55,7 +55,7 @@ const passObject = {
   logo: {
     sourceUri: {
       // Replace with your hosted logo URL (must be HTTPS, min 660×660px recommended)
-      uri: "https://lousycoder96.github.io/Makers-Co-Website/assets/logo.png"
+      uri: "https://makersco.github.io/Makers-Co-Website/assets/logo.png"
     },
     contentDescription: {
       defaultValue: { language: "en-US", value: "MakersCo Logo" }
@@ -101,7 +101,7 @@ const passObject = {
         id: "email"
       },
       {
-        uri: "https://lousycoder96.github.io/Makers-Co-Website/",
+        uri: "https://makersco.github.io/Makers-Co-Website/",
         description: "🌐 Makers-Co-Website",
         id: "website"
       },
@@ -111,7 +111,7 @@ const passObject = {
         id: "whatsapp"
       },
       {
-        uri: "https://github.com/lousycoder96",
+        uri: "https://github.com/makersco",
         description: "👨‍💻 GitHub",
         id: "github"
       }
@@ -121,7 +121,7 @@ const passObject = {
   // ── QR code on the pass ───────────────────────────────────────────────────────
   barcode: {
     type: "QR_CODE",
-    value: "https://lousycoder96.github.io/Makers-Co-Website/",
+    value: "https://makersco.github.io/Makers-Co-Website/",
     alternateText: "Scan to visit portfolio"
   },
 

@@ -54,7 +54,7 @@ git commit -m "feat: add dark luxury card template"
 git push -u origin main
 
 # Then enable GitHub Pages in repo settings → Branch: main
-# Card URL: https://lousycoder96.github.io/makersco-digital-card/src/templates/card-dark-luxury.html
+# Card URL: https://makersco.github.io/makersco-digital-card/src/templates/card-dark-luxury.html
 Option 2 — Netlify Drop (instant, no account needed)
 Go to drop.netlify.com, drag and drop the HTML file. Get a URL like https://random-name-123.netlify.app in 10 seconds. Free forever.
 

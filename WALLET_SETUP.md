@@ -125,7 +125,7 @@ Upload `output/card.pkpass` to your hosting (e.g. `makersco-card-live` GitHub Pa
 
 Then update the "Add to Apple Wallet" button in your card HTML:
 ```html
-<a href="https://lousycoder96.github.io/makersco-card-live/card.pkpass">
+<a href="https://makersco.github.io/makersco-card-live/card.pkpass">
   <img src="https://developer.apple.com/wallet/add-to-apple-wallet-badge.svg"
        alt="Add to Apple Wallet" height="44">
 </a>

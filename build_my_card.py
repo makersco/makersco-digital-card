@@ -24,18 +24,18 @@ CONFIG = {
     "phone":         "+60192953528",
     "phone_display": "+60 19-295 3528",
     "email":         "soonfookwong96@gmail.com",
-    "website":       "https://lousycoder96.github.io/Makers-Co-Website/",
+    "website":       "https://makersco.github.io/Makers-Co-Website/",
     "website_short": "Makers-Co-Website",
     "location":      "Malaysia",
     "wa_message":    "Hi Soon Fook, I found your digital card and would like to connect!",
     "social": {
         "linkedin":  "",
         "instagram": "",
-        "github":    "https://github.com/lousycoder96",
+        "github":    "https://github.com/makersco",
         "twitter":   "",
     },
     "custom_links": [
-        {"icon": "🚀", "label": "Visit My Portfolio", "url": "https://lousycoder96.github.io/Makers-Co-Website/"},
+        {"icon": "🚀", "label": "Visit My Portfolio", "url": "https://makersco.github.io/Makers-Co-Website/"},
     ],
     "booking_url": "",
     "maps_url":    "https://maps.google.com/?q=Malaysia",
@@ -456,7 +456,7 @@ body::before{{
           <div class="c-dot"></div>
           <div class="c-info">
             <div class="c-key">Website</div>
-            <div class="c-val"><a href="https://lousycoder96.github.io/Makers-Co-Website/" target="_blank" rel="noopener">Makers-Co-Website</a></div>
+            <div class="c-val"><a href="https://makersco.github.io/Makers-Co-Website/" target="_blank" rel="noopener">Makers-Co-Website</a></div>
           </div>
         </div>
       </div>
@@ -492,7 +492,7 @@ body::before{{
     <div class="info-icon">🌐</div>
     <div>
       <div class="info-key">Website</div>
-      <div class="info-val"><a href="https://lousycoder96.github.io/Makers-Co-Website/" target="_blank" rel="noopener">Makers-Co-Website</a></div>
+      <div class="info-val"><a href="https://makersco.github.io/Makers-Co-Website/" target="_blank" rel="noopener">Makers-Co-Website</a></div>
     </div>
   </div>
   <div class="info-row">
@@ -528,7 +528,7 @@ body::before{{
 <!-- Extras: GitHub social + portfolio link -->
 <div class="extras-section">
   <div class="social-row" id="socialRow"></div>
-  <a href="https://lousycoder96.github.io/Makers-Co-Website/" target="_blank" rel="noopener" class="extra-btn">
+  <a href="https://makersco.github.io/Makers-Co-Website/" target="_blank" rel="noopener" class="extra-btn">
     🚀 Visit My Portfolio
   </a>
 </div>
@@ -560,11 +560,11 @@ const CONFIG = {{
   phone:         "+60192953528",
   phone_display: "+60 19-295 3528",
   email:         "soonfookwong96@gmail.com",
-  website:       "https://lousycoder96.github.io/Makers-Co-Website/",
+  website:       "https://makersco.github.io/Makers-Co-Website/",
   location:      "Malaysia",
   wa_message:    "Hi Soon Fook, I found your digital card and would like to connect!",
   social: {{
-    github: "https://github.com/lousycoder96",
+    github: "https://github.com/makersco",
     linkedin: "",
     instagram: "",
     twitter: ""
