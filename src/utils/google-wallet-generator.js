@@ -37,19 +37,18 @@ const jwt  = require("jsonwebtoken");
 const CONFIG = {
   // Identity
   name:    "Wong Soon Fook",
-  title:   "Founder & Digital Builder",
+  title:   "Owner & Founder of Makers Co",
   company: "MakersCo",
-  phone:   "+60 19-295 3528",
-  email:   "soonfookwong96@gmail.com",
-  website: "https://makersco.github.io/makersco-card-live/",
-  cardUrl: "https://makersco.github.io/makersco-card-live/src/templates/card-dark-luxury.html",
-  whatsapp:"https://wa.me/60192953528?text=Hi+Soon+Fook%2C+I+found+your+digital+card!",
+  phone:   "+60 17-299 6254",
+  website: "https://makersco.github.io/makers-co-pages/",
+  cardUrl: "https://makersco.github.io/makersco-digital-card/src/cards/wong-soon-fook.html",
+  whatsapp:"https://wa.me/60172996254?text=Hi+Soon+Fook%2C+I+found+your+digital+card!",
 
   // Logo — must be a publicly accessible HTTPS URL, min 660×660px recommended
-  logoUrl: "https://makersco.github.io/makersco-card-live/src/assets/icons/icon-512.png",
+  logoUrl: "https://makersco.github.io/makersco-digital-card/src/assets/makersco-wordmark-logo.png",
 
   // Background colour (hex, shown on the pass card)
-  bgColor: "#0a0a0f",
+  bgColor: "#0a0a0a",
 
   // Google Wallet Issuer ID — get from pay.google.com/business/console
   // Replace the X's with your actual 19-digit Issuer ID
@@ -58,7 +57,7 @@ const CONFIG = {
   // Unique IDs for this pass class and object
   // classId format: {issuerId}.{yourSuffix}  — only created once
   classSuffix: "makersco_biz_card",
-  objectSuffix: "wsf_card_002",      // increment for each unique cardholder
+  objectSuffix: "wsf_card_003",      // increment for each unique cardholder
 
   // Path to service account JSON key (gitignored)
   keyFile: path.join(__dirname, "..", "..", "certs", "google-service-account.json"),
@@ -103,9 +102,8 @@ function buildPassObject(issuerId) {
     // Back of pass — tappable links
     linksModuleData: {
       uris: [
-        { id: "email",    uri: `mailto:${CONFIG.email}`,   description: `✉️  ${CONFIG.email}` },
         { id: "phone",    uri: `tel:${CONFIG.phone.replace(/\s/g,"")}`, description: `📞  ${CONFIG.phone}` },
-        { id: "website",  uri: CONFIG.website,             description: "🌐  Digital Card" },
+        { id: "website",  uri: CONFIG.website,             description: "🌐  Makers Co Website" },
         { id: "whatsapp", uri: CONFIG.whatsapp,            description: "💬  WhatsApp Me" },
       ],
     },
@@ -113,7 +111,7 @@ function buildPassObject(issuerId) {
     // Hero banner — wide image shown at top of pass
     heroImage: {
       sourceUri: {
-        uri: "https://makersco.github.io/makersco-card-live/src/assets/wallet-hero-banner.png"
+        uri: "https://makersco.github.io/makersco-digital-card/src/assets/wallet-hero-banner-wsf2.png"
       },
       contentDescription: {
         defaultValue: { language: "en-US", value: "MakersCo Digital Business Card" }

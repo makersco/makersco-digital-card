@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Wong Soon Fook — Owner & Founder of Makers Co | Digital Business Card"/>
+<title>Wong Soon Fook — Makers Co</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#C9A96E;
+  --gold-light:#E8CFA8;
+  --gold-dark:#A07840;
+  --gold-border:rgba(201,169,110,.22);
+  --dark:#070504;
+  --surface:#15100A;
+  --text:#F5E9D6;
+  --text2:rgba(245,233,214,.62);
+  --text3:rgba(245,233,214,.34);
+}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--dark);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:48px 20px 60px;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:'';position:fixed;top:0;left:0;right:0;height:55vh;
+  background:radial-gradient(ellipse at 50% -10%,rgba(201,169,110,.07) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── Card ── */
+.card{
+  width:360px;
+  border-radius:20px;
+  background:linear-gradient(160deg,#15100A 0%,#1C140B 45%,#241808 100%);
+  border:1px solid var(--gold-border);
+  box-shadow:0 24px 60px rgba(0,0,0,.7),0 0 40px rgba(201,169,110,.05);
+  padding:30px 26px 26px;
+  position:relative;
+  z-index:1;
+  cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 30px 70px rgba(0,0,0,.75),0 0 50px rgba(201,169,110,.08)}
+.card:active{transform:scale(.985)}
+.card::before{
+  content:'';position:absolute;top:0;right:0;
+  width:60px;height:60px;
+  border-top:1px solid var(--gold-border);
+  border-right:1px solid var(--gold-border);
+  border-radius:0 20px 0 0;pointer-events:none;
+}
+.card::after{
+  content:'';position:absolute;bottom:0;left:12%;right:12%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-dark),var(--gold),var(--gold-dark),transparent);
+  opacity:.5;pointer-events:none;
+}
+.card-mark{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:12px;font-weight:700;letter-spacing:.32em;
+  color:var(--gold);
+  margin-bottom:22px;
+}
+.card-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:27px;font-weight:700;line-height:1.2;
+  background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.card-title{font-size:13px;color:var(--text2);margin-top:6px;font-weight:500}
+.gold-rule{width:30px;height:1px;background:var(--gold);margin:14px 0;opacity:.6}
+.card-tagline{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);font-weight:600}
+
+.gwallet-hint{
+  display:flex;align-items:center;gap:7px;
+  margin-top:22px;padding-top:16px;
+  border-top:1px solid rgba(201,169,110,.12);
+  font-size:11px;color:var(--text3);letter-spacing:.02em;
+}
+.gwallet-hint svg{width:15px;height:15px;flex-shrink:0}
+
+.tap-hint{
+  font-size:10.5px;color:var(--text3);text-align:center;
+  letter-spacing:.05em;margin:14px 0 26px;
+  position:relative;z-index:1;
+}
+
+/* ── Action buttons ── */
+.actions{width:360px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:1}
+.btn{
+  width:100%;height:50px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;border:none;text-decoration:none;color:var(--text);
+  transition:transform .15s,opacity .15s;
+}
+.btn:hover{transform:translateY(-1px);opacity:.93}
+.btn:active{transform:scale(.98)}
+.btn svg{width:18px;height:18px;flex-shrink:0}
+.btn-gold{background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:var(--dark);box-shadow:0 4px 20px rgba(201,169,110,.25)}
+.btn-wa{background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.28);color:#25d366}
+.btn-web{background:var(--surface);border:1px solid var(--gold-border);color:var(--text2)}
+.btn-apple{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:var(--text)}
+
+/* ── Apple Wallet modal ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.78);
+  display:flex;align-items:center;justify-content:center;
+  z-index:200;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{
+  background:var(--surface);border:1px solid var(--gold-border);
+  border-radius:20px;padding:26px 24px 24px;max-width:340px;width:100%;
+  position:relative;box-shadow:0 32px 80px rgba(0,0,0,.8);
+}
+.modal-close{
+  position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;
+  background:rgba(201,169,110,.08);border:1px solid var(--gold-border);
+  color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.modal-logo{width:100%;border-radius:12px;margin-bottom:18px;display:block}
+.modal-title{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:700;text-align:center;color:var(--text);margin-bottom:8px}
+.modal-sub{font-size:12.5px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:18px}
+.modal-note{font-size:11px;color:var(--text3);text-align:center;font-style:italic;margin-bottom:16px}
+
+/* ── Toast ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:#1C140B;border:1px solid var(--gold-border);color:var(--text);
+  padding:9px 22px;border-radius:24px;font-size:13px;font-weight:600;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;z-index:999;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+.powered{width:360px;margin:22px auto 0;text-align:center;font-size:10px;color:var(--text3);letter-spacing:.06em;position:relative;z-index:1}
+.powered span{color:var(--gold);opacity:.8}
+
+@media(max-width:400px){.card,.actions,.powered{width:100%!important}}
+</style>
+</head>
+<body>
+
+<!-- Apple Wallet modal -->
+<div class="modal-overlay" id="walletModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeWalletModal()">✕</button>
+    <img class="modal-logo" src="../assets/makersco-wordmark-logo.png" alt="Makers Co"/>
+    <div class="modal-title">Apple Wallet Ready</div>
+    <div class="modal-sub">
+      This digital card supports <strong style="color:var(--gold)">Apple Wallet Pass (.pkpass)</strong> integration.
+      Add it to your iPhone Wallet — always one tap away.
+    </div>
+    <div class="modal-note">Wallet Pass is generated &amp; signed by Makers Co for your card</div>
+    <a href="https://wa.me/60172996254?text=Hi+Soon+Fook!+I+want+to+add+your+digital+card+to+Apple+Wallet."
+       target="_blank" class="btn btn-gold" style="text-decoration:none;width:100%">
+      💬 Enquire About Wallet Pass
+    </a>
+  </div>
+</div>
+
+<!-- Card: click anywhere to add to Google Wallet -->
+<div class="card" id="walletCard">
+  <div class="card-mark">MAKERS CO</div>
+  <div class="card-name">Wong Soon Fook</div>
+  <div class="card-title">Owner &amp; Founder of Makers Co</div>
+  <div class="gold-rule"></div>
+  <div class="card-tagline">We Build · You Grow</div>
+  <div class="gwallet-hint">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+    Tap card to add to Google Wallet
+  </div>
+</div>
+
+<div class="tap-hint">Tap the card above · or use the buttons below</div>
+
+<!-- Action buttons -->
+<div class="actions">
+  <button class="btn btn-gold" onclick="saveContact()">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/></svg>
+    Save to Contacts
+  </button>
+  <button class="btn btn-wa" onclick="openWhatsApp()">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.78 1.21h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>
+    WhatsApp / Call +60 17-299 6254
+  </button>
+  <a class="btn btn-web" href="https://makersco.github.io/makers-co-pages/" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c2.5 2.6 3.8 6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-6-3.8-9s1.3-6.4 3.8-9z" stroke="currentColor" stroke-width="1.6"/></svg>
+    Visit Website
+  </a>
+  <button class="btn btn-apple" id="appleBtn" onclick="handleAppleWallet()">
+    <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M2 10h20" stroke="currentColor" stroke-width="1.5"/><circle cx="17" cy="15" r="1.5" fill="currentColor"/></svg>
+    Add to Apple Wallet
+  </button>
+</div>
+
+<div class="powered">Powered by <span>Makers Co</span> · Digital Business Cards</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG = {
+  name:    "Wong Soon Fook",
+  title:   "Owner & Founder of Makers Co",
+  company: "Makers Co",
+  phone:   "+60172996254",
+  phone_display: "+60 17-299 6254",
+  website: "https://makersco.github.io/makers-co-pages/",
+  wa_message: "Hi Soon Fook, I found your digital card and would like to connect!"
+};
+
+// ── vCard (no email — cross-platform: opens native Contacts on iOS & Android) ──
+function saveContact() {
+  const vcf = [
+    'BEGIN:VCARD','VERSION:3.0',
+    `FN:${CONFIG.name}`,
+    `N:${CONFIG.name.split(' ').slice(-1)[0]};${CONFIG.name.split(' ')[0]};;;`,
+    `ORG:${CONFIG.company}`,
+    `TITLE:${CONFIG.title}`,
+    `TEL;TYPE=CELL:${CONFIG.phone}`,
+    `URL:${CONFIG.website}`,
+    'END:VCARD'
+  ].join('\r\n');
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([vcf], {type:'text/vcard'})),
+    download: `${CONFIG.name.replace(/\s+/g,'-')}.vcf`
+  });
+  a.click();
+  showToast('Contact saved! ✓');
+}
+
+function openWhatsApp() {
+  window.open(`https://wa.me/${CONFIG.phone.replace(/\D/g,'')}?text=${encodeURIComponent(CONFIG.wa_message)}`, '_blank');
+}
+
+// ── Google Wallet — tap the card itself ──────────────────────────────────────
+const GOOGLE_WALLET_JWT = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ3YWxsZXQtc2lnbmVyQG1ha2Vycy1jby5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsImF1ZCI6Imdvb2dsZSIsInR5cCI6InNhdmV0b3dhbGxldCIsImlhdCI6MTc4MjU2MDE1MiwicGF5bG9hZCI6eyJnZW5lcmljQ2xhc3NlcyI6W3siaWQiOiIzMzg4MDAwMDAwMDIzMTQ4NjYxLm1ha2Vyc2NvX2Jpel9jYXJkIiwiaXNzdWVyTmFtZSI6Ik1ha2Vyc0NvIn1dLCJnZW5lcmljT2JqZWN0cyI6W3siaWQiOiIzMzg4MDAwMDAwMDIzMTQ4NjYxLndzZl9jYXJkXzAwMyIsImNsYXNzSWQiOiIzMzg4MDAwMDAwMDIzMTQ4NjYxLm1ha2Vyc2NvX2Jpel9jYXJkIiwiZ2VuZXJpY1R5cGUiOiJHRU5FUklDX1RZUEVfVU5TUEVDSUZJRUQiLCJzdGF0ZSI6IkFDVElWRSIsImhleEJhY2tncm91bmRDb2xvciI6IiMwYTBhMGEiLCJsb2dvIjp7InNvdXJjZVVyaSI6eyJ1cmkiOiJodHRwczovL21ha2Vyc2NvLmdpdGh1Yi5pby9tYWtlcnNjby1kaWdpdGFsLWNhcmQvc3JjL2Fzc2V0cy9tYWtlcnNjby13b3JkbWFyay1sb2dvLnBuZyJ9LCJjb250ZW50RGVzY3JpcHRpb24iOnsiZGVmYXVsdFZhbHVlIjp7Imxhbmd1YWdlIjoiZW4tVVMiLCJ2YWx1ZSI6Ik1ha2Vyc0NvIExvZ28ifX19LCJjYXJkVGl0bGUiOnsiZGVmYXVsdFZhbHVlIjp7Imxhbmd1YWdlIjoiZW4tVVMiLCJ2YWx1ZSI6Ik1ha2Vyc0NvIn19LCJzdWJoZWFkZXIiOnsiZGVmYXVsdFZhbHVlIjp7Imxhbmd1YWdlIjoiZW4tVVMiLCJ2YWx1ZSI6Ik93bmVyICYgRm91bmRlciBvZiBNYWtlcnMgQ28ifX0sImhlYWRlciI6eyJkZWZhdWx0VmFsdWUiOnsibGFuZ3VhZ2UiOiJlbi1VUyIsInZhbHVlIjoiV29uZyBTb29uIEZvb2sifX0sInRleHRNb2R1bGVzRGF0YSI6W3siaWQiOiJjb21wYW55IiwiaGVhZGVyIjoiQ29tcGFueSIsImJvZHkiOiJNYWtlcnNDbyDCtyBNYWxheXNpYSJ9LHsiaWQiOiJwaG9uZSIsImhlYWRlciI6IlBob25lIiwiYm9keSI6Iis2MCAxNy0yOTkgNjI1NCJ9XSwibGlua3NNb2R1bGVEYXRhIjp7InVyaXMiOlt7ImlkIjoicGhvbmUiLCJ1cmkiOiJ0ZWw6KzYwMTctMjk5NjI1NCIsImRlc2NyaXB0aW9uIjoi8J-TniAgKzYwIDE3LTI5OSA2MjU0In0seyJpZCI6IndlYnNpdGUiLCJ1cmkiOiJodHRwczovL21ha2Vyc2NvLmdpdGh1Yi5pby9tYWtlcnMtY28tcGFnZXMvIiwiZGVzY3JpcHRpb24iOiLwn4yQICBNYWtlcnMgQ28gV2Vic2l0ZSJ9LHsiaWQiOiJ3aGF0c2FwcCIsInVyaSI6Imh0dHBzOi8vd2EubWUvNjAxNzI5OTYyNTQ_dGV4dD1IaStTb29uK0Zvb2slMkMrSStmb3VuZCt5b3VyK2RpZ2l0YWwrY2FyZCEiLCJkZXNjcmlwdGlvbiI6IvCfkqwgIFdoYXRzQXBwIE1lIn1dfSwiaGVyb0ltYWdlIjp7InNvdXJjZVVyaSI6eyJ1cmkiOiJodHRwczovL21ha2Vyc2NvLmdpdGh1Yi5pby9tYWtlcnNjby1kaWdpdGFsLWNhcmQvc3JjL2Fzc2V0cy93YWxsZXQtaGVyby1iYW5uZXItd3NmMi5wbmcifSwiY29udGVudERlc2NyaXB0aW9uIjp7ImRlZmF1bHRWYWx1ZSI6eyJsYW5ndWFnZSI6ImVuLVVTIiwidmFsdWUiOiJNYWtlcnNDbyBEaWdpdGFsIEJ1c2luZXNzIENhcmQifX19LCJiYXJjb2RlIjp7InR5cGUiOiJRUl9DT0RFIiwidmFsdWUiOiJodHRwczovL21ha2Vyc2NvLmdpdGh1Yi5pby9tYWtlcnNjby1kaWdpdGFsLWNhcmQvc3JjL2NhcmRzL3dvbmctc29vbi1mb29rLmh0bWwiLCJhbHRlcm5hdGVUZXh0IjoiU2NhbiB0byBvcGVuIGNhcmQifX1dfX0.UfJg3PNJjAEGebSc_WquesXXV1ZU4Sa7g2HzpXHnYQIw3l7Kz_K4xYyTBgN1-4JQhKkfeIDr7ECHv1Fg100sEGXKv-fAI2szm_yAeKqcvmL25tW2xrUSmfLW1CywIvKDRVPFULKiG8hFcfgXWmK1Y8nWv_it3JfR95A8GCV0utJCoC_cNFiAuQu9B4dkrcxqwcicM_f-0TdpZs9NTn2FZlLpWHeDOYfGPWD0mxO_2U4Om7igxKblYvr7UiXo4JpxFObGt2ZYOtlrL2YR58v0coZT9qfwIRzdzGDnkCKaG18-qPoMfphvQ48u1R50gDOnbimoNjmnssYquSuX_Ku5Ww";
+
+document.getElementById('walletCard').addEventListener('click', function() {
+  window.open(`https://pay.google.com/gp/v/save/${GOOGLE_WALLET_JWT}`, '_blank');
+  showToast('Opening Google Wallet… 🤖');
+});
+
+// ── Apple Wallet ──────────────────────────────────────────────────────────────
+const PKPASS_URL = "";  // ← e.g. "./wong-soon-fook.pkpass" once Apple Developer cert is set up
+function handleAppleWallet() {
+  if (PKPASS_URL) {
+    const a = document.createElement('a');
+    a.href = PKPASS_URL;
+    a.download = "wong-soon-fook.pkpass";
+    a.click();
+    showToast('Opening Apple Wallet… 🍎');
+  } else {
+    document.getElementById('walletModal').classList.add('open');
+  }
+}
+function closeWalletModal() {
+  document.getElementById('walletModal').classList.remove('open');
+}
+document.getElementById('walletModal').addEventListener('click', function(e) {
+  if (e.target === this) closeWalletModal();
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>

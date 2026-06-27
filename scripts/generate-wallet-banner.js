@@ -19,7 +19,7 @@ const path = require("path");
 // ── Config — change these to match your card ────────────────────────────────
 const CONFIG = {
   name:    "Wong Soon Fook",
-  title:   "Founder & Digital Builder",
+  title:   "Owner & Founder of Makers Co",
   company: "MakersCo",
   // Colours
   bg:           "#0a0a0f",
@@ -145,7 +145,8 @@ function drawSpaced(ctx, text, x, y, spacing) {
 }
 
 // ── Write file ───────────────────────────────────────────────────────────────
-const OUT = path.join(__dirname, "..", "src", "assets", "wallet-hero-banner.png");
+const OUT_NAME = process.argv[2] || "wallet-hero-banner.png";
+const OUT = path.join(__dirname, "..", "src", "assets", OUT_NAME);
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 
 const banner = drawBanner();
@@ -155,4 +156,4 @@ fs.writeFileSync(OUT, buf);
 console.log(`\n✅  Hero banner written: ${OUT}`);
 console.log(`   Size: ${buf.length} bytes  (${W}×${H}px)`);
 console.log(`\n   Live URL (after git push):`);
-console.log(`   https://makersco.github.io/makersco-card-live/src/assets/wallet-hero-banner.png\n`);
+console.log(`   https://makersco.github.io/makersco-digital-card/src/assets/${OUT_NAME}\n`);
