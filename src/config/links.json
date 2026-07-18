@@ -1,0 +1,32 @@
+{
+  "_comment": "Single source of truth for every real contact/card link used by the wallet-pass generator scripts. Edit values here — generate_wallet_pass.js, generate_google_wallet_pass.js, and src/utils/google-wallet-generator.js all read from this file instead of hardcoding their own copies.",
+
+  "person": {
+    "name": "Wong Soon Fook",
+    "title": "Founder & Digital Builder",
+    "company": "MakersCo",
+    "phone": "+60192953528",
+    "phoneDisplay": "+60 19-295 3528",
+    "email": "soonfookwong96@gmail.com",
+    "whatsappNumber": "60192953528",
+    "whatsappMessage": "Hi Soon Fook, I found your digital card and would like to connect!"
+  },
+
+  "card": {
+    "public": "https://makersco.github.io/makersco-digital-card/src/cards/wong-soon-fook.html",
+    "owner": "https://makersco.github.io/makersco-digital-card/src/cards/wong-soon-fook-owner.html"
+  },
+
+  "business": {
+    "name": "MakersCo",
+    "whatsappNumber": "60172996254",
+    "github": "https://makersco.github.io/makers-co-pages/"
+  },
+
+  "assets": {
+    "logo": "https://makersco.github.io/makersco-digital-card/src/assets/makersco-wordmark-logo.png",
+    "walletBanner": "https://makersco.github.io/makersco-digital-card/src/assets/wallet-hero-banner-wsf2.png"
+  },
+
+  "maps": "https://maps.google.com/?q=Malaysia"
+}

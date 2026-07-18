@@ -45,7 +45,7 @@ digital-card-platform/
 
 
 Option 1 — GitHub Pages (free, instant, permanent URL)
-You already use it for ecommerce-daily-builds. Push the card to any public repo:
+Push the card to any public repo:
 
 # In your digital-card-platform folder
 gh repo create makersco-digital-card --public   # public = GitHub Pages works
@@ -71,9 +71,6 @@ Quickest path right now: Use Option 2 — drag the HTML onto Netlify Drop, get a
 
 # Generate a new client card (AI-powered)
 python3 build_card.py
-
-# Regenerate your personal card
-python3 build_my_card.py
 
 # Generate Google Wallet JWT (one-time per update)
 node generate_google_wallet_pass.js

@@ -1,814 +1,746 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neo-Brutalist Digital Business Card</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        :root {
-            --bg-page: #FFFBF0;
-            --card-front: #FF5C39;
-            --card-back: #0a0a0f;
-            --ink: #0a0a0f;
-            --ink-inverse: #FFFBF0;
-            --paper-shadow: #0a0a0f;
-            --accent: #FF5C39;
-            --accent-shadow: #C2421F;
-            --tag-bg: #F5E6A8;
-            --tag-ink: #0a0a0f;
-            --divider: #0a0a0f;
-            --border-card: 3px solid #0a0a0f;
-            --border-chunky: 2px solid #0a0a0f;
-            --offset-shadow: 8px 8px 0 0 #0a0a0f;
-            --offset-shadow-sm: 4px 4px 0 0 #0a0a0f;
-            --radius-card: 0;
-            --radius-badge: 20px;
-            --radius-btn: 0;
-            --ease-snap: cubic-bezier(0.2, 0.8, 0.2, 1);
-            --t-fast: 120ms;
-            --t-base: 180ms;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ahmad Faris bin Razak - Digital Business Card</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg-page: #FFFBF0;
+      --card-front: #FF5C39;
+      --card-back: #0a0a0f;
+      --ink: #0a0a0f;
+      --ink-inverse: #FFFBF0;
+      --paper: #FFFBF0;
+      --accent: #FF5C39;
+      --accent-shadow: #C73E1F;
+      --tag-bg: #FFFBF0;
+      --tag-ink: #0a0a0f;
+      --border: 3px solid #0a0a0f;
+      --shadow-hard: 8px 8px 0 #0a0a0f;
+      --shadow-hard-sm: 4px 4px 0 #0a0a0f;
+      --radius-card: 0px;
+      --radius-badge: 20px;
+      --ease-snap: cubic-bezier(0.7, 0, 0.2, 1);
+      --dur-flip: 280ms;
+      --dur-press: 120ms;
+      --dur-hover: 160ms;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: var(--bg-page);
-            color: var(--ink);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 32px 16px;
-            overflow-x: hidden;
-        }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-page);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      line-height: 1.4;
+    }
 
-        .page-header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
+    .container {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      align-items: center;
+    }
 
-        .page-header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            margin-bottom: 8px;
-        }
+    .card-wrapper {
+      width: 100%;
+      max-width: 380px;
+      aspect-ratio: 1.586 / 1;
+      perspective: 1000px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        .page-header p {
-            font-size: 14px;
-            font-weight: 400;
-            opacity: 0.7;
-        }
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform var(--dur-flip) var(--ease-snap);
+    }
 
-        .card-wrapper {
-            width: 340px;
-            height: 540px;
-            max-width: calc(100vw - 32px);
-            perspective: 1000px;
-            margin: 0 auto 32px;
-            cursor: pointer;
-        }
+    .card-inner.flipped {
+      transform: rotateY(180deg);
+    }
 
-        .card-inner {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 280ms var(--ease-snap);
-        }
+    .card-face {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border: var(--border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-hard);
+      transition: transform var(--dur-hover) var(--ease-snap),
+                  box-shadow var(--dur-hover) var(--ease-snap);
+    }
 
-        .card-inner.flipped {
-            transform: rotateY(180deg);
-        }
+    .card-wrapper:hover .card-face {
+      transform: translate(-2px, -2px);
+      box-shadow: 10px 10px 0 var(--ink);
+    }
 
-        .card-face {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            border: var(--border-card);
-            box-shadow: var(--offset-shadow);
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            overflow: hidden;
-        }
+    .card-wrapper:active .card-face {
+      transform: translate(4px, 4px);
+      box-shadow: 4px 4px 0 var(--ink);
+      transition-duration: var(--dur-press);
+    }
 
-        .card-front {
-            background: var(--card-front);
-            position: relative;
-        }
+    .card-front {
+      background: var(--card-front);
+      padding: 24px;
+    }
 
-        .card-front::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, #0a0a0f 1px, transparent 1px) 0 0 / 6px 6px;
-            opacity: 0.08;
-            pointer-events: none;
-        }
+    .card-back {
+      background: var(--card-back);
+      padding: 24px;
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-        .card-back {
-            background: var(--card-back);
-            color: var(--ink-inverse);
-            transform: rotateY(180deg);
-        }
+    /* Front face elements */
+    .corner-block {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      width: 32px;
+      height: 32px;
+      background: var(--ink);
+      border: none;
+    }
 
-        .top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            height: 48px;
-            position: relative;
-            z-index: 10;
-        }
+    .tag-badge {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: var(--tag-bg);
+      color: var(--tag-ink);
+      border: 2px solid var(--ink);
+      border-radius: var(--radius-badge);
+      padding: 2px 10px;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
 
-        .tag-badge {
-            background: var(--tag-bg);
-            color: var(--tag-ink);
-            border: 2px solid #0a0a0f;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            transition: transform var(--t-base) var(--ease-snap);
-        }
+    .hero-name {
+      position: absolute;
+      bottom: 88px;
+      left: 24px;
+      max-width: 80%;
+      font-weight: 800;
+      font-size: clamp(40px, 9vw, 64px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      word-wrap: break-word;
+    }
 
-        .tag-badge:hover {
-            transform: rotate(-2deg);
-        }
+    .role-line {
+      position: absolute;
+      bottom: 60px;
+      left: 24px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      line-height: 1.0;
+    }
 
-        .index-number {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--ink);
-        }
+    .signature-stamp {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      width: 40px;
+      height: 40px;
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-4deg);
+    }
 
-        .registration-mark {
-            position: absolute;
-            top: 8px;
-            right: 50%;
-            width: 12px;
-            height: 12px;
-            border: 1px solid var(--ink);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .stamp-initials {
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--paper);
+      letter-spacing: 0.02em;
+    }
 
-        .registration-mark::before,
-        .registration-mark::after {
-            content: '';
-            position: absolute;
-            background: var(--ink);
-        }
+    .flip-hint {
+      position: absolute;
+      bottom: 28px;
+      right: 24px;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
 
-        .registration-mark::before {
-            width: 8px;
-            height: 1px;
-        }
+    /* Back face elements */
+    .back-header {
+      height: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .registration-mark::after {
-            width: 1px;
-            height: 8px;
-        }
+    .company-name {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+      color: var(--ink-inverse);
+    }
 
-        .divider-rule {
-            width: 100%;
-            height: 3px;
-            background: var(--ink);
-            margin-top: 8px;
-            position: relative;
-            z-index: 10;
-        }
+    .header-square {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
 
-        .name-block {
-            position: absolute;
-            bottom: 72px;
-            left: 24px;
-            right: 80px;
-            z-index: 5;
-        }
+    .divider {
+      width: 100%;
+      height: 3px;
+      background: var(--ink-inverse);
+      margin: 4px 0;
+    }
 
-        .name-text-wrapper {
-            position: relative;
-        }
+    .contact-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
 
-        .name-ghost {
-            font-size: 44px;
-            font-weight: 700;
-            line-height: 0.95;
-            letter-spacing: -0.02em;
-            color: #1B4DE8;
-            transform: translate(-3px, 3px);
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
+    .contact-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 32px;
+      align-items: center;
+      min-height: 44px;
+      gap: 12px;
+      cursor: pointer;
+      transition: opacity 200ms ease;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        .name-main {
-            font-size: 44px;
-            font-weight: 700;
-            line-height: 0.95;
-            letter-spacing: -0.02em;
-            color: var(--ink);
-            position: relative;
-            z-index: 2;
-        }
+    .contact-row:active {
+      opacity: 0.6;
+    }
 
-        .title-text {
-            font-size: 16px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-top: 12px;
-            color: var(--ink);
-        }
+    .contact-label {
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      line-height: 1.0;
+    }
 
-        .company-text {
-            font-size: 14px;
-            font-weight: 400;
-            margin-top: 4px;
-            color: var(--ink);
-        }
+    .contact-value {
+      font-weight: 400;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      color: var(--ink-inverse);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-        .geometric-mark {
-            position: absolute;
-            bottom: 24px;
-            right: 24px;
-            width: 56px;
-            height: 56px;
-            background: var(--ink);
-            z-index: 10;
-        }
+    .contact-arrow {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--ink-inverse);
+      text-align: right;
+    }
 
-        .edge-label {
-            position: absolute;
-            right: 8px;
-            bottom: 120px;
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--ink);
-            opacity: 0.8;
-        }
+    .back-footer {
+      margin-top: auto;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-align: left;
+    }
 
-        .back-header {
-            width: calc(100% + 48px);
-            height: 48px;
-            background: var(--accent);
-            margin: -24px -24px 24px -24px;
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-        }
+    .qr-section {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+    }
 
-        .back-header-name {
-            font-size: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--ink);
-            letter-spacing: 0.04em;
-        }
+    #qrcode {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .contact-rows {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            flex: 1;
-            margin-bottom: 24px;
-        }
+    #qrcode canvas,
+    #qrcode img {
+      max-width: 100%;
+      height: auto;
+    }
 
-        .contact-row {
-            display: flex;
-            align-items: center;
-            min-height: 48px;
-            padding: 12px 0;
-            border-bottom: 1px dashed rgba(255, 251, 240, 0.2);
-            gap: 12px;
-        }
+    .qr-text {
+      font-weight: 400;
+      font-size: 13px;
+      color: var(--ink-inverse);
+      line-height: 1.4;
+    }
 
-        .contact-row:last-child {
-            border-bottom: none;
-        }
+    /* Action buttons */
+    .action-buttons {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-        .contact-icon {
-            width: 24px;
-            height: 24px;
-            flex-shrink: 0;
-            stroke: var(--ink-inverse);
-            stroke-width: 2;
-            fill: none;
-        }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 12px 20px;
+      background: var(--paper);
+      color: var(--ink);
+      border: 3px solid var(--ink);
+      border-radius: 0;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: var(--shadow-hard-sm);
+      transition: transform var(--dur-hover) var(--ease-snap),
+                  box-shadow var(--dur-hover) var(--ease-snap);
+      cursor: pointer;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        .contact-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            opacity: 0.6;
-            min-width: 60px;
-        }
+    .btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--ink);
+    }
 
-        .contact-value {
-            font-size: 14px;
-            font-weight: 400;
-            flex: 1;
-            word-break: break-word;
-        }
+    .btn:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0 0 0 var(--ink);
+      transition-duration: var(--dur-press);
+    }
 
-        .back-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-top: auto;
-        }
+    .btn--primary {
+      background: var(--accent);
+      color: var(--ink);
+    }
 
-        .signature-svg {
-            width: 80px;
-            height: 40px;
-        }
+    .btn--dark {
+      background: var(--ink);
+      color: var(--ink-inverse);
+      box-shadow: 4px 4px 0 var(--accent);
+    }
 
-        .flip-prompt {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            opacity: 0.8;
-            letter-spacing: 0.04em;
-        }
+    .btn--dark:hover {
+      box-shadow: 6px 6px 0 var(--accent);
+    }
 
-        .qr-section {
-            text-align: center;
-            margin: 32px 0;
-            padding: 24px;
-            background: var(--ink-inverse);
-            border: var(--border-chunky);
-            box-shadow: var(--offset-shadow-sm);
-            max-width: 340px;
-            width: calc(100vw - 32px);
-        }
+    .btn--dark:active {
+      box-shadow: 0 0 0 var(--accent);
+    }
 
-        .qr-section h3 {
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 16px;
-        }
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
-        #qrcode {
-            display: inline-block;
-            padding: 16px;
-            background: white;
-            border: 2px solid var(--ink);
-        }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--ink);
+      color: var(--ink-inverse);
+      padding: 12px 24px;
+      border: 3px solid var(--accent);
+      box-shadow: 4px 4px 0 var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: transform 300ms var(--ease-snap),
+                  opacity 300ms var(--ease-snap);
+      z-index: 1000;
+      pointer-events: none;
+    }
 
-        .action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-width: 340px;
-            width: calc(100vw - 32px);
-            margin: 0 auto;
-        }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
 
-        .button-row {
-            display: flex;
-            gap: 8px;
-        }
+    @media (max-width: 480px) {
+      .card-wrapper {
+        max-width: 340px;
+      }
 
-        .btn-brutal {
-            background: var(--ink-inverse);
-            color: var(--ink);
-            border: 3px solid var(--ink);
-            border-radius: 0;
-            padding: 16px 24px;
-            font: 700 14px/1 'Space Grotesk', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            box-shadow: var(--offset-shadow-sm);
-            transition: transform var(--t-fast) var(--ease-snap),
-                        box-shadow var(--t-fast) var(--ease-snap);
-            cursor: pointer;
-            flex: 1;
-            text-align: center;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 44px;
-        }
+      .hero-name {
+        font-size: clamp(32px, 9vw, 48px);
+      }
 
-        .btn-brutal:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 0 var(--ink);
-        }
-
-        .btn-brutal:active {
-            transform: translate(4px, 4px);
-            box-shadow: 0 0 0 0 var(--ink);
-        }
-
-        .btn-brutal--accent {
-            background: var(--accent);
-            color: var(--ink);
-        }
-
-        .btn-brutal--full {
-            width: 100%;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 32px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--ink);
-            color: var(--ink-inverse);
-            padding: 16px 24px;
-            border: 3px solid var(--ink);
-            box-shadow: var(--offset-shadow-sm);
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            opacity: 0;
-            transition: transform var(--t-base) var(--ease-snap),
-                        opacity var(--t-base) var(--ease-snap);
-            z-index: 1000;
-            pointer-events: none;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        @media (max-width: 400px) {
-            .card-wrapper {
-                width: calc(100vw - 32px);
-                height: calc((100vw - 32px) * 1.588);
-            }
-
-            .name-ghost,
-            .name-main {
-                font-size: 32px;
-            }
-
-            .title-text {
-                font-size: 14px;
-            }
-
-            .company-text {
-                font-size: 13px;
-            }
-
-            .geometric-mark {
-                width: 48px;
-                height: 48px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-    </style>
+      .btn-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="page-header">
-        <h1>Digital Business Card</h1>
-        <p>Tap card to flip · Scan QR to save contact</p>
-    </div>
-
+  <div class="container">
     <div class="card-wrapper" id="cardWrapper">
-        <div class="card-inner" id="cardInner">
-            <div class="card-face card-front">
-                <div class="top-row">
-                    <div class="tag-badge" id="statusBadge">AVAILABLE FOR WORK</div>
-                    <div class="index-number">№ 047</div>
-                    <div class="registration-mark"></div>
-                </div>
-                <div class="divider-rule"></div>
-                <div class="name-block">
-                    <div class="name-text-wrapper">
-                        <div class="name-ghost" id="nameGhost"></div>
-                        <div class="name-main" id="nameMain"></div>
-                    </div>
-                    <div class="title-text" id="titleText"></div>
-                    <div class="company-text" id="companyText"></div>
-                </div>
-                <div class="geometric-mark"></div>
-                <div class="edge-label">BUSINESS CARD · 2026 · EST</div>
-            </div>
-
-            <div class="card-face card-back">
-                <div class="back-header">
-                    <div class="back-header-name" id="backHeaderName"></div>
-                </div>
-                <div class="contact-rows">
-                    <div class="contact-row">
-                        <svg class="contact-icon" viewBox="0 0 24 24">
-                            <rect x="3" y="5" width="18" height="14" rx="0" ry="0"/>
-                            <polyline points="3 5 12 13 21 5"/>
-                        </svg>
-                        <div class="contact-label">EMAIL</div>
-                        <div class="contact-value" id="emailValue"></div>
-                    </div>
-                    <div class="contact-row">
-                        <svg class="contact-icon" viewBox="0 0 24 24">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
-                        <div class="contact-label">PHONE</div>
-                        <div class="contact-value" id="phoneValue"></div>
-                    </div>
-                    <div class="contact-row">
-                        <svg class="contact-icon" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="2" y1="12" x2="22" y2="12"/>
-                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                        </svg>
-                        <div class="contact-label">WEBSITE</div>
-                        <div class="contact-value" id="websiteValue"></div>
-                    </div>
-                    <div class="contact-row">
-                        <svg class="contact-icon" viewBox="0 0 24 24">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                        </svg>
-                        <div class="contact-label">STUDIO</div>
-                        <div class="contact-value" id="locationValue"></div>
-                    </div>
-                    <div class="contact-row">
-                        <svg class="contact-icon" viewBox="0 0 24 24">
-                            <rect x="2" y="2" width="20" height="20" rx="0" ry="0"/>
-                            <circle cx="12" cy="12" r="4"/>
-                            <line x1="16.5" y1="7.5" x2="16.51" y2="7.5"/>
-                        </svg>
-                        <div class="contact-label">SOCIAL</div>
-                        <div class="contact-value" id="instagramValue">@pixelreka</div>
-                    </div>
-                </div>
-                <div class="back-footer">
-                    <svg class="signature-svg" viewBox="0 0 80 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 30 Q10 15 20 25 T40 20"/>
-                        <path d="M45 15 L50 30 L55 15"/>
-                        <path d="M60 15 Q65 30 75 20"/>
-                    </svg>
-                    <div class="flip-prompt">FLIP →</div>
-                </div>
-            </div>
+      <div class="card-inner" id="cardInner">
+        <!-- Front Face -->
+        <div class="card-face card-front">
+          <div class="corner-block"></div>
+          <div class="tag-badge">AVAILABLE FOR HIRE</div>
+          <div class="hero-name" id="heroName">AHMAD FARIS</div>
+          <div class="role-line" id="roleText">FOUNDER & CEO</div>
+          <div class="signature-stamp">
+            <span class="stamp-initials" id="stampInitials">AF</span>
+          </div>
+          <div class="flip-hint">TAP →</div>
         </div>
-    </div>
 
-    <div class="qr-section">
-        <h3>Scan to Save Contact</h3>
-        <div id="qrcode"></div>
+        <!-- Back Face -->
+        <div class="card-face card-back">
+          <div class="back-header">
+            <div class="company-name" id="companyName">PIXEL REKA</div>
+            <div class="header-square"></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="contact-section">
+            <div class="contact-row" data-action="email" id="emailRow">
+              <span class="contact-label">EMAIL</span>
+              <span class="contact-value" id="emailValue">faris@pixelreka.com.my</span>
+              <span class="contact-arrow">→</span>
+            </div>
+
+            <div class="contact-row" data-action="phone" id="phoneRow">
+              <span class="contact-label">PHONE</span>
+              <span class="contact-value" id="phoneValue">+60 12 345 6789</span>
+              <span class="contact-arrow">→</span>
+            </div>
+
+            <div class="contact-row" data-action="website" id="websiteRow">
+              <span class="contact-label">WEB</span>
+              <span class="contact-value" id="websiteValue">pixelreka.com.my</span>
+              <span class="contact-arrow">→</span>
+            </div>
+
+            <div class="contact-row" data-action="location" id="locationRow">
+              <span class="contact-label">LOCATION</span>
+              <span class="contact-value" id="locationValue">Kuala Lumpur</span>
+              <span class="contact-arrow">→</span>
+            </div>
+
+            <div class="qr-section">
+              <div id="qrcode"></div>
+              <div class="qr-text">Scan to save contact or visit website</div>
+            </div>
+          </div>
+
+          <div class="back-footer" id="footerText">© PIXEL REKA — KUALA LUMPUR</div>
+        </div>
+      </div>
     </div>
 
     <div class="action-buttons">
-        <div class="button-row">
-            <button class="btn-brutal btn-brutal--accent" id="saveBtn">Save Contact</button>
-            <button class="btn-brutal" id="shareBtn">Share</button>
-        </div>
-        <button class="btn-brutal btn-brutal--full" id="whatsappBtn">
-            <span>Message on WhatsApp</span>
+      <button class="btn btn--primary" id="downloadVcard">
+        ↓ DOWNLOAD CONTACT
+      </button>
+      <button class="btn btn--dark" id="whatsappBtn">
+        WHATSAPP MESSAGE
+      </button>
+      <div class="btn-group">
+        <button class="btn" id="copyLinkBtn">
+          COPY LINK
         </button>
-        <button class="btn-brutal btn-brutal--full" id="copyBtn">Copy Card Link</button>
+        <button class="btn" id="shareBtn">
+          SHARE
+        </button>
+      </div>
     </div>
+  </div>
 
-    <div class="toast" id="toast"></div>
+  <div class="toast" id="toast"></div>
 
-    <script>
-        const CONFIG = {
-            name: "Ahmad Faris bin Razak",
-            title: "Founder & CEO",
-            company: "Pixel Reka Sdn Bhd",
-            phone: "+60123456789",
-            email: "faris@pixelreka.com.my",
-            website: "https://pixelreka.com.my",
-            location: "Kuala Lumpur, Malaysia",
-            bio: "Building digital solutions for Malaysian SMEs",
-            color: "#FF5C39",
-            whatsapp_message: "Hi Faris, I found your digital card!"
-        };
+  <script>
+    // Configuration
+    const CONFIG = {
+      name: "Ahmad Faris bin Razak",
+      title: "Founder & CEO",
+      company: "Pixel Reka Sdn Bhd",
+      phone: "+60123456789",
+      email: "faris@pixelreka.com.my",
+      website: "https://pixelreka.com.my",
+      location: "Kuala Lumpur, Malaysia",
+      bio: "Building digital solutions for Malaysian SMEs",
+      color: "#FF5C39",
+      whatsapp_message: "Hi Faris, I found your digital card!"
+    };
 
-        function initCard() {
-            document.getElementById('nameGhost').textContent = CONFIG.name;
-            document.getElementById('nameMain').textContent = CONFIG.name;
-            document.getElementById('titleText').textContent = CONFIG.title;
-            document.getElementById('companyText').textContent = CONFIG.company;
-            document.getElementById('backHeaderName').textContent = CONFIG.name.toUpperCase();
-            document.getElementById('emailValue').textContent = CONFIG.email;
-            document.getElementById('phoneValue').textContent = CONFIG.phone;
-            document.getElementById('websiteValue').textContent = CONFIG.website.replace('https://', '');
-            document.getElementById('locationValue').textContent = CONFIG.location;
+    // DOM Elements
+    const cardWrapper = document.getElementById('cardWrapper');
+    const cardInner = document.getElementById('cardInner');
+    const heroName = document.getElementById('heroName');
+    const roleText = document.getElementById('roleText');
+    const companyName = document.getElementById('companyName');
+    const emailValue = document.getElementById('emailValue');
+    const phoneValue = document.getElementById('phoneValue');
+    const websiteValue = document.getElementById('websiteValue');
+    const locationValue = document.getElementById('locationValue');
+    const footerText = document.getElementById('footerText');
+    const stampInitials = document.getElementById('stampInitials');
+    const toast = document.getElementById('toast');
 
-            if (CONFIG.color && CONFIG.color !== '#FF5C39') {
-                document.documentElement.style.setProperty('--card-front', CONFIG.color);
-                document.documentElement.style.setProperty('--accent', CONFIG.color);
-            }
-        }
+    // Populate card with data
+    function populateCard() {
+      // Extract first and last name for hero
+      const nameParts = CONFIG.name.split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : '';
+      heroName.textContent = `${firstName.toUpperCase()} ${lastName.toUpperCase()}`.trim();
 
-        function generateVCard() {
-            const vcard = [
-                'BEGIN:VCARD',
-                'VERSION:3.0',
-                `FN:${CONFIG.name}`,
-                `ORG:${CONFIG.company}`,
-                `TITLE:${CONFIG.title}`,
-                `TEL;TYPE=CELL:${CONFIG.phone}`,
-                `EMAIL:${CONFIG.email}`,
-                `URL:${CONFIG.website}`,
-                `NOTE:${CONFIG.bio}`,
-                `ADR;TYPE=WORK:;;${CONFIG.location}`,
-                'END:VCARD'
-            ].join('\n');
-            return vcard;
-        }
+      roleText.textContent = CONFIG.title.toUpperCase();
+      
+      // Extract company name (remove legal entity suffix)
+      const companyShort = CONFIG.company.replace(/\s+(Sdn Bhd|Bhd|Pte Ltd|Ltd|LLC|Inc)\.?$/i, '');
+      companyName.textContent = companyShort.toUpperCase();
 
-        function downloadVCard() {
-            const vcard = generateVCard();
-            const blob = new Blob([vcard], { type: 'text/vcard' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${CONFIG.name.replace(/\s+/g, '_')}.vcf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            showToast('Contact saved!');
-        }
+      emailValue.textContent = CONFIG.email;
+      phoneValue.textContent = CONFIG.phone.replace(/(\+60)(\d{2})(\d+)/, '$1 $2 $3');
+      
+      // Extract domain from website
+      const websiteDomain = CONFIG.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+      websiteValue.textContent = websiteDomain;
 
-        function generateQRCode() {
-            const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = '';
-            
-            const vcard = generateVCard();
-            
-            new QRCode(qrContainer, {
-                text: vcard,
-                width: 160,
-                height: 160,
-                colorDark: '#0a0a0f',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.M
-            });
-        }
+      // Extract city from location
+      const locationCity = CONFIG.location.split(',')[0].trim();
+      locationValue.textContent = locationCity;
 
-        function setupFlipCard() {
-            const cardWrapper = document.getElementById('cardWrapper');
-            const cardInner = document.getElementById('cardInner');
-            
-            cardWrapper.addEventListener('click', function() {
-                cardInner.classList.toggle('flipped');
-            });
-        }
+      // Footer with company and location
+      footerText.textContent = `© ${companyShort.toUpperCase()} — ${locationCity.toUpperCase()}`;
 
-        function setupActionButtons() {
-            document.getElementById('saveBtn').addEventListener('click', function(e) {
-                e.stopPropagation();
-                downloadVCard();
-            });
+      // Generate initials for stamp
+      const initials = nameParts
+        .filter((part, idx) => idx === 0 || idx === nameParts.length - 1)
+        .map(part => part[0])
+        .join('')
+        .toUpperCase();
+      stampInitials.textContent = initials;
+    }
 
-            document.getElementById('whatsappBtn').addEventListener('click', function(e) {
-                e.stopPropagation();
-                const message = encodeURIComponent(CONFIG.whatsapp_message);
-                const phone = CONFIG.phone.replace(/\D/g, '');
-                const url = `https://wa.me/${phone}?text=${message}`;
-                window.open(url, '_blank');
-            });
+    // Card flip functionality
+    let isFlipped = false;
+    cardWrapper.addEventListener('click', function(e) {
+      // Don't flip if clicking on contact rows
+      if (e.target.closest('.contact-row')) {
+        return;
+      }
+      isFlipped = !isFlipped;
+      cardInner.classList.toggle('flipped', isFlipped);
+    });
 
-            document.getElementById('copyBtn').addEventListener('click', function(e) {
-                e.stopPropagation();
-                const currentUrl = window.location.href;
-                
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(currentUrl).then(function() {
-                        showToast('Link copied!');
-                    }).catch(function() {
-                        fallbackCopyToClipboard(currentUrl);
-                    });
-                } else {
-                    fallbackCopyToClipboard(currentUrl);
-                }
-            });
+    // Contact row actions
+    document.getElementById('emailRow').addEventListener('click', function(e) {
+      e.stopPropagation();
+      window.location.href = `mailto:${CONFIG.email}`;
+    });
 
-            document.getElementById('shareBtn').addEventListener('click', function(e) {
-                e.stopPropagation();
-                
-                if (navigator.share) {
-                    navigator.share({
-                        title: `${CONFIG.name} - ${CONFIG.title}`,
-                        text: `Check out ${CONFIG.name}'s digital business card`,
-                        url: window.location.href
-                    }).catch(function(error) {
-                        if (error.name !== 'AbortError') {
-                            console.log('Share failed:', error);
-                        }
-                    });
-                } else {
-                    const currentUrl = window.location.href;
-                    fallbackCopyToClipboard(currentUrl);
-                    showToast('Link copied! Share manually.');
-                }
-            });
-        }
+    document.getElementById('phoneRow').addEventListener('click', function(e) {
+      e.stopPropagation();
+      window.location.href = `tel:${CONFIG.phone}`;
+    });
 
-        function fallbackCopyToClipboard(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            
-            try {
-                document.execCommand('copy');
-                showToast('Link copied!');
-            } catch (err) {
-                showToast('Copy failed. Please try again.');
-            }
-            
-            document.body.removeChild(textarea);
-        }
+    document.getElementById('websiteRow').addEventListener('click', function(e) {
+      e.stopPropagation();
+      window.open(CONFIG.website, '_blank');
+    });
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            
-            setTimeout(function() {
-                toast.classList.remove('show');
-            }, 2000);
-        }
+    document.getElementById('locationRow').addEventListener('click', function(e) {
+      e.stopPropagation();
+      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONFIG.location)}`;
+      window.open(mapsUrl, '_blank');
+    });
 
-        function updateStatusBadge() {
-            const hour = new Date().getHours();
-            const badge = document.getElementById('statusBadge');
-            
-            if (hour >= 9 && hour < 18) {
-                badge.textContent = 'AVAILABLE NOW';
-            } else if (hour >= 18 && hour < 22) {
-                badge.textContent = 'EVENING HOURS';
-            } else {
-                badge.textContent = 'AVAILABLE FOR WORK';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            initCard();
-            generateQRCode();
-            setupFlipCard();
-            setupActionButtons();
-            updateStatusBadge();
-            
-            setInterval(updateStatusBadge, 60000);
+    // Generate QR Code
+    function generateQRCode() {
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = '';
+      
+      try {
+        new QRCode(qrContainer, {
+          text: CONFIG.website,
+          width: 80,
+          height: 80,
+          colorDark: "#FFFBF0",
+          colorLight: "#0a0a0f",
+          correctLevel: QRCode.CorrectLevel.M
         });
+      } catch (error) {
+        console.error('QR code generation failed:', error);
+        qrContainer.innerHTML = '<div style="width:80px;height:80px;background:#FF5C39;"></div>';
+      }
+    }
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'f' || e.key === 'F' || e.key === ' ') {
-                e.preventDefault();
-                document.getElementById('cardInner').classList.toggle('flipped');
+    // Generate vCard
+    function generateVCard() {
+      const vcard = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        `FN:${CONFIG.name}`,
+        `ORG:${CONFIG.company}`,
+        `TITLE:${CONFIG.title}`,
+        `TEL;TYPE=CELL:${CONFIG.phone}`,
+        `EMAIL:${CONFIG.email}`,
+        `URL:${CONFIG.website}`,
+        `ADR:;;${CONFIG.location};;;;`,
+        `NOTE:${CONFIG.bio}`,
+        'END:VCARD'
+      ].join('\n');
+
+      return vcard;
+    }
+
+    // Download vCard
+    document.getElementById('downloadVcard').addEventListener('click', function() {
+      const vcard = generateVCard();
+      const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${CONFIG.name.replace(/\s+/g, '_')}.vcf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast('CONTACT DOWNLOADED');
+    });
+
+    // WhatsApp
+    document.getElementById('whatsappBtn').addEventListener('click', function() {
+      const phoneClean = CONFIG.phone.replace(/[^\d]/g, '');
+      const message = encodeURIComponent(CONFIG.whatsapp_message);
+      const whatsappUrl = `https://wa.me/${phoneClean}?text=${message}`;
+      window.open(whatsappUrl, '_blank');
+    });
+
+    // Copy Link
+    document.getElementById('copyLinkBtn').addEventListener('click', function() {
+      const currentUrl = window.location.href;
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(currentUrl)
+          .then(() => {
+            showToast('LINK COPIED');
+          })
+          .catch(() => {
+            fallbackCopyText(currentUrl);
+          });
+      } else {
+        fallbackCopyText(currentUrl);
+      }
+    });
+
+    function fallbackCopyText(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast('LINK COPIED');
+      } catch (err) {
+        showToast('COPY FAILED');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    // Share
+    document.getElementById('shareBtn').addEventListener('click', function() {
+      const shareData = {
+        title: `${CONFIG.name} - ${CONFIG.title}`,
+        text: `Connect with ${CONFIG.name} from ${CONFIG.company}`,
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        navigator.share(shareData)
+          .then(() => {
+            showToast('SHARED');
+          })
+          .catch((err) => {
+            if (err.name !== 'AbortError') {
+              console.error('Share failed:', err);
             }
-        });
+          });
+      } else {
+        // Fallback: copy to clipboard
+        fallbackCopyText(window.location.href);
+      }
+    });
 
-        window.addEventListener('orientationchange', function() {
-            setTimeout(function() {
-                const qrContainer = document.getElementById('qrcode');
-                if (qrContainer.innerHTML === '') {
-                    generateQRCode();
-                }
-            }, 300);
-        });
-    </script>
+    // Toast notification
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      populateCard();
+      generateQRCode();
+    });
+  </script>
 </body>
 </html>

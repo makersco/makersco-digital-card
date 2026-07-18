@@ -1,18 +1,9 @@
-<!-- PDF Export Module -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
+<!-- PDF Export Module - Add to card page -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-  .pdf-export-wrapper {
-    margin: 32px 0;
-    font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-
-  .pdf-download-btn {
+  .pdf-export-btn {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -20,138 +11,223 @@
     gap: 8px;
     min-height: 44px;
     padding: 12px 24px;
-    background: linear-gradient(135deg, #3b4ecc 0%, #5865f2 100%);
-    color: #ffffff;
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 15px;
     font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
     border: none;
-    border-radius: 20px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 240ms cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(59, 78, 204, 0.24);
-    outline: none;
+    transition: transform 200ms, opacity 200ms;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .pdf-download-btn:hover:not(:disabled) {
+  .pdf-export-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(59, 78, 204, 0.32);
+    opacity: 0.9;
   }
 
-  .pdf-download-btn:active:not(:disabled) {
+  .pdf-export-btn:active {
     transform: translateY(0);
   }
 
-  .pdf-download-btn:disabled {
-    opacity: 0.6;
+  .pdf-export-btn:disabled {
     cursor: not-allowed;
+    opacity: 0.6;
   }
 
-  .pdf-spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
+  .pdf-export-btn__icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 200ms;
+  }
+
+  .pdf-export-btn:hover .pdf-export-btn__icon {
+    transform: scale(1.1);
+  }
+
+  .pdf-export-btn__spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top-color: #ffffff;
     border-radius: 50%;
-    animation: pdf-spin 600ms linear infinite;
+    animation: spin 800ms linear infinite;
   }
 
-  @keyframes pdf-spin {
+  .pdf-export-btn--loading .pdf-export-btn__spinner {
+    display: block;
+  }
+
+  .pdf-export-btn--loading .pdf-export-btn__icon {
+    display: none;
+  }
+
+  @keyframes spin {
     to { transform: rotate(360deg); }
   }
 
-  .pdf-btn-text {
-    display: inline-block;
-  }
-
-  @media (max-width: 380px) {
-    .pdf-download-btn {
+  @media (max-width: 768px) {
+    .pdf-export-btn {
       width: 100%;
-      padding: 12px 20px;
+      font-size: 16px;
+      padding: 16px 24px;
     }
   }
 </style>
 
-<div class="pdf-export-wrapper">
-  <button class="pdf-download-btn" id="pdfDownloadBtn" onclick="exportCardToPDF()">
-    <span class="pdf-btn-text">Download PDF</span>
-  </button>
-</div>
+<button class="pdf-export-btn" id="pdfExportBtn" type="button">
+  <svg class="pdf-export-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  <div class="pdf-export-btn__spinner"></div>
+  <span>Download PDF</span>
+</button>
 
 <script>
-async function exportCardToPDF() {
-  const btn = document.getElementById('pdfDownloadBtn');
-  const btnText = btn.querySelector('.pdf-btn-text');
-  const originalText = btnText.textContent;
-  
-  // Start loading state
-  btn.disabled = true;
-  btnText.textContent = 'Generating...';
-  btn.insertAdjacentHTML('afterbegin', '<span class="pdf-spinner"></span>');
-  
-  try {
+(function() {
+  'use strict';
+
+  const btn = document.getElementById('pdfExportBtn');
+  if (!btn) return;
+
+  // Extract contact data from card
+  function getCardData() {
+    const card = document.querySelector('.card-wrapper');
+    if (!card) return null;
+
+    const getName = () => {
+      const nameEl = card.querySelector('[data-field="name"]') || 
+                     card.querySelector('.name') ||
+                     card.querySelector('h1');
+      return nameEl ? nameEl.textContent.trim() : 'business-card';
+    };
+
+    const getPhone = () => {
+      const phoneEl = card.querySelector('[data-field="phone"]') ||
+                      card.querySelector('a[href^="tel:"]');
+      return phoneEl ? phoneEl.textContent.trim().replace(/\s+/g, '') : null;
+    };
+
+    const getEmail = () => {
+      const emailEl = card.querySelector('[data-field="email"]') ||
+                      card.querySelector('a[href^="mailto:"]');
+      return emailEl ? emailEl.textContent.trim() : null;
+    };
+
+    const getWebsite = () => {
+      const websiteEl = card.querySelector('[data-field="website"]') ||
+                        card.querySelector('a[href^="http"]');
+      if (!websiteEl) return null;
+      const href = websiteEl.getAttribute('href');
+      return href && !href.includes('mailto:') && !href.includes('tel:') ? href : null;
+    };
+
+    return {
+      name: getName(),
+      phone: getPhone(),
+      email: getEmail(),
+      website: getWebsite()
+    };
+  }
+
+  // Generate safe filename
+  function getFilename(name) {
+    const safe = name.toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
+    return `${safe}-card.pdf`;
+  }
+
+  // Main export function
+  async function exportToPDF() {
     const cardWrapper = document.querySelector('.card-wrapper');
     if (!cardWrapper) {
-      throw new Error('Card wrapper not found');
+      console.error('Card wrapper not found');
+      return;
     }
 
-    // Capture card as canvas
-    const canvas = await html2canvas(cardWrapper, {
-      scale: 3,
-      useCORS: true,
-      backgroundColor: null,
-      logging: false,
-      imageTimeout: 0
-    });
-
-    // Business card dimensions: 85mm × 54mm at 300 DPI
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
-      orientation: 'landscape',
-      unit: 'mm',
-      format: [85, 54]
-    });
-
-    const imgData = canvas.toDataURL('image/png', 1.0);
-    pdf.addImage(imgData, 'PNG', 0, 0, 85, 54, '', 'FAST');
-
-    // Extract contact info and add clickable links
-    const phone = document.querySelector('[href^="tel:"]')?.getAttribute('href')?.replace('tel:', '');
-    const email = document.querySelector('[href^="mailto:"]')?.getAttribute('href')?.replace('mailto:', '');
-    const website = document.querySelector('a[href*="://"]')?.getAttribute('href');
-
-    // Add invisible clickable areas (approximate positions - adjust based on your layout)
-    if (phone) {
-      pdf.link(10, 35, 30, 8, { url: `tel:${phone}` });
-    }
-    if (email) {
-      pdf.link(10, 44, 35, 8, { url: `mailto:${email}` });
-    }
-    if (website) {
-      pdf.link(50, 44, 30, 8, { url: website });
+    const cardData = getCardData();
+    if (!cardData) {
+      console.error('Could not extract card data');
+      return;
     }
 
-    // Extract name for filename
-    const nameElement = document.querySelector('[data-field="fullName"], .name, h1, h2');
-    let filename = 'business-card.pdf';
-    
-    if (nameElement) {
-      const fullName = nameElement.textContent.trim().toLowerCase();
-      filename = fullName.replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') + '-card.pdf';
+    // Set loading state
+    btn.disabled = true;
+    btn.classList.add('pdf-export-btn--loading');
+
+    try {
+      // Capture card as canvas
+      const canvas = await html2canvas(cardWrapper, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: null,
+        logging: false,
+        imageTimeout: 0,
+        removeContainer: true
+      });
+
+      // Business card dimensions in mm
+      const cardWidth = 85;
+      const cardHeight = 54;
+
+      // Initialize jsPDF
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [cardWidth, cardHeight],
+        compress: true
+      });
+
+      // Calculate image dimensions to fit card
+      const imgWidth = cardWidth;
+      const imgHeight = cardHeight;
+
+      // Add canvas as image
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+
+      // Add clickable links
+      const linkHeight = 8;
+      let linkY = cardHeight - linkHeight * 3;
+
+      if (cardData.phone) {
+        pdf.link(2, linkY, cardWidth - 4, linkHeight, { url: `tel:${cardData.phone}` });
+        linkY += linkHeight;
+      }
+
+      if (cardData.email) {
+        pdf.link(2, linkY, cardWidth - 4, linkHeight, { url: `mailto:${cardData.email}` });
+        linkY += linkHeight;
+      }
+
+      if (cardData.website) {
+        pdf.link(2, linkY, cardWidth - 4, linkHeight, { url: cardData.website });
+      }
+
+      // Download PDF
+      const filename = getFilename(cardData.name);
+      pdf.save(filename);
+
+    } catch (error) {
+      console.error('PDF export failed:', error);
+      alert('Failed to export PDF. Please try again.');
+    } finally {
+      // Reset button state
+      btn.disabled = false;
+      btn.classList.remove('pdf-export-btn--loading');
     }
-
-    // Download PDF
-    pdf.save(filename);
-
-  } catch (error) {
-    console.error('PDF export failed:', error);
-    alert('Failed to generate PDF. Please try again.');
-  } finally {
-    // Reset button state
-    const spinner = btn.querySelector('.pdf-spinner');
-    if (spinner) spinner.remove();
-    btnText.textContent = originalText;
-    btn.disabled = false;
   }
-}
+
+  // Attach event listener
+  btn.addEventListener('click', exportToPDF);
+})();
 </script>

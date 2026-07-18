@@ -2,6 +2,16 @@ export function initBookingLocation(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
+  const CONFIG = window.CONFIG || {};
+  
+  const hasBooking = Boolean(CONFIG.booking_url);
+  const hasLocation = Boolean(CONFIG.location);
+  
+  if (!hasBooking && !hasLocation) {
+    container.style.display = 'none';
+    return;
+  }
+
   const wrapper = document.createElement('div');
   wrapper.style.cssText = `
     display: flex;
@@ -10,78 +20,105 @@ export function initBookingLocation(containerId) {
     width: 100%;
   `;
 
-  const accentColor = getComputedStyle(document.documentElement)
-    .getPropertyValue('--accent-color')
-    .trim() || '#6366f1';
-
-  if (window.CONFIG.booking_url) {
-    const bookingBtn = createButton(
-      '📅',
-      'Book a Meeting',
-      window.CONFIG.booking_url,
-      accentColor
-    );
+  if (hasBooking) {
+    const bookingBtn = createButton({
+      icon: '📅',
+      text: 'Book a Meeting',
+      accentColor: CONFIG.accent_color || '#3b82f6',
+      onClick: () => window.open(CONFIG.booking_url, '_blank', 'noopener,noreferrer')
+    });
     wrapper.appendChild(bookingBtn);
   }
 
-  if (window.CONFIG.location) {
-    const mapsUrl = window.CONFIG.maps_url || 
-      `https://maps.google.com/?q=${encodeURIComponent(window.CONFIG.location)}`;
-    const locationBtn = createButton(
-      '📍',
-      window.CONFIG.location,
-      mapsUrl,
-      '#10b981'
-    );
+  if (hasLocation) {
+    const locationUrl = CONFIG.maps_url || `https://maps.google.com/?q=${encodeURIComponent(CONFIG.location)}`;
+    const locationBtn = createButton({
+      icon: '📍',
+      text: CONFIG.location,
+      accentColor: '#10b981',
+      onClick: () => window.open(locationUrl, '_blank', 'noopener,noreferrer')
+    });
     wrapper.appendChild(locationBtn);
   }
 
-  if (wrapper.children.length > 0) {
-    container.appendChild(wrapper);
-  }
+  container.appendChild(wrapper);
 }
 
-function createButton(icon, label, url, baseColor) {
-  const btn = document.createElement('a');
-  btn.href = url;
-  btn.target = '_blank';
-  btn.rel = 'noopener noreferrer';
+function createButton({ icon, text, accentColor, onClick }) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.setAttribute('aria-label', text);
   
-  const rgb = hexToRgb(baseColor);
+  const rgb = hexToRgb(accentColor);
+  const bgColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.15)`;
+  const borderColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.4)`;
+  const hoverBg = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.25)`;
   
   btn.style.cssText = `
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
     width: 100%;
     min-height: 48px;
     padding: 12px 16px;
     border-radius: 12px;
-    background: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.15);
-    border: 1px solid rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.4);
-    color: ${baseColor};
-    font-weight: 600;
+    background: ${bgColor};
+    border: 1px solid ${borderColor};
+    color: inherit;
+    font-family: inherit;
     font-size: 15px;
-    text-decoration: none;
-    transition: transform 200ms, opacity 200ms;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     cursor: pointer;
+    transition: opacity 200ms ease, transform 200ms ease;
+    -webkit-tap-highlight-color: transparent;
   `;
 
-  btn.innerHTML = `
-    <span style="font-size: 18px; line-height: 1;">${icon}</span>
-    <span>${label}</span>
+  const iconSpan = document.createElement('span');
+  iconSpan.textContent = icon;
+  iconSpan.style.cssText = `
+    font-size: 18px;
+    line-height: 1;
   `;
+
+  const textSpan = document.createElement('span');
+  textSpan.textContent = text;
+  textSpan.style.cssText = `
+    line-height: 1.4;
+  `;
+
+  btn.appendChild(iconSpan);
+  btn.appendChild(textSpan);
 
   btn.addEventListener('mouseenter', () => {
-    btn.style.transform = 'translateY(-2px)';
-    btn.style.opacity = '0.9';
+    btn.style.background = hoverBg;
   });
 
   btn.addEventListener('mouseleave', () => {
-    btn.style.transform = 'translateY(0)';
+    btn.style.background = bgColor;
+  });
+
+  btn.addEventListener('mousedown', () => {
+    btn.style.transform = 'scale(0.98)';
+    btn.style.opacity = '0.9';
+  });
+
+  btn.addEventListener('mouseup', () => {
+    btn.style.transform = 'scale(1)';
     btn.style.opacity = '1';
   });
+
+  btn.addEventListener('touchstart', () => {
+    btn.style.transform = 'scale(0.98)';
+    btn.style.opacity = '0.9';
+  }, { passive: true });
+
+  btn.addEventListener('touchend', () => {
+    btn.style.transform = 'scale(1)';
+    btn.style.opacity = '1';
+  }, { passive: true });
+
+  btn.addEventListener('click', onClick);
 
   return btn;
 }

@@ -4,48 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Business Card - Vibrant Bold</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             /* Surfaces */
-            --bg: #0d0d0d;
-            --card-back: #1a1a1a;
-            --surface-elev: #1f1f1f;
-            --surface-line: #262626;
+            --bg-page: #0d0d0d;
+            --bg-card-back: #1a1a1a;
+            --bg-elevated: #1f1f22;
+            --bg-chip: rgba(255, 255, 255, 0.06);
 
             /* Accent system */
             --accent: #EC4899;
-            --accent-deep: #BE1E6E;
+            --accent-deep: #BE2D7E;
             --accent-soft: #F472B6;
-            --accent-ink: #FCE7F3;
+            --accent-glow: rgba(236, 72, 153, 0.28);
 
-            /* Supporting hues */
-            --amber: #F59E0B;
-            --violet: #7C3AED;
+            /* Front gradient */
+            --grad-front: linear-gradient(135deg, #EC4899 0%, #C026A8 55%, #7C2D8E 100%);
+            --grad-front-overlay: radial-gradient(120% 80% at 15% 0%, rgba(255,255,255,0.18), transparent 60%);
 
             /* Text */
-            --text-hi: #FAFAFA;
-            --text-mid: #A3A3A3;
-            --text-lo: #737373;
-            --text-on-accent: #1a1a1a;
+            --text-primary: #FAFAFA;
+            --text-secondary: rgba(250, 250, 250, 0.72);
+            --text-muted: rgba(250, 250, 250, 0.52);
+            --text-on-accent: #FFFFFF;
+            --text-on-back: #F5F5F5;
 
-            /* Card front gradient */
-            --grad-front: linear-gradient(135deg, #EC4899 0%, #BE1E6E 55%, #7C3AED 100%);
+            /* Strokes & dividers */
+            --hairline: rgba(255, 255, 255, 0.08);
+            --hairline-back: rgba(255, 255, 255, 0.06);
+
+            /* Status / tag */
+            --tag-bg: rgba(255, 255, 255, 0.14);
+            --tag-text: #FFFFFF;
+            --tag-live-bg: #16A34A;
 
             /* Motion */
             --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
             --ease-snap: cubic-bezier(0.34, 1.56, 0.64, 1);
-            --dur-fast: 160ms;
+            --dur-fast: 140ms;
             --dur-base: 220ms;
-            --dur-flip: 280ms;
+            --dur-flip: 560ms;
 
-            /* Radius */
-            --r-sm: 8px;
-            --r-md: 16px;
-            --r-lg: 24px;
-            --r-pill: 999px;
-            --r-badge: 20px;
+            /* Radii */
+            --r-card: 28px;
+            --r-button: 14px;
+            --r-tag: 20px;
+            --r-chip: 12px;
         }
 
         * {
@@ -56,47 +64,22 @@
 
         body {
             font-family: 'Outfit', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text-hi);
+            background: var(--bg-page);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 24px;
-            line-height: 1.5;
-        }
-
-        .container {
-            max-width: 480px;
-            width: 100%;
-            animation: fadeInUp var(--dur-flip) var(--ease-out);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            padding: 40px 20px;
         }
 
         .card-wrapper {
             width: 340px;
-            height: 540px;
+            height: 200px;
             perspective: 1000px;
             margin: 0 auto 32px;
             cursor: pointer;
-        }
-
-        @media (min-width: 768px) {
-            .card-wrapper {
-                width: 380px;
-                height: 580px;
-            }
         }
 
         .card-inner {
@@ -119,486 +102,615 @@
             height: 100%;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            border-radius: var(--r-lg);
-            overflow: hidden;
         }
 
-        .card-front {
+        .card-face--front {
             background: var(--grad-front);
+            border-radius: var(--r-card);
+            padding: 32px 24px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
         }
 
-        .card-back {
-            background: var(--card-back);
-            transform: rotateY(180deg);
-            padding: 32px 24px;
-            position: relative;
-        }
-
-        .card-back::after {
+        .card-face--front::before {
             content: "";
             position: absolute;
-            right: -16px;
-            bottom: -16px;
-            width: 128px;
-            height: 128px;
-            background-image: radial-gradient(var(--accent) 1.5px, transparent 2px);
-            background-size: 8px 8px;
-            opacity: 0.18;
+            inset: 0;
+            background: var(--grad-front-overlay);
             pointer-events: none;
         }
 
-        .front-badge {
+        .card-face--front::after {
+            content: "";
             position: absolute;
-            top: 24px;
-            left: 24px;
-            transform: rotate(-6deg);
-            background: var(--text-hi);
-            color: var(--accent-deep);
-            font-weight: 700;
-            font-size: 12px;
+            left: -10%;
+            bottom: 22%;
+            width: 120%;
+            height: 6px;
+            background: #FAFAFA;
+            opacity: 0.85;
+            transform: rotate(-8deg);
+            transform-origin: center;
+            transition: transform var(--dur-base) var(--ease-snap);
+        }
+
+        .card-wrapper:hover .card-face--front::after {
+            transform: rotate(-8deg) translateX(8px) scaleX(1.04);
+        }
+
+        .card-face--back {
+            background: var(--bg-card-back);
+            border-radius: var(--r-card);
+            padding: 24px 20px;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .front-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font: 700 11px/1.6 'Outfit';
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            padding: 4px 14px;
-            border-radius: var(--r-badge);
-            transition: transform var(--dur-fast) var(--ease-snap);
-            z-index: 10;
+            background: var(--tag-bg);
+            color: var(--tag-text);
         }
 
-        .front-badge:hover {
-            transform: rotate(-6deg) scale(1.05);
+        .tag--live {
+            background: var(--tag-live-bg);
         }
 
-        .front-name {
-            position: absolute;
-            top: 180px;
-            left: 24px;
-            right: 24px;
-            font-weight: 800;
-            font-size: 40px;
-            line-height: 0.92;
-            letter-spacing: -0.04em;
-            color: var(--text-hi);
-        }
-
-        @media (min-width: 768px) {
-            .front-name {
-                font-size: 56px;
-            }
-        }
-
-        .front-role {
-            position: absolute;
-            top: 312px;
-            left: 24px;
-            right: 24px;
-            font-weight: 600;
-            font-size: 14px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--accent-ink);
-            opacity: 0.9;
-        }
-
-        @media (min-width: 768px) {
-            .front-role {
-                font-size: 16px;
-            }
-        }
-
-        .front-identity {
-            position: absolute;
-            bottom: 80px;
-            left: 24px;
-            right: 24px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .front-avatar {
-            width: 48px;
-            height: 48px;
+        .tag--live::before {
+            content: "";
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
-            background: var(--text-hi);
+            background: #FFFFFF;
+            animation: tag-pulse 1800ms ease-in-out infinite;
+        }
+
+        @keyframes tag-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #F472B6, #EC4899);
+            border: 2px solid rgba(255, 255, 255, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 20px;
-            color: var(--accent-deep);
-            flex-shrink: 0;
+            font: 800 24px/1 'Outfit';
+            color: var(--text-on-accent);
+            transition: transform var(--dur-base) var(--ease-out);
         }
 
-        .front-handle {
-            font-weight: 400;
-            font-size: 16px;
-            color: var(--text-hi);
+        .card-wrapper:hover .avatar {
+            transform: scale(1.04);
         }
 
-        .front-flip-hint {
-            position: absolute;
-            bottom: 24px;
-            right: 24px;
-            font-weight: 300;
-            font-size: 12px;
-            color: var(--text-hi);
-            opacity: 0.7;
+        .front-content {
+            position: relative;
+            z-index: 2;
+            margin-top: auto;
+            padding-bottom: 40px;
+        }
+
+        .hero-name {
+            font: 800 36px/1.1 'Outfit';
+            letter-spacing: -0.02em;
+            color: var(--text-on-accent);
+            margin-bottom: 8px;
+            text-wrap: balance;
+            max-width: 100%;
+        }
+
+        .hero-title {
+            font: 600 14px/1.3 'Outfit';
+            color: rgba(255, 255, 255, 0.84);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .hero-company {
+            font: 400 14px/1.3 'Outfit';
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .front-footer {
+            position: relative;
+            z-index: 2;
             display: flex;
             align-items: center;
-            gap: 4px;
-            animation: pulse 1400ms ease-in-out infinite;
+            gap: 8px;
+            font: 600 11px/1 'Outfit';
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            transition: transform var(--dur-base) var(--ease-out);
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
+        .card-wrapper:hover .front-footer {
+            transform: translateX(4px);
+        }
+
+        .back-header {
+            border-bottom: 1px solid var(--hairline-back);
+            padding-bottom: 16px;
+        }
+
+        .back-name {
+            font: 700 20px/1.3 'Outfit';
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .back-title {
+            font: 400 13px/1.4 'Outfit';
+            color: var(--text-muted);
         }
 
         .section-label {
-            font-weight: 600;
-            font-size: 11px;
-            letter-spacing: 0.16em;
+            font: 600 11px/1 'Outfit';
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: var(--text-mid);
-            margin-bottom: 8px;
-            position: relative;
-            padding-bottom: 8px;
+            color: var(--accent);
         }
 
-        .section-label::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 32px;
-            height: 2px;
-            background: var(--accent);
-        }
-
-        @media (min-width: 768px) {
-            .section-label {
-                font-size: 12px;
-            }
-        }
-
-        .contact-section {
-            margin-bottom: 32px;
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .contact-row {
             display: grid;
-            grid-template-columns: 36px 1fr 16px;
+            grid-template-columns: 36px 1fr 24px;
             align-items: center;
             gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--surface-line);
+            padding: 12px 8px;
             min-height: 44px;
-            transition: transform var(--dur-base) var(--ease-out);
+            border-radius: var(--r-chip);
+            transition: transform var(--dur-base) var(--ease-out),
+                        background-color var(--dur-fast) var(--ease-out);
             cursor: pointer;
-        }
-
-        .contact-row:hover {
-            transform: translateX(2px);
-        }
-
-        .contact-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--r-sm);
-            background: rgba(236, 72, 153, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-size: 18px;
-        }
-
-        .contact-label {
-            font-weight: 400;
-            font-size: 14px;
-            letter-spacing: -0.005em;
-            color: var(--text-hi);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 768px) {
-            .contact-label {
-                font-size: 15px;
-            }
-        }
-
-        .contact-chevron {
-            width: 14px;
-            height: 14px;
-            color: var(--text-lo);
-            transition: all var(--dur-base) var(--ease-out);
-        }
-
-        .contact-row:hover .contact-chevron {
-            color: var(--accent);
-            transform: translateX(4px);
-        }
-
-        .works-section {
-            margin-bottom: 24px;
-        }
-
-        .badge-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            border-radius: 20px;
-            padding: 2px 10px;
-            font-weight: 700;
-            font-size: 11px;
-            line-height: 1.6;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            background: rgba(236, 72, 153, 0.16);
-            color: var(--accent-soft);
-        }
-
-        .back-flip-hint {
-            position: absolute;
-            bottom: 24px;
-            left: 24px;
-            font-weight: 300;
-            font-size: 12px;
-            color: var(--text-mid);
-            opacity: 0.7;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .btn {
-            font-family: 'Outfit', system-ui, sans-serif;
-            font-weight: 700;
-            font-size: 15px;
-            line-height: 1;
-            letter-spacing: 0.02em;
-            padding: 14px 24px;
-            border-radius: var(--r-pill);
-            border: none;
-            min-height: 44px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: transform var(--dur-fast) var(--ease-snap);
             text-decoration: none;
         }
 
-        .btn:hover {
-            transform: scale(1.03);
+        @media (hover: hover) {
+            .contact-row:hover {
+                background: var(--bg-chip);
+                transform: translateX(4px);
+            }
+
+            .contact-row:hover .chev {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
-        .btn:active {
-            transform: scale(0.97);
+        .contact-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .contact-label {
+            font: 600 12px/1 'Outfit';
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .contact-value {
+            font: 400 15px/1.3 'Outfit';
+            color: var(--text-on-back);
+        }
+
+        .chev {
+            opacity: 0;
+            transform: translateX(-4px);
+            transition: opacity var(--dur-fast), transform var(--dur-fast);
+            color: var(--accent);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: auto;
         }
 
         .btn-primary {
             background: var(--accent);
             color: var(--text-on-accent);
+            font: 600 15px/1 'Outfit';
+            letter-spacing: 0.01em;
+            padding: 14px 20px;
+            min-height: 48px;
+            border-radius: var(--r-button);
+            border: none;
+            box-shadow: 0 4px 16px var(--accent-glow);
+            transition: transform var(--dur-base) var(--ease-out),
+                        background-color var(--dur-fast) var(--ease-out),
+                        box-shadow var(--dur-base) var(--ease-out);
+            cursor: pointer;
+            flex: 1;
+        }
+
+        @media (hover: hover) {
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                background: var(--accent-soft);
+                box-shadow: 0 8px 24px var(--accent-glow);
+            }
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+            background: var(--accent-deep);
+            box-shadow: 0 2px 8px var(--accent-glow);
         }
 
         .btn-secondary {
             background: transparent;
-            color: var(--text-hi);
-            border: 2px solid var(--text-hi);
+            color: var(--text-on-back);
+            font: 600 15px/1 'Outfit';
+            padding: 14px 20px;
+            min-height: 48px;
+            border-radius: var(--r-button);
+            border: 1.5px solid rgba(236, 72, 153, 0.55);
+            transition: transform var(--dur-base) var(--ease-out),
+                        background-color var(--dur-fast) var(--ease-out),
+                        border-color var(--dur-fast) var(--ease-out);
+            cursor: pointer;
+            flex: 1;
         }
 
-        .btn-secondary:hover {
-            background: var(--text-hi);
-            color: var(--bg);
+        @media (hover: hover) {
+            .btn-secondary:hover {
+                background: rgba(236, 72, 153, 0.10);
+                border-color: var(--accent);
+                transform: translateY(-2px);
+            }
         }
 
-        .btn-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .social-icons {
+            display: flex;
             gap: 12px;
+            justify-content: center;
+            margin-top: 4px;
         }
 
-        .qr-section {
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--surface-line);
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-chip);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform var(--dur-base) var(--ease-out),
+                        background-color var(--dur-fast) var(--ease-out);
+            color: var(--text-secondary);
+        }
+
+        @media (hover: hover) {
+            .social-btn:hover {
+                transform: scale(1.08);
+                background: rgba(236, 72, 153, 0.15);
+                color: var(--accent);
+            }
+        }
+
+        .external-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 340px;
+            margin: 0 auto;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            font: 600 15px/1 'Outfit';
+            padding: 14px 20px;
+            min-height: 48px;
+            border-radius: var(--r-button);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform var(--dur-base) var(--ease-out),
+                        background-color var(--dur-fast) var(--ease-out);
+        }
+
+        @media (hover: hover) {
+            .btn-whatsapp:hover {
+                background: #20BA55;
+                transform: translateY(-2px);
+            }
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            font: 600 15px/1 'Outfit';
+            padding: 14px 20px;
+            min-height: 48px;
+            border-radius: var(--r-button);
+            border: 1.5px solid var(--hairline);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform var(--dur-base) var(--ease-out),
+                        background-color var(--dur-fast) var(--ease-out),
+                        border-color var(--dur-fast) var(--ease-out);
+        }
+
+        @media (hover: hover) {
+            .btn-outline:hover {
+                background: var(--bg-chip);
+                border-color: var(--accent);
+                transform: translateY(-2px);
+            }
+        }
+
+        .qr-container {
+            width: 340px;
+            margin: 32px auto 0;
+            padding: 24px;
+            background: var(--bg-card-back);
+            border-radius: var(--r-card);
             text-align: center;
         }
 
         .qr-label {
-            font-weight: 600;
-            font-size: 12px;
+            font: 600 13px/1 'Outfit';
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: var(--text-mid);
+            color: var(--text-muted);
             margin-bottom: 16px;
         }
 
-        .qr-code {
+        #qrcode {
             display: inline-block;
             padding: 16px;
-            background: var(--text-hi);
-            border-radius: var(--r-md);
+            background: white;
+            border-radius: var(--r-chip);
         }
 
-        #qrcode canvas {
-            display: block;
-        }
-
-        .icon-phone::before { content: "📞"; }
-        .icon-email::before { content: "✉️"; }
-        .icon-web::before { content: "🌐"; }
-        .icon-location::before { content: "📍"; }
-        .icon-arrow::before { content: "→"; }
-        .icon-flip-right::before { content: "▶"; }
-        .icon-flip-left::before { content: "◀"; }
-
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--accent);
-            color: var(--text-on-accent);
-            padding: 12px 24px;
-            border-radius: var(--r-pill);
-            font-weight: 600;
-            font-size: 14px;
-            opacity: 0;
-            transition: all var(--dur-base) var(--ease-out);
-            z-index: 1000;
-            pointer-events: none;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        @media (max-width: 767px) {
-            .front-name {
-                top: 160px;
-                font-size: 36px;
+        @media (min-width: 768px) {
+            .hero-name {
+                font-size: 44px;
             }
-            .front-role {
-                top: 280px;
+
+            .hero-title {
+                font-size: 16px;
             }
         }
 
-        .visually-hidden {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
+        @media (max-width: 380px) {
+            .card-wrapper {
+                width: 100%;
+                max-width: 340px;
+            }
+
+            .external-actions {
+                width: 100%;
+                max-width: 340px;
+            }
+
+            .qr-container {
+                width: 100%;
+                max-width: 340px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card-wrapper" id="cardWrapper">
-            <div class="card-inner" id="cardInner">
-                <div class="card-face card-front">
-                    <div class="front-badge">AVAILABLE NOW</div>
-                    <div class="front-name" id="frontName"></div>
-                    <div class="front-role" id="frontRole"></div>
-                    <div class="front-identity">
-                        <div class="front-avatar" id="frontAvatar"></div>
-                        <div class="front-handle" id="frontHandle"></div>
+    <div class="card-wrapper" id="cardWrapper">
+        <div class="card-inner" id="cardInner">
+            <div class="card-face card-face--front">
+                <div class="front-header">
+                    <div class="tag tag--live">
+                        <span>OPEN NOW</span>
                     </div>
-                    <div class="front-flip-hint">
-                        <span>flip</span>
-                        <span class="icon-flip-right"></span>
+                    <div class="avatar" id="avatar">AF</div>
+                </div>
+                <div class="front-content">
+                    <div class="hero-name" id="heroName">Ahmad Faris</div>
+                    <div class="hero-title" id="heroTitle">Founder & CEO</div>
+                    <div class="hero-company" id="heroCompany">Pixel Reka Sdn Bhd</div>
+                </div>
+                <div class="front-footer">
+                    <span>TAP TO CONNECT</span>
+                    <span>→</span>
+                </div>
+            </div>
+
+            <div class="card-face card-face--back">
+                <div class="back-header">
+                    <div class="back-name" id="backName">Ahmad Faris bin Razak</div>
+                    <div class="back-title" id="backTitle">Founder & CEO</div>
+                </div>
+
+                <div class="section-label">CONNECT</div>
+
+                <div class="contact-list">
+                    <a href="#" class="contact-row" id="phoneRow">
+                        <div class="contact-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-label">PHONE</div>
+                            <div class="contact-value" id="phoneValue">+60 12 345 6789</div>
+                        </div>
+                        <div class="chev">→</div>
+                    </a>
+
+                    <a href="#" class="contact-row" id="whatsappRow">
+                        <div class="contact-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-label">WHATSAPP</div>
+                            <div class="contact-value" id="whatsappValue">+60 12 345 6789</div>
+                        </div>
+                        <div class="chev">→</div>
+                    </a>
+
+                    <a href="#" class="contact-row" id="emailRow">
+                        <div class="contact-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-label">EMAIL</div>
+                            <div class="contact-value" id="emailValue">faris@pixelreka.com.my</div>
+                        </div>
+                        <div class="chev">→</div>
+                    </a>
+
+                    <a href="#" class="contact-row" id="websiteRow">
+                        <div class="contact-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-label">WEBSITE</div>
+                            <div class="contact-value" id="websiteValue">pixelreka.com.my</div>
+                        </div>
+                        <div class="chev">→</div>
+                    </a>
+
+                    <div class="contact-row">
+                        <div class="contact-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-label">LOCATION</div>
+                            <div class="contact-value" id="locationValue">Kuala Lumpur, Malaysia</div>
+                        </div>
+                        <div class="chev">→</div>
                     </div>
                 </div>
 
-                <div class="card-face card-back">
-                    <div class="contact-section">
-                        <div class="section-label">Contact</div>
-                        <div class="contact-row" id="phoneRow">
-                            <div class="contact-icon icon-phone"></div>
-                            <div class="contact-label" id="phoneLabel"></div>
-                            <div class="contact-chevron icon-arrow"></div>
-                        </div>
-                        <div class="contact-row" id="emailRow">
-                            <div class="contact-icon icon-email"></div>
-                            <div class="contact-label" id="emailLabel"></div>
-                            <div class="contact-chevron icon-arrow"></div>
-                        </div>
-                        <div class="contact-row" id="websiteRow">
-                            <div class="contact-icon icon-web"></div>
-                            <div class="contact-label" id="websiteLabel"></div>
-                            <div class="contact-chevron icon-arrow"></div>
-                        </div>
-                        <div class="contact-row" id="locationRow">
-                            <div class="contact-icon icon-location"></div>
-                            <div class="contact-label" id="locationLabel"></div>
-                            <div class="contact-chevron icon-arrow"></div>
-                        </div>
-                    </div>
-
-                    <div class="works-section">
-                        <div class="section-label">What I Do</div>
-                        <div class="badge-group" id="badgeGroup"></div>
-                    </div>
-
-                    <div class="back-flip-hint">
-                        <span class="icon-flip-left"></span>
-                        <span>flip</span>
-                    </div>
+                <div class="action-buttons">
+                    <button class="btn-primary" id="saveContactBtn">Save Contact</button>
+                    <button class="btn-secondary" id="shareBtn">Share</button>
                 </div>
-            </div>
-        </div>
 
-        <div class="actions">
-            <a href="#" class="btn btn-primary" id="whatsappBtn">
-                💬 WhatsApp Me
-            </a>
-            <div class="btn-row">
-                <button class="btn btn-secondary" id="copyBtn">
-                    📋 Copy Link
-                </button>
-                <button class="btn btn-secondary" id="shareBtn">
-                    📤 Share
-                </button>
-            </div>
-            <button class="btn btn-secondary" id="downloadBtn">
-                💾 Save Contact
-            </button>
-        </div>
-
-        <div class="qr-section">
-            <div class="qr-label">Scan to Connect</div>
-            <div class="qr-code">
-                <div id="qrcode"></div>
+                <div class="social-icons">
+                    <button class="social-btn" id="linkedinBtn" title="LinkedIn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </button>
+                    <button class="social-btn" id="twitterBtn" title="Twitter">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                        </svg>
+                    </button>
+                    <button class="social-btn" id="instagramBtn" title="Instagram">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+                        </svg>
+                    </button>
+                    <button class="social-btn" id="facebookBtn" title="Facebook">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                    </button>
+                    <button class="social-btn" id="githubBtn" title="GitHub">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <div class="external-actions">
+        <button class="btn-whatsapp" id="externalWhatsappBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            <span>Message on WhatsApp</span>
+        </button>
+        
+        <button class="btn-outline" id="copyLinkBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            <span>Copy Link</span>
+        </button>
+
+        <button class="btn-outline" id="shareCardBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Share Card</span>
+        </button>
+    </div>
+
+    <div class="qr-container">
+        <div class="qr-label">Scan QR Code</div>
+        <div id="qrcode"></div>
+    </div>
 
     <script>
         const CONFIG = {
@@ -611,124 +723,70 @@
             location: "Kuala Lumpur, Malaysia",
             bio: "Building digital solutions for Malaysian SMEs",
             color: "#EC4899",
-            whatsapp_message: "Hi Faris, I found your digital card!",
-            works_with: ["SMEs", "Startups", "Brands"]
+            whatsapp_message: "Hi Faris, I found your digital card!"
         };
 
         // Initialize card
-        function initCard() {
-            // Front face
+        function initializeCard() {
+            // Set avatar initials
             const nameParts = CONFIG.name.split(' ');
-            const firstName = nameParts[0];
-            const lastName = nameParts.slice(1).join(' ');
-            document.getElementById('frontName').innerHTML = `${firstName}<br>${lastName}`;
-            document.getElementById('frontRole').textContent = `${CONFIG.title} · ${CONFIG.company}`;
-            
-            // Avatar with initials
-            const initials = CONFIG.name.split(' ').map(n => n[0]).join('').slice(0, 2);
-            document.getElementById('frontAvatar').textContent = initials;
-            
-            // Handle/website
-            const websiteDisplay = CONFIG.website.replace('https://', '').replace('http://', '');
-            document.getElementById('frontHandle').textContent = websiteDisplay;
+            const initials = nameParts[0][0] + (nameParts[1] ? nameParts[1][0] : '');
+            document.getElementById('avatar').textContent = initials.toUpperCase();
 
-            // Back face - Contact
-            document.getElementById('phoneLabel').textContent = CONFIG.phone;
-            document.getElementById('emailLabel').textContent = CONFIG.email;
-            document.getElementById('websiteLabel').textContent = websiteDisplay;
-            document.getElementById('locationLabel').textContent = CONFIG.location;
+            // Set front content
+            document.getElementById('heroName').textContent = nameParts[0] + ' ' + (nameParts[1] || '');
+            document.getElementById('heroTitle').textContent = CONFIG.title;
+            document.getElementById('heroCompany').textContent = CONFIG.company;
 
-            // Works with badges
-            const badgeGroup = document.getElementById('badgeGroup');
-            CONFIG.works_with.forEach(item => {
-                const badge = document.createElement('span');
-                badge.className = 'badge';
-                badge.textContent = item;
-                badgeGroup.appendChild(badge);
+            // Set back content
+            document.getElementById('backName').textContent = CONFIG.name;
+            document.getElementById('backTitle').textContent = CONFIG.title;
+
+            // Set contact values
+            document.getElementById('phoneValue').textContent = CONFIG.phone.replace(/(\+60)(\d{2})(\d+)/, '$1 $2 $3');
+            document.getElementById('whatsappValue').textContent = CONFIG.phone.replace(/(\+60)(\d{2})(\d+)/, '$1 $2 $3');
+            document.getElementById('emailValue').textContent = CONFIG.email;
+            document.getElementById('websiteValue').textContent = CONFIG.website.replace('https://', '');
+            document.getElementById('locationValue').textContent = CONFIG.location;
+
+            // Set contact links
+            document.getElementById('phoneRow').href = `tel:${CONFIG.phone}`;
+            document.getElementById('whatsappRow').href = `https://wa.me/${CONFIG.phone.replace(/\+/g, '')}?text=${encodeURIComponent(CONFIG.whatsapp_message)}`;
+            document.getElementById('emailRow').href = `mailto:${CONFIG.email}`;
+            document.getElementById('websiteRow').href = CONFIG.website;
+
+            // Generate QR code
+            const currentUrl = window.location.href;
+            new QRCode(document.getElementById('qrcode'), {
+                text: currentUrl,
+                width: 160,
+                height: 160,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
             });
         }
 
-        // Flip card
+        // Card flip functionality
         const cardWrapper = document.getElementById('cardWrapper');
         const cardInner = document.getElementById('cardInner');
-        
-        cardWrapper.addEventListener('click', () => {
+
+        cardWrapper.addEventListener('click', function() {
             cardInner.classList.toggle('flipped');
         });
 
-        // Contact row clicks
-        document.getElementById('phoneRow').addEventListener('click', (e) => {
-            e.stopPropagation();
-            window.location.href = `tel:${CONFIG.phone}`;
-        });
-
-        document.getElementById('emailRow').addEventListener('click', (e) => {
-            e.stopPropagation();
-            window.location.href = `mailto:${CONFIG.email}`;
-        });
-
-        document.getElementById('websiteRow').addEventListener('click', (e) => {
-            e.stopPropagation();
-            window.open(CONFIG.website, '_blank');
-        });
-
-        document.getElementById('locationRow').addEventListener('click', (e) => {
-            e.stopPropagation();
-            const locationQuery = encodeURIComponent(CONFIG.location);
-            window.open(`https://www.google.com/maps/search/?api=1&query=${locationQuery}`, '_blank');
-        });
-
-        // WhatsApp
-        document.getElementById('whatsappBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            const phoneClean = CONFIG.phone.replace(/\+/g, '').replace(/\s/g, '');
-            const message = encodeURIComponent(CONFIG.whatsapp_message);
-            window.open(`https://wa.me/${phoneClean}?text=${message}`, '_blank');
-        });
-
-        // Copy link
-        document.getElementById('copyBtn').addEventListener('click', () => {
-            const currentUrl = window.location.href;
-            navigator.clipboard.writeText(currentUrl).then(() => {
-                showToast('Link copied to clipboard!');
-            }).catch(() => {
-                showToast('Failed to copy link');
-            });
-        });
-
-        // Share
-        document.getElementById('shareBtn').addEventListener('click', async () => {
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: `${CONFIG.name} - ${CONFIG.title}`,
-                        text: CONFIG.bio,
-                        url: window.location.href
-                    });
-                } catch (err) {
-                    if (err.name !== 'AbortError') {
-                        showToast('Failed to share');
-                    }
-                }
-            } else {
-                const currentUrl = window.location.href;
-                navigator.clipboard.writeText(currentUrl).then(() => {
-                    showToast('Link copied to clipboard!');
-                });
-            }
-        });
-
-        // Download vCard
-        document.getElementById('downloadBtn').addEventListener('click', () => {
+        // Save contact as vCard
+        function generateVCard() {
             const vcard = `BEGIN:VCARD
 VERSION:3.0
 FN:${CONFIG.name}
-TEL:${CONFIG.phone}
-EMAIL:${CONFIG.email}
-URL:${CONFIG.website}
+N:${CONFIG.name.split(' ').reverse().join(';')};;;
 ORG:${CONFIG.company}
 TITLE:${CONFIG.title}
-ADR:;;${CONFIG.location};;;;
+TEL;TYPE=CELL:${CONFIG.phone}
+EMAIL:${CONFIG.email}
+URL:${CONFIG.website}
+ADR;TYPE=WORK:;;${CONFIG.location};;;;
 NOTE:${CONFIG.bio}
 END:VCARD`;
 
@@ -736,189 +794,105 @@ END:VCARD`;
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `${CONFIG.name.replace(/\s/g, '_')}.vcf`;
+            link.download = `${CONFIG.name.replace(/\s+/g, '_')}.vcf`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
-            showToast('Contact saved!');
+        }
+
+        document.getElementById('saveContactBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            generateVCard();
         });
 
-        // Toast notification
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2500);
-        }
+        // Share functionality
+        document.getElementById('shareBtn').addEventListener('click', async function(e) {
+            e.stopPropagation();
+            const shareData = {
+                title: `${CONFIG.name} - Digital Business Card`,
+                text: `Check out ${CONFIG.name}'s digital business card`,
+                url: window.location.href
+            };
 
-        // Generate QR code
-        function generateQR() {
-            const qrData = CONFIG.website || window.location.href;
-            new QRCode(document.getElementById('qrcode'), {
-                text: qrData,
-                width: 180,
-                height: 180,
-                colorDark: CONFIG.color,
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log('Share cancelled');
+                }
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        });
+
+        // WhatsApp button
+        document.getElementById('externalWhatsappBtn').addEventListener('click', function() {
+            const whatsappUrl = `https://wa.me/${CONFIG.phone.replace(/\+/g, '')}?text=${encodeURIComponent(CONFIG.whatsapp_message)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+
+        // Copy link button
+        document.getElementById('copyLinkBtn').addEventListener('click', function() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const originalText = this.querySelector('span').textContent;
+                this.querySelector('span').textContent = 'Link Copied!';
+                setTimeout(() => {
+                    this.querySelector('span').textContent = originalText;
+                }, 2000);
             });
-        }
+        });
+
+        // Share card button
+        document.getElementById('shareCardBtn').addEventListener('click', async function() {
+            const shareData = {
+                title: `${CONFIG.name} - Digital Business Card`,
+                text: `Check out ${CONFIG.name}'s digital business card`,
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log('Share cancelled');
+                }
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        });
+
+        // Social buttons (placeholder - add actual links)
+        document.getElementById('linkedinBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            window.open('https://linkedin.com', '_blank');
+        });
+
+        document.getElementById('twitterBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            window.open('https://twitter.com', '_blank');
+        });
+
+        document.getElementById('instagramBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            window.open('https://instagram.com', '_blank');
+        });
+
+        document.getElementById('facebookBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            window.open('https://facebook.com', '_blank');
+        });
+
+        document.getElementById('githubBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            window.open('https://github.com', '_blank');
+        });
 
         // Initialize on load
-        window.addEventListener('DOMContentLoaded', () => {
-            initCard();
-            generateQR();
-        });
-
-        // Keyboard accessibility for card flip
-        cardWrapper.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                cardInner.classList.toggle('flipped');
-            }
-        });
-
-        // Make card wrapper focusable
-        cardWrapper.setAttribute('tabindex', '0');
-        cardWrapper.setAttribute('role', 'button');
-        cardWrapper.setAttribute('aria-label', 'Flip business card');
-
-        // Add focus styles
-        cardWrapper.addEventListener('focus', () => {
-            cardWrapper.style.outline = `2px solid ${CONFIG.color}`;
-            cardWrapper.style.outlineOffset = '4px';
-        });
-
-        cardWrapper.addEventListener('blur', () => {
-            cardWrapper.style.outline = 'none';
-        });
-
-        // Prevent card flip when clicking action buttons
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-        });
-
-        // Update CSS custom property for accent color if needed
-        if (CONFIG.color !== '#EC4899') {
-            document.documentElement.style.setProperty('--accent', CONFIG.color);
-        }
-
-        // Preload fonts
-        if (document.fonts) {
-            document.fonts.load('800 56px Outfit').then(() => {
-                console.log('Fonts loaded');
-            });
-        }
-
-        // Handle visibility change for animations
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                cardInner.style.animationPlayState = 'paused';
-            } else {
-                cardInner.style.animationPlayState = 'running';
-            }
-        });
-
-        // Analytics placeholder
-        function trackEvent(action, label) {
-            console.log(`Event: ${action} - ${label}`);
-            // Integration point for analytics (GA4, Mixpanel, etc.)
-        }
-
-        // Track button clicks
-        document.getElementById('whatsappBtn').addEventListener('click', () => trackEvent('click', 'whatsapp'));
-        document.getElementById('copyBtn').addEventListener('click', () => trackEvent('click', 'copy_link'));
-        document.getElementById('shareBtn').addEventListener('click', () => trackEvent('click', 'share'));
-        document.getElementById('downloadBtn').addEventListener('click', () => trackEvent('click', 'download_vcard'));
-
-        // Track card flips
-        cardWrapper.addEventListener('click', () => {
-            const isFlipped = cardInner.classList.contains('flipped');
-            trackEvent('flip', isFlipped ? 'to_back' : 'to_front');
-        });
-
-        // Performance observer for metrics
-        if ('PerformanceObserver' in window) {
-            const perfObserver = new PerformanceObserver((list) => {
-                for (const entry of list.getEntries()) {
-                    if (entry.entryType === 'paint') {
-                        console.log(`${entry.name}: ${entry.startTime}ms`);
-                    }
-                }
-            });
-            perfObserver.observe({ entryTypes: ['paint'] });
-        }
-
-        // Service worker registration placeholder
-        if ('serviceWorker' in navigator) {
-            // Uncomment to enable offline support
-            // navigator.serviceWorker.register('/sw.js');
-        }
-
-        // Responsive QR size adjustment
-        function adjustQRSize() {
-            const qrElement = document.getElementById('qrcode');
-            if (window.innerWidth < 400) {
-                qrElement.style.transform = 'scale(0.85)';
-            } else {
-                qrElement.style.transform = 'scale(1)';
-            }
-        }
-
-        window.addEventListener('resize', adjustQRSize);
-        adjustQRSize();
-
-        // Prevent context menu on card for cleaner UX
-        cardWrapper.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-        });
-
-        // Add subtle parallax effect on card hover
-        if (window.matchMedia('(hover: hover)').matches) {
-            cardWrapper.addEventListener('mousemove', (e) => {
-                const rect = cardWrapper.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const deltaX = (x - centerX) / centerX;
-                const deltaY = (y - centerY) / centerY;
-                
-                if (!cardInner.classList.contains('flipped')) {
-                    cardInner.style.transform = `rotateY(${deltaX * 3}deg) rotateX(${-deltaY * 3}deg)`;
-                }
-            });
-
-            cardWrapper.addEventListener('mouseleave', () => {
-                if (!cardInner.classList.contains('flipped')) {
-                    cardInner.style.transform = 'rotateY(0deg) rotateX(0deg)';
-                }
-            });
-        }
-
-        // Intersection observer for scroll animations
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('.actions, .qr-section').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
-                observer.observe(el);
-            });
-        }
+        initializeCard();
     </script>
 </body>
 </html>

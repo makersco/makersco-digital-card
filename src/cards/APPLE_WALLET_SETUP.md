@@ -1,5 +1,5 @@
 # Apple Wallet Pass — Setup Guide
-**Card:** Wong Soon Fook (`wong-soonfook.html`)
+**Card:** Wong Soon Fook (`wong-soon-fook-owner.html`)
 
 There are 3 paths. Pick one. Path 1 is the fastest (10 min, free).
 
@@ -17,9 +17,9 @@ No code. No Apple Developer account needed.
    - Company: `MakersCo`
    - Phone: `+60192953528`
    - Email: `soonfookwong96@gmail.com`
-   - Website: `https://makersco.github.io/Makers-Co-Website/`
+   - Website: `https://makersco.github.io/makersco-digital-card/src/cards/wong-soon-fook.html`
 5. Download or copy the hosted `.pkpass` URL they provide
-6. Open `wong-soonfook.html` in a text editor
+6. Open `wong-soon-fook-owner.html` in a text editor
 7. Find this line near the bottom of the `<script>` section:
    ```js
    const PKPASS_URL = "";
@@ -115,21 +115,21 @@ signerKeyPassphrase: "your_passphrase_here",
 npm install passkit-generator
 
 node generate_wallet_pass.js
-# → Output: src/cards/wong-soonfook.pkpass
+# → Output: src/cards/wong-soon-fook.pkpass
 ```
 
 ### Step 8 — Wire up the card button
-Open `wong-soonfook.html`, find:
+Open `wong-soon-fook-owner.html`, find:
 ```js
 const PKPASS_URL = "";
 ```
 Change to:
 ```js
-const PKPASS_URL = "./wong-soonfook.pkpass";
+const PKPASS_URL = "./wong-soon-fook.pkpass";
 ```
 
 ### Step 9 — Host both files together
-Upload **both** `wong-soonfook.html` and `wong-soonfook.pkpass` to the same folder on:
+Upload **both** `wong-soon-fook-owner.html` and `wong-soon-fook.pkpass` to the same folder on:
 - **Netlify Drop** → drag the whole `src/cards/` folder to [drop.netlify.com](https://drop.netlify.com)
 - **GitHub Pages** → push to your repo, enable Pages
 - Any web host
@@ -192,7 +192,7 @@ digital-card-platform/
 │   │   ├── logo.png          ← 160×50
 │   │   └── logo@2x.png       ← 320×100
 │   └── cards/
-│       ├── wong-soonfook.html        ← your card
-│       ├── wong-soonfook.pkpass      ← generated output
+│       ├── wong-soon-fook-owner.html        ← your card
+│       ├── wong-soon-fook.pkpass      ← generated output
 │       └── APPLE_WALLET_SETUP.md    ← this file
 ```

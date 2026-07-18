@@ -121,11 +121,11 @@ npm run generate:apple
 ```
 
 ### Step 7 — Host the .pkpass file
-Upload `output/card.pkpass` to your hosting (e.g. `makersco-card-live` GitHub Pages repo).
+Upload `output/card.pkpass` to your hosting (e.g. this repo's GitHub Pages).
 
 Then update the "Add to Apple Wallet" button in your card HTML:
 ```html
-<a href="https://makersco.github.io/makersco-card-live/card.pkpass">
+<a href="https://makersco.github.io/makersco-digital-card/card.pkpass">
   <img src="https://developer.apple.com/wallet/add-to-apple-wallet-badge.svg"
        alt="Add to Apple Wallet" height="44">
 </a>

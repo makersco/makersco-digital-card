@@ -1,5 +1,5 @@
 # Google Wallet (Android) Pass — Setup Guide
-**Card:** Wong Soon Fook (`wong-soonfook.html`)
+**Card:** Wong Soon Fook (`wong-soon-fook-owner.html`)
 
 ## How it differs from Apple Wallet
 
@@ -20,7 +20,7 @@ Same services support both Apple and Google Wallet:
 1. Go to [walletpasses.io](https://walletpasses.io) or [pass.camp](https://pass.camp)
 2. Create your pass — both Apple and Google Wallet links are provided
 3. Copy the **Google Wallet** link (looks like `https://pay.google.com/gp/v/save/eyJ...`)
-4. Open `wong-soonfook.html`, find:
+4. Open `wong-soon-fook-owner.html`, find:
    ```js
    const GOOGLE_WALLET_JWT = "";
    ```
@@ -105,7 +105,7 @@ The JWT is also saved to `src/cards/google-wallet-jwt.txt`.
 
 ### Step 8 — Paste JWT into your card
 
-Open `wong-soonfook.html`, find:
+Open `wong-soon-fook-owner.html`, find:
 ```js
 const GOOGLE_WALLET_JWT = "";
 ```
@@ -144,7 +144,7 @@ Save the file. The **Android Wallet** button now works — no server, no hosting
 Back of pass (swipe up):
   📞 +60 19-295 3528
   ✉️ soonfookwong96@gmail.com
-  🌐 Makers-Co-Website
+  🌐 Digital Card
   💬 WhatsApp Me
   👨‍💻 GitHub
 ```
@@ -156,7 +156,7 @@ Back of pass (swipe up):
 If your details change:
 1. Edit the info in `generate_google_wallet_pass.js`
 2. Re-run: `node generate_google_wallet_pass.js`
-3. Replace `GOOGLE_WALLET_JWT` in `wong-soonfook.html`
+3. Replace `GOOGLE_WALLET_JWT` in `wong-soon-fook-owner.html`
 4. Re-host the HTML
 
 > Passes already saved to users' Wallets won't auto-update unless you use the Google Wallet API's **update** endpoint (requires a server). For a personal card, re-sharing the link is fine.
@@ -184,7 +184,7 @@ digital-card-platform/
 ├── certs/
 │   └── google-service-account.json ← downloaded from Google Cloud
 └── src/cards/
-    ├── wong-soonfook.html           ← paste GOOGLE_WALLET_JWT here
+    ├── wong-soon-fook-owner.html           ← paste GOOGLE_WALLET_JWT here
     ├── google-wallet-jwt.txt        ← JWT output saved here automatically
     ├── APPLE_WALLET_SETUP.md        ← Apple Wallet guide
     └── GOOGLE_WALLET_SETUP.md       ← this file

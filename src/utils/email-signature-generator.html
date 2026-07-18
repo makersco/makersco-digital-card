@@ -6,7 +6,7 @@
     <title>Email Signature Generator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
         * {
@@ -16,7 +16,7 @@
         }
 
         body {
-            font-family: 'Space Grotesk', system-ui, sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #0b0f1a;
             color: #e5e7eb;
             min-height: 100vh;
@@ -25,23 +25,30 @@
         .container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 32px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 24px;
+            gap: 0;
+            min-height: 100vh;
         }
 
         .panel {
-            background: #111827;
-            border-radius: 16px;
             padding: 32px;
+            overflow-y: auto;
+        }
+
+        .panel-left {
+            background: #111827;
+            border-right: 1px solid #1f2937;
+        }
+
+        .panel-right {
+            background: #0b0f1a;
+            padding: 40px;
         }
 
         h1 {
             font-size: 28px;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 8px;
-            color: #ffffff;
+            color: #f9fafb;
         }
 
         .subtitle {
@@ -65,36 +72,41 @@
 
         input[type="text"],
         input[type="email"],
-        input[type="tel"],
-        input[type="url"] {
+        input[type="url"],
+        input[type="tel"] {
             width: 100%;
-            padding: 12px 16px;
+            padding: 12px;
             background: #1f2937;
             border: 1px solid #374151;
             border-radius: 8px;
-            color: #e5e7eb;
-            font-family: inherit;
+            color: #f9fafb;
             font-size: 14px;
             font-weight: 400;
-            transition: border-color 200ms, background 200ms;
+            transition: border-color 200ms, transform 200ms;
         }
 
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="tel"]:focus,
-        input[type="url"]:focus {
+        input:focus {
             outline: none;
             border-color: #60a5fa;
-            background: #242d3d;
         }
 
         input[type="color"] {
             width: 100%;
-            height: 48px;
+            height: 44px;
+            padding: 4px;
             background: #1f2937;
             border: 1px solid #374151;
             border-radius: 8px;
             cursor: pointer;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 4px;
         }
 
         .button-group {
@@ -105,17 +117,16 @@
 
         button {
             flex: 1;
-            padding: 12px 24px;
+            min-height: 44px;
+            padding: 12px 20px;
             background: #3b82f6;
-            color: #ffffff;
             border: none;
             border-radius: 8px;
-            font-family: inherit;
+            color: #ffffff;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: opacity 200ms, transform 200ms;
-            min-height: 44px;
         }
 
         button:hover {
@@ -131,83 +142,73 @@
         }
 
         .warning {
-            margin-top: 16px;
-            padding: 12px 16px;
-            background: #422006;
-            border: 1px solid #78350f;
+            margin-top: 20px;
+            padding: 12px;
+            background: #7c2d12;
+            border: 1px solid #ea580c;
             border-radius: 8px;
             font-size: 13px;
             font-weight: 400;
-            color: #fbbf24;
-        }
-
-        .preview-panel {
-            background: #ffffff;
-            min-height: 400px;
+            color: #fed7aa;
         }
 
         .preview-container {
+            background: #ffffff;
             padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .preview-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #f9fafb;
+            margin-bottom: 24px;
         }
 
         #signaturePreview {
-            margin: 0 auto;
-        }
-
-        .success-message {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            padding: 12px 20px;
-            background: #065f46;
-            border: 1px solid #10b981;
-            border-radius: 20px;
-            color: #d1fae5;
-            font-size: 13px;
-            font-weight: 700;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: opacity 200ms, transform 200ms;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        .success-message.show {
-            opacity: 1;
-            transform: translateY(0);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
         }
 
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
-                padding: 24px 16px;
             }
 
-            .panel {
+            .panel-left {
+                border-right: none;
+                border-bottom: 1px solid #1f2937;
+            }
+
+            .panel-right {
                 padding: 24px;
+            }
+
+            .preview-container {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .panel {
+                padding: 20px;
             }
 
             h1 {
                 font-size: 24px;
             }
-        }
 
-        @media (max-width: 380px) {
             .button-group {
                 flex-direction: column;
-            }
-
-            .panel {
-                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="panel">
+        <div class="panel panel-left">
             <h1>Email Signature Generator</h1>
-            <p class="subtitle">Create a professional email signature</p>
+            <p class="subtitle">Build a professional email signature</p>
 
             <div class="form-group">
                 <label for="name">Name</label>
@@ -221,7 +222,7 @@
 
             <div class="form-group">
                 <label for="company">Company</label>
-                <input type="text" id="company" placeholder="Acme Corp" value="Acme Corp">
+                <input type="text" id="company" placeholder="Acme Inc" value="Acme Inc">
             </div>
 
             <div class="form-group">
@@ -231,22 +232,27 @@
 
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" placeholder="john@example.com" value="john@example.com">
+                <input type="email" id="email" placeholder="john@acme.com" value="john@acme.com">
             </div>
 
             <div class="form-group">
                 <label for="website">Website</label>
-                <input type="url" id="website" placeholder="https://example.com" value="https://example.com">
+                <input type="url" id="website" placeholder="https://acme.com" value="https://acme.com">
             </div>
 
             <div class="form-group">
                 <label for="linkedin">LinkedIn URL</label>
-                <input type="url" id="linkedin" placeholder="https://linkedin.com/in/johndoe" value="">
+                <input type="url" id="linkedin" placeholder="https://linkedin.com/in/johndoe">
             </div>
 
             <div class="form-group">
                 <label for="whatsapp">WhatsApp Number</label>
-                <input type="tel" id="whatsapp" placeholder="+1 234 567 8900" value="">
+                <input type="tel" id="whatsapp" placeholder="+1 234 567 8900">
+            </div>
+
+            <div class="form-group">
+                <label for="cardUrl">Card URL</label>
+                <input type="url" id="cardUrl" placeholder="https://card.acme.com/john" value="https://card.acme.com/john">
             </div>
 
             <div class="form-group">
@@ -254,29 +260,25 @@
                 <input type="color" id="accentColor" value="#3b82f6">
             </div>
 
-            <div class="form-group">
-                <label for="cardUrl">Digital Card URL</label>
-                <input type="url" id="cardUrl" placeholder="https://yourcard.com/johndoe" value="https://yourcard.com/johndoe">
-            </div>
-
             <div class="button-group">
-                <button id="copyButton">Copy HTML</button>
-                <button id="previewButton" class="secondary">Preview</button>
+                <button id="copyBtn">Copy HTML</button>
+                <button id="previewBtn" class="secondary">Refresh Preview</button>
             </div>
 
             <div class="warning">
-                ⚠️ Test in Gmail, Outlook, and Apple Mail before using
+                Test in Gmail, Outlook, and Apple Mail before using
             </div>
         </div>
 
-        <div class="panel preview-panel">
+        <div class="panel panel-right">
+            <p class="preview-title">Live Preview</p>
             <div class="preview-container">
                 <div id="signaturePreview"></div>
             </div>
         </div>
     </div>
 
-    <div class="success-message" id="successMessage">Copied to clipboard!</div>
+    <canvas id="qrCanvas" style="display:none;"></canvas>
 
     <script>
         const inputs = {
@@ -288,97 +290,70 @@
             website: document.getElementById('website'),
             linkedin: document.getElementById('linkedin'),
             whatsapp: document.getElementById('whatsapp'),
-            accentColor: document.getElementById('accentColor'),
-            cardUrl: document.getElementById('cardUrl')
+            cardUrl: document.getElementById('cardUrl'),
+            accentColor: document.getElementById('accentColor')
         };
 
+        const copyBtn = document.getElementById('copyBtn');
+        const previewBtn = document.getElementById('previewBtn');
         const signaturePreview = document.getElementById('signaturePreview');
-        const copyButton = document.getElementById('copyButton');
-        const previewButton = document.getElementById('previewButton');
-        const successMessage = document.getElementById('successMessage');
-
-        let qrDataUrl = '';
+        const qrCanvas = document.getElementById('qrCanvas');
 
         function getInitial(name) {
-            return name.trim().charAt(0).toUpperCase() || 'U';
+            return name ? name.charAt(0).toUpperCase() : 'J';
         }
 
-        function hexToRgb(hex) {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : {r: 59, g: 130, b: 246};
-        }
+        function desaturateColor(hex, maxSaturation = 0.75) {
+            hex = hex.replace('#', '');
+            const r = parseInt(hex.substr(0, 2), 16) / 255;
+            const g = parseInt(hex.substr(2, 2), 16) / 255;
+            const b = parseInt(hex.substr(4, 2), 16) / 255;
 
-        function desaturate(hex, factor = 0.7) {
-            const rgb = hexToRgb(hex);
-            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-            hsl.s = Math.min(hsl.s * factor, 0.75);
-            return hslToHex(hsl.h, hsl.s, hsl.l);
-        }
-
-        function rgbToHsl(r, g, b) {
-            r /= 255; g /= 255; b /= 255;
-            const max = Math.max(r, g, b), min = Math.min(r, g, b);
-            let h, s, l = (max + min) / 2;
-
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            const l = (max + min) / 2;
+            
             if (max === min) {
-                h = s = 0;
-            } else {
-                const d = max - min;
-                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-                switch (max) {
-                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-                    case g: h = ((b - r) / d + 2) / 6; break;
-                    case b: h = ((r - g) / d + 4) / 6; break;
-                }
+                return hex;
             }
 
-            return {h: h * 360, s, l};
-        }
+            const d = max - min;
+            let s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            
+            if (s > maxSaturation) {
+                s = maxSaturation;
+            }
 
-        function hslToHex(h, s, l) {
-            const hslToRgbChannel = (p, q, t) => {
+            let h;
+            switch (max) {
+                case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                case g: h = ((b - r) / d + 2) / 6; break;
+                case b: h = ((r - g) / d + 4) / 6; break;
+            }
+
+            function hue2rgb(p, q, t) {
                 if (t < 0) t += 1;
                 if (t > 1) t -= 1;
                 if (t < 1/6) return p + (q - p) * 6 * t;
                 if (t < 1/2) return q;
                 if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
                 return p;
-            };
-
-            h /= 360;
-            let r, g, b;
-
-            if (s === 0) {
-                r = g = b = l;
-            } else {
-                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                const p = 2 * l - q;
-                r = hslToRgbChannel(p, q, h + 1/3);
-                g = hslToRgbChannel(p, q, h);
-                b = hslToRgbChannel(p, q, h - 1/3);
             }
 
-            const toHex = x => {
-                const hex = Math.round(x * 255).toString(16);
-                return hex.length === 1 ? '0' + hex : hex;
-            };
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
 
-            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+            const rOut = Math.round(hue2rgb(p, q, h + 1/3) * 255);
+            const gOut = Math.round(hue2rgb(p, q, h) * 255);
+            const bOut = Math.round(hue2rgb(p, q, h - 1/3) * 255);
+
+            return '#' + [rOut, gOut, bOut].map(x => x.toString(16).padStart(2, '0')).join('');
         }
 
-        async function generateQR(url) {
-            if (!url) {
-                qrDataUrl = '';
-                return;
-            }
-            
-            const canvas = document.createElement('canvas');
+        async function generateQRDataURL(url) {
+            if (!url) return '';
             try {
-                await QRCode.toCanvas(canvas, url, {
+                await QRCode.toCanvas(qrCanvas, url, {
                     width: 64,
                     margin: 0,
                     color: {
@@ -386,121 +361,99 @@
                         light: '#ffffff'
                     }
                 });
-                qrDataUrl = canvas.toDataURL();
-            } catch (err) {
-                console.error('QR generation failed:', err);
-                qrDataUrl = '';
+                return qrCanvas.toDataURL('image/png');
+            } catch (error) {
+                console.error('QR generation failed:', error);
+                return '';
             }
         }
 
-        function generateSignatureHTML() {
-            const name = inputs.name.value || 'Your Name';
-            const jobTitle = inputs.jobTitle.value || 'Job Title';
+        async function generateSignatureHTML() {
+            const name = inputs.name.value || 'John Doe';
+            const jobTitle = inputs.jobTitle.value || 'Professional';
             const company = inputs.company.value || 'Company';
-            const phone = inputs.phone.value;
-            const email = inputs.email.value;
-            const website = inputs.website.value;
-            const linkedin = inputs.linkedin.value;
-            const whatsapp = inputs.whatsapp.value;
-            const accentColor = desaturate(inputs.accentColor.value);
-            const cardUrl = inputs.cardUrl.value;
+            const phone = inputs.phone.value || '';
+            const email = inputs.email.value || '';
+            const website = inputs.website.value || '';
+            const linkedin = inputs.linkedin.value || '';
+            const whatsapp = inputs.whatsapp.value || '';
+            const cardUrl = inputs.cardUrl.value || '';
+            const accentColor = desaturateColor(inputs.accentColor.value);
+
             const initial = getInitial(name);
+            const qrDataURL = await generateQRDataURL(cardUrl);
 
             const contactLinks = [];
-            if (phone) contactLinks.push(`<a href="tel:${phone}" style="color:#6b7280;text-decoration:none;">${phone}</a>`);
-            if (email) contactLinks.push(`<a href="mailto:${email}" style="color:#6b7280;text-decoration:none;">${email}</a>`);
+            if (phone) contactLinks.push(`<a href="tel:${phone}" style="color:#374151;text-decoration:none;">${phone}</a>`);
+            if (email) contactLinks.push(`<a href="mailto:${email}" style="color:#374151;text-decoration:none;">${email}</a>`);
             if (website) {
-                const displayUrl = website.replace(/^https?:\/\//, '');
-                contactLinks.push(`<a href="${website}" style="color:#6b7280;text-decoration:none;">${displayUrl}</a>`);
+                const displayWebsite = website.replace(/^https?:\/\//, '').replace(/\/$/, '');
+                contactLinks.push(`<a href="${website}" style="color:#374151;text-decoration:none;">${displayWebsite}</a>`);
             }
 
-            const socialLinks = [];
-            if (linkedin) socialLinks.push(`<a href="${linkedin}" style="color:#6b7280;text-decoration:none;font-size:12px;">LinkedIn</a>`);
-            if (whatsapp) socialLinks.push(`<a href="https://wa.me/${whatsapp.replace(/\D/g, '')}" style="color:#6b7280;text-decoration:none;font-size:12px;">WhatsApp</a>`);
+            const contactRow = contactLinks.join(' <span style="color:#d1d5db;">·</span> ');
 
-            return `
-<table cellpadding="0" cellspacing="0" border="0" style="max-width:600px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+            const socialLinks = [];
+            if (linkedin) socialLinks.push(`<a href="${linkedin}" style="color:${accentColor};text-decoration:none;font-weight:600;">LinkedIn</a>`);
+            if (whatsapp) socialLinks.push(`<a href="https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}" style="color:${accentColor};text-decoration:none;font-weight:600;">WhatsApp</a>`);
+            const socialRow = socialLinks.length > 0 ? `<tr><td colspan="2" style="padding-top:12px;font-size:13px;">${socialLinks.join(' <span style="color:#d1d5db;">·</span> ')}</td></tr>` : '';
+
+            const qrRow = qrDataURL ? `<tr><td colspan="2" style="padding-top:16px;"><img src="${qrDataURL}" width="64" height="64" alt="QR Code" style="display:block;border-radius:4px;"></td></tr>` : '';
+
+            const ctaRow = cardUrl ? `<tr><td colspan="2" style="padding-top:16px;"><a href="${cardUrl}" style="display:inline-block;padding:8px 20px;background-color:${accentColor};color:#ffffff;text-decoration:none;border-radius:6px;font-size:14px;font-weight:700;">View Digital Card →</a></td></tr>` : '';
+
+            return `<table cellpadding="0" cellspacing="0" border="0" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;max-width:600px;border-collapse:collapse;">
     <tr>
-        <td style="padding-bottom:12px;">
-            <table cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                    <td style="width:40px;height:40px;background:${accentColor};border-radius:50%;text-align:center;vertical-align:middle;color:#ffffff;font-size:18px;font-weight:700;">${initial}</td>
-                    <td style="padding-left:12px;vertical-align:top;">
-                        <div style="font-size:16px;font-weight:700;color:#111827;line-height:1.3;margin-bottom:2px;">${name}</div>
-                        <div style="font-size:13px;color:#374151;line-height:1.4;margin-bottom:1px;">${jobTitle}</div>
-                        <div style="font-size:12px;color:#6b7280;line-height:1.4;">${company}</div>
-                    </td>
-                </tr>
-            </table>
+        <td style="width:40px;height:40px;background-color:${accentColor};border-radius:50%;text-align:center;vertical-align:middle;color:#ffffff;font-size:18px;font-weight:700;">${initial}</td>
+        <td style="padding-left:16px;vertical-align:middle;">
+            <div style="font-size:16px;font-weight:700;color:#111827;line-height:1.3;">${name}</div>
+            <div style="font-size:13px;color:#374151;line-height:1.4;margin-top:2px;">${jobTitle}</div>
+            <div style="font-size:12px;color:#6b7280;line-height:1.4;margin-top:1px;">${company}</div>
         </td>
     </tr>
     <tr>
-        <td style="border-top:1px solid ${accentColor};padding-top:12px;padding-bottom:12px;">
-            <div style="font-size:12px;color:#6b7280;line-height:1.6;">
-                ${contactLinks.join(' · ')}
-            </div>
-            ${socialLinks.length > 0 ? `<div style="font-size:12px;color:#6b7280;line-height:1.6;margin-top:4px;">${socialLinks.join(' · ')}</div>` : ''}
+        <td colspan="2" style="padding-top:12px;padding-bottom:12px;">
+            <div style="height:1px;background-color:${accentColor};opacity:0.3;"></div>
         </td>
     </tr>
-    ${cardUrl ? `
     <tr>
-        <td style="padding-top:8px;">
-            <table cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                    ${qrDataUrl ? `<td style="padding-right:12px;vertical-align:middle;"><img src="${qrDataUrl}" width="64" height="64" style="display:block;border:0;" alt="QR Code" /></td>` : ''}
-                    <td style="vertical-align:middle;">
-                        <a href="${cardUrl}" style="display:inline-block;padding:8px 16px;background:${accentColor};color:#ffffff;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600;">View Digital Card →</a>
-                    </td>
-                </tr>
-            </table>
+        <td colspan="2" style="font-size:13px;color:#374151;line-height:1.6;">
+            ${contactRow}
         </td>
     </tr>
-    ` : ''}
-</table>`.trim();
+    ${socialRow}
+    ${qrRow}
+    ${ctaRow}
+</table>`;
         }
 
         async function updatePreview() {
-            await generateQR(inputs.cardUrl.value);
-            const html = generateSignatureHTML();
+            const html = await generateSignatureHTML();
             signaturePreview.innerHTML = html;
         }
 
-        async function copyToClipboard() {
-            const html = generateSignatureHTML();
+        async function copySignature() {
+            const html = await generateSignatureHTML();
             try {
                 await navigator.clipboard.writeText(html);
-                successMessage.classList.add('show');
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                copyBtn.style.background = '#059669';
                 setTimeout(() => {
-                    successMessage.classList.remove('show');
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = '#3b82f6';
                 }, 2000);
-            } catch (err) {
+            } catch (error) {
                 alert('Failed to copy. Please try again.');
             }
         }
 
-        function showPreview() {
-            const html = generateSignatureHTML();
-            const previewWindow = window.open('', 'signature-preview', 'width=700,height=600');
-            previewWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Email Signature Preview</title>
-                    <style>body{font-family:sans-serif;padding:40px;background:#f9fafb;}</style>
-                </head>
-                <body>${html}</body>
-                </html>
-            `);
-            previewWindow.document.close();
-        }
-
-        copyButton.addEventListener('click', copyToClipboard);
-        previewButton.addEventListener('click', showPreview);
-
         Object.values(inputs).forEach(input => {
             input.addEventListener('input', updatePreview);
         });
+
+        copyBtn.addEventListener('click', copySignature);
+        previewBtn.addEventListener('click', updatePreview);
 
         updatePreview();
     </script>

@@ -21,7 +21,7 @@
  *   5. Update ISSUER_ID below
  *   6. npm install google-auth-library jsonwebtoken
  *   7. node generate_google_wallet_pass.js
- *      → Outputs the JWT to paste into wong-soonfook.html
+ *      → Outputs the JWT to paste into wong-soon-fook-owner.html
  *
  * INSTALL:
  *   npm install google-auth-library jsonwebtoken
@@ -33,6 +33,7 @@
 const fs  = require("fs");
 const path = require("path");
 const jwt  = require("jsonwebtoken");
+const LINKS = require("./src/config/links.json");
 
 // ── Your Google Wallet Issuer ID ──────────────────────────────────────────────
 // Get this from: pay.google.com/business/console
@@ -55,22 +56,22 @@ const passObject = {
   logo: {
     sourceUri: {
       // Replace with your hosted logo URL (must be HTTPS, min 660×660px recommended)
-      uri: "https://makersco.github.io/Makers-Co-Website/assets/logo.png"
+      uri: LINKS.assets.logo
     },
     contentDescription: {
-      defaultValue: { language: "en-US", value: "MakersCo Logo" }
+      defaultValue: { language: "en-US", value: `${LINKS.business.name} Logo` }
     }
   },
 
   // ── Pass text fields ─────────────────────────────────────────────────────────
   cardTitle: {
-    defaultValue: { language: "en-US", value: "MakersCo" }
+    defaultValue: { language: "en-US", value: LINKS.business.name }
   },
   subheader: {
     defaultValue: { language: "en-US", value: "Digital Business Card" }
   },
   header: {
-    defaultValue: { language: "en-US", value: "Wong Soon Fook" }
+    defaultValue: { language: "en-US", value: LINKS.person.name }
   },
 
   // ── Text modules (shown on the front of the pass) ────────────────────────────
@@ -78,12 +79,12 @@ const passObject = {
     {
       id: "title",
       header: "Title",
-      body: "Founder & Digital Builder"
+      body: LINKS.person.title
     },
     {
       id: "company",
       header: "Company",
-      body: "MakersCo · Malaysia"
+      body: `${LINKS.person.company} · Malaysia`
     }
   ],
 
@@ -91,27 +92,27 @@ const passObject = {
   linksModuleData: {
     uris: [
       {
-        uri: "tel:+60192953528",
-        description: "📞 +60 19-295 3528",
+        uri: `tel:${LINKS.person.phone}`,
+        description: `📞 ${LINKS.person.phoneDisplay}`,
         id: "phone"
       },
       {
-        uri: "mailto:soonfookwong96@gmail.com",
-        description: "✉️ soonfookwong96@gmail.com",
+        uri: `mailto:${LINKS.person.email}`,
+        description: `✉️ ${LINKS.person.email}`,
         id: "email"
       },
       {
-        uri: "https://makersco.github.io/Makers-Co-Website/",
-        description: "🌐 Makers-Co-Website",
+        uri: LINKS.card.public,
+        description: "🌐 Digital Card",
         id: "website"
       },
       {
-        uri: "https://wa.me/60192953528?text=Hi+Soon+Fook%2C+I+found+your+digital+card+and+would+like+to+connect!",
+        uri: `https://wa.me/${LINKS.person.whatsappNumber}?text=${encodeURIComponent(LINKS.person.whatsappMessage)}`,
         description: "💬 WhatsApp Me",
         id: "whatsapp"
       },
       {
-        uri: "https://github.com/makersco",
+        uri: LINKS.business.github,
         description: "👨‍💻 GitHub",
         id: "github"
       }
@@ -121,8 +122,8 @@ const passObject = {
   // ── QR code on the pass ───────────────────────────────────────────────────────
   barcode: {
     type: "QR_CODE",
-    value: "https://makersco.github.io/Makers-Co-Website/",
-    alternateText: "Scan to visit portfolio"
+    value: LINKS.card.public,
+    alternateText: "Scan to view digital card"
   },
 
   // ── State ─────────────────────────────────────────────────────────────────────
@@ -163,7 +164,7 @@ function generateJWT() {
   console.log(token);
   console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("\nNext step:");
-  console.log('  Open wong-soonfook.html, find: const GOOGLE_WALLET_JWT = ""');
+  console.log('  Open wong-soon-fook-owner.html, find: const GOOGLE_WALLET_JWT = ""');
   console.log("  Paste the JWT token above between the quotes.");
   console.log("  Save and host — the Android Wallet button will work.\n");
 

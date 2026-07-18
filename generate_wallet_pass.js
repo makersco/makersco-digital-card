@@ -20,16 +20,17 @@
  *
  * RUN:
  *   node generate_wallet_pass.js
- *   # Outputs: src/cards/wong-soonfook.pkpass
+ *   # Outputs: src/cards/wong-soon-fook.pkpass
  */
 
 const { PKPass } = require("passkit-generator");
 const fs   = require("fs");
 const path = require("path");
+const LINKS = require("./src/config/links.json");
 
 // ── Paths ────────────────────────────────────────────────────────────────────
 const CERTS_DIR  = path.join(__dirname, "certs");
-const OUT_FILE   = path.join(__dirname, "src", "cards", "wong-soonfook.pkpass");
+const OUT_FILE   = path.join(__dirname, "src", "cards", "wong-soon-fook.pkpass");
 const ICONS_DIR  = path.join(__dirname, "src", "assets", "pass-icons");
 
 // ── Your Apple Developer Pass Type ID ────────────────────────────────────────
@@ -82,7 +83,7 @@ async function generate() {
           {
             key:   "name",
             label: "Name",
-            value: "Wong Soon Fook",
+            value: LINKS.person.name,
           }
         ],
         // Secondary: shown below primary
@@ -90,12 +91,12 @@ async function generate() {
           {
             key:   "title",
             label: "Title",
-            value: "Founder & Digital Builder",
+            value: LINKS.person.title,
           },
           {
             key:   "company",
             label: "Company",
-            value: "MakersCo",
+            value: LINKS.person.company,
           }
         ],
         // Auxiliary: smaller row
@@ -103,13 +104,13 @@ async function generate() {
           {
             key:        "phone",
             label:      "Phone",
-            value:      "+60 19-295 3528",
+            value:      LINKS.person.phoneDisplay,
             dataDetectorTypes: ["PKDataDetectorTypePhoneNumber"],
           },
           {
             key:        "email",
             label:      "Email",
-            value:      "soonfookwong96@gmail.com",
+            value:      LINKS.person.email,
             dataDetectorTypes: ["PKDataDetectorTypeLink"],
           }
         ],
@@ -117,14 +118,14 @@ async function generate() {
         backFields: [
           {
             key:   "website",
-            label: "Portfolio",
-            value: "https://makersco.github.io/Makers-Co-Website/",
+            label: "Digital Card",
+            value: LINKS.card.public,
             dataDetectorTypes: ["PKDataDetectorTypeLink"],
           },
           {
             key:   "whatsapp",
             label: "WhatsApp",
-            value: "https://wa.me/60192953528",
+            value: `https://wa.me/${LINKS.person.whatsappNumber}`,
             dataDetectorTypes: ["PKDataDetectorTypeLink"],
           },
           {
@@ -138,17 +139,17 @@ async function generate() {
       // ── Barcodes ─────────────────────────────────────────────────────────
       barcodes: [
         {
-          message:         "https://makersco.github.io/Makers-Co-Website/",
+          message:         LINKS.card.public,
           format:          "PKBarcodeFormatQR",
           messageEncoding: "iso-8859-1",
-          altText:         "Scan to visit portfolio",
+          altText:         "Scan to view digital card",
         }
       ],
 
       // ── NFC (iPhone 7+ with NFC entitlement) ─────────────────────────────
       // Uncomment if you have NFC entitlement on your developer account
       // nfc: {
-      //   message: "https://makersco.github.io/Makers-Co-Website/",
+      //   message: LINKS.card.public,
       // }
     }
   );
@@ -159,7 +160,7 @@ async function generate() {
   fs.writeFileSync(OUT_FILE, buf);
   console.log("✅  Pass generated:", OUT_FILE);
   console.log("    Size:", Math.round(buf.length / 1024) + " KB");
-  console.log("\nNext step: host wong-soonfook.pkpass alongside your HTML card.");
+  console.log("\nNext step: host wong-soon-fook.pkpass alongside your HTML card.");
   console.log("Then update the Wallet button href to point to the .pkpass file.");
 }
 

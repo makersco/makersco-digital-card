@@ -1,5 +1,5 @@
 # Wallet Pass Setup — Start Here
-**Card:** Wong Soon Fook (`wong-soonfook.html`)
+**Card:** Wong Soon Fook (`wong-soon-fook-owner.html`)
 
 This is the master guide. Read this first, then follow the detailed guide for your chosen path.
 
@@ -48,7 +48,7 @@ Everything is already built. You just need a Google Cloud account.
 6. npm install jsonwebtoken
 7. node generate_google_wallet_pass.js
 8. Copy the JWT output
-9. Open wong-soonfook.html → find:
+9. Open wong-soon-fook-owner.html → find:
       const GOOGLE_WALLET_JWT = "";
    Paste JWT between the quotes → save
 ```
@@ -74,9 +74,9 @@ Android Wallet button works. Free forever. No monthly fee.
 5. Add icon images to src/assets/pass-icons/
 6. npm install passkit-generator
 7. node generate_wallet_pass.js
-   → outputs src/cards/wong-soonfook.pkpass
-8. Host wong-soonfook.pkpass online (Netlify, GitHub Pages)
-9. Open wong-soonfook.html → find:
+   → outputs src/cards/wong-soon-fook.pkpass
+8. Host wong-soon-fook.pkpass online (Netlify, GitHub Pages)
+9. Open wong-soon-fook-owner.html → find:
       const PKPASS_URL = "";
    Paste hosted URL → save
 ```
@@ -97,11 +97,11 @@ Supports both Apple Wallet and Google Wallet. Has a free test option.
       Company:  MakersCo
       Phone:    +60192953528
       Email:    soonfookwong96@gmail.com
-      Website:  https://makersco.github.io/Makers-Co-Website/
+      Website:  https://makersco.github.io/makersco-digital-card/src/cards/wong-soon-fook.html
 5. Publish → they give you:
       Apple Wallet:  a .pkpass hosted URL
       Google Wallet: a pay.google.com/gp/v/save/... URL
-6. Open wong-soonfook.html → set both constants:
+6. Open wong-soon-fook-owner.html → set both constants:
       const PKPASS_URL        = "https://...your-apple-url...";
       const GOOGLE_WALLET_JWT = "eyJhbGci...your-google-jwt...";
 7. Save → re-host on Netlify → both buttons live
@@ -119,14 +119,14 @@ Best option if you want to test before deciding on a paid plan.
 3. Create pass → choose Business Card template
 4. Customise with your details (same as Path C above)
 5. Publish → copy Apple + Google Wallet URLs
-6. Paste into wong-soonfook.html (same as Path C step 6–7)
+6. Paste into wong-soon-fook-owner.html (same as Path C step 6–7)
 ```
 
 After 45 days: $39.50/month if you continue. Good for selling cards to clients.
 
 ---
 
-## Activating the buttons in wong-soonfook.html
+## Activating the buttons in wong-soon-fook-owner.html
 
 Both wallet buttons check a constant at the top of the script section.
 Find these two lines and fill them in:
@@ -156,8 +156,8 @@ digital-card-platform/
 │   ├── wwdr.pem                      ← Path B: Apple WWDR (free from Apple)
 │   └── google-service-account.json  ← Path A: Google service account key
 └── src/cards/
-    ├── wong-soonfook.html            ← your card (edit PKPASS_URL + GOOGLE_WALLET_JWT)
-    ├── wong-soonfook.pkpass          ← Path B output (generated, then host online)
+    ├── wong-soon-fook-owner.html            ← your card (edit PKPASS_URL + GOOGLE_WALLET_JWT)
+    ├── wong-soon-fook.pkpass          ← Path B output (generated, then host online)
     ├── google-wallet-jwt.txt         ← Path A output (paste into HTML)
     ├── WALLET_SETUP.md               ← this file (start here)
     ├── APPLE_WALLET_SETUP.md         ← Path B full step-by-step

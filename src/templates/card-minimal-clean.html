@@ -3,37 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Business Card - Minimal Clean</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Ahmad Faris bin Razak - Digital Business Card</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             --bg-page: #FAFAFA;
-            --surface-front: #FFFFFF;
-            --surface-back: #F9FAFB;
-            --surface-sunken: #F3F4F6;
-            --ink-primary: #111827;
-            --ink-secondary: #4B5563;
-            --ink-tertiary: #9CA3AF;
-            --ink-divider: #E5E7EB;
+            --card-front: #FFFFFF;
+            --card-back: #F9FAFB;
+            --surface-sunk: #F3F4F6;
+            --border-card: #E5E7EB;
+            --border-soft: #EEF0F3;
+            --divider: #F1F2F4;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --text-tertiary: #9CA3AF;
+            --text-on-accent: #FFFFFF;
             --accent: #6366F1;
             --accent-hover: #4F46E5;
-            --accent-tint: #EEF2FF;
-            --accent-ink: #FFFFFF;
-            --status-on: #047857;
+            --accent-tint: #EEF0FF;
+            --accent-ring: rgba(99, 102, 241, 0.18);
             --status-on-bg: #ECFDF5;
-            --radius-card: 16px;
-            --radius-chip: 20px;
-            --radius-btn: 10px;
-            --border-card: 1px solid #E5E7EB;
-            --shadow-rest: 0 1px 2px rgba(17,24,39,0.04), 0 8px 24px rgba(17,24,39,0.06);
-            --shadow-lift: 0 2px 4px rgba(17,24,39,0.05), 0 16px 40px rgba(17,24,39,0.08);
-            --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
-            --dur-fast: 140ms;
-            --dur-base: 220ms;
-            --dur-flip: 280ms;
+            --status-on-fg: #047857;
+            --status-off-bg: #F3F4F6;
+            --status-off-fg: #6B7280;
+            --shadow-card: 0 1px 2px rgba(17, 24, 39, 0.04), 0 8px 24px rgba(17, 24, 39, 0.06);
+            --shadow-hover: 0 2px 4px rgba(17, 24, 39, 0.05), 0 16px 32px rgba(17, 24, 39, 0.08);
+            --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+            --t-fast: 140ms;
+            --t-base: 220ms;
+            --t-flip: 280ms;
         }
 
         * {
@@ -43,33 +42,30 @@
         }
 
         body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-page);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            padding: 20px;
+            color: var(--text-primary);
         }
 
         .card-wrapper {
-            width: 340px;
-            height: 200px;
+            width: 360px;
+            height: 560px;
             perspective: 1000px;
-            margin: 0 auto 32px;
+            margin: 0 auto 24px;
             cursor: pointer;
-            transition: transform var(--dur-base) var(--ease-out);
         }
 
-        .card-wrapper:hover {
-            transform: translateY(-2px);
-        }
-
-        .card-wrapper:hover .card-inner {
-            box-shadow: var(--shadow-lift);
+        @media (min-width: 768px) {
+            .card-wrapper {
+                width: 400px;
+                height: 600px;
+            }
         }
 
         .card-inner {
@@ -77,14 +73,19 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform var(--dur-flip) var(--ease-out),
-                        box-shadow var(--dur-base) var(--ease-out);
-            border-radius: var(--radius-card);
-            box-shadow: var(--shadow-rest);
+            transition: transform var(--t-flip) var(--ease-out);
         }
 
         .card-inner.flipped {
             transform: rotateY(180deg);
+        }
+
+        .card {
+            transition: box-shadow var(--t-base) var(--ease-out);
+        }
+
+        .card-wrapper:hover .card {
+            box-shadow: var(--shadow-hover);
         }
 
         .card-face {
@@ -95,341 +96,403 @@
             height: 100%;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            border-radius: var(--radius-card);
-            border: var(--border-card);
+            border-radius: 20px;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-card);
             overflow: hidden;
         }
 
         .card-front {
-            background: var(--surface-front);
-            padding: 24px;
+            background: var(--card-front);
+            padding: 32px;
             display: flex;
             flex-direction: column;
         }
 
         .card-back {
-            background: var(--surface-back);
-            padding: 24px;
+            background: var(--card-back);
+            padding: 32px;
             transform: rotateY(180deg);
         }
 
-        .accent-rule {
+        .accent-bar {
             position: absolute;
             top: 24px;
-            left: 24px;
-            width: 32px;
-            height: 2px;
+            left: 0;
+            width: 3px;
+            height: 32px;
             background: var(--accent);
-            border-radius: 1px;
-            transform-origin: left center;
-            transition: transform var(--dur-flip) var(--ease-out);
         }
 
-        .card-inner.flipped .card-front .accent-rule {
-            transform: scaleX(0);
+        .accent-bar-right {
+            left: auto;
+            right: 0;
         }
 
-        .card-back .accent-rule {
-            transform: scaleX(1.5);
-            transition: transform var(--dur-flip) var(--ease-out);
+        .avatar-wrapper {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 1px solid var(--border-soft);
+            overflow: hidden;
+            margin-bottom: 24px;
+            background: var(--surface-sunk);
         }
 
-        .card-inner:not(.flipped) .card-back .accent-rule {
-            transform: scaleX(0);
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .hero-section {
-            margin-top: 20px;
-        }
-
-        .name-row {
-            display: flex;
-            align-items: baseline;
-            justify-content: space-between;
-            gap: 12px;
+        .hero-name {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
             margin-bottom: 4px;
         }
 
-        .name {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--ink-primary);
-            letter-spacing: -0.01em;
-            line-height: 1.2;
+        @media (max-width: 380px) {
+            .hero-name {
+                font-size: 24px;
+            }
         }
 
-        .status-pill {
+        .hero-title {
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 380px) {
+            .hero-title {
+                font-size: 14px;
+            }
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--divider);
+            margin: 24px 0;
+        }
+
+        .organisation {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 380px) {
+            .organisation {
+                font-size: 12px;
+            }
+        }
+
+        .department {
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+
+        .badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            border-radius: 20px;
             padding: 2px 10px;
-            border-radius: var(--radius-chip);
-            background: var(--status-on-bg);
-            color: var(--status-on);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: 0.06em;
+            line-height: 1.6;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
-            white-space: nowrap;
-            flex-shrink: 0;
+            background: var(--status-on-bg);
+            color: var(--status-on-fg);
+            margin-top: 16px;
         }
 
-        .status-dot {
+        .badge::before {
+            content: '';
             width: 6px;
             height: 6px;
             border-radius: 50%;
             background: currentColor;
         }
 
-        .title {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--ink-secondary);
-            margin-bottom: 16px;
-            line-height: 1.4;
-        }
-
-        .company {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--ink-tertiary);
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-
-        .flip-button {
+        .flip-affordance {
             position: absolute;
             bottom: 24px;
-            right: 24px;
-            width: 32px;
-            height: 32px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            color: var(--ink-tertiary);
-            transition: color var(--dur-fast) var(--ease-out),
-                        transform var(--dur-fast) var(--ease-out);
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .flip-button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
+            transform: translateX(-50%);
+            color: var(--text-tertiary);
+            font-size: 12px;
         }
 
-        .flip-button:hover {
-            color: var(--accent);
-            transform: translateY(-1px);
+        .chevron-down {
+            width: 12px;
+            height: 12px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
         }
 
-        .flip-button:active {
-            transform: scale(0.98);
-        }
-
-        .flip-button svg {
-            width: 20px;
-            height: 20px;
-            stroke-width: 1.5px;
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
         }
 
         .contact-rows {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            margin-top: 44px;
+            gap: 12px;
+            margin-bottom: 32px;
         }
 
         .contact-row {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            position: relative;
+            display: grid;
+            grid-template-columns: 36px 1fr 16px;
+            align-items: center;
+            gap: 12px;
+            min-height: 44px;
+            padding: 4px 8px;
+            margin: 0 -8px;
+            border-radius: 12px;
+            transition: background var(--t-fast) var(--ease-out);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .contact-row:hover {
+            background: var(--surface-sunk);
+        }
+
+        .contact-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--accent-tint);
+            color: var(--accent);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+        }
+
+        .contact-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .contact-content {
+            min-width: 0;
         }
 
         .contact-label {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 600;
+            line-height: 1;
             letter-spacing: 0.08em;
-            color: var(--ink-tertiary);
             text-transform: uppercase;
-        }
-
-        .contact-value-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
+            color: var(--text-tertiary);
         }
 
         .contact-value {
             font-size: 14px;
             font-weight: 400;
-            color: var(--ink-primary);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
+            line-height: 1.4;
+            color: var(--text-primary);
+            margin-top: 2px;
+            word-break: break-word;
         }
 
-        .contact-action {
+        .external-icon {
             width: 16px;
             height: 16px;
+            stroke: var(--text-tertiary);
+            stroke-width: 2;
+            fill: none;
             flex-shrink: 0;
-            color: var(--ink-tertiary);
-            cursor: pointer;
-            transition: color var(--dur-fast) var(--ease-out);
-            position: relative;
         }
 
-        .contact-action::before {
-            content: '';
+        .credential-strip {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 44px;
-            height: 44px;
-        }
-
-        .contact-action:hover {
-            color: var(--accent);
-        }
-
-        .contact-action svg {
-            width: 16px;
-            height: 16px;
-            stroke-width: 1.5px;
-        }
-
-        .contact-divider {
-            height: 1px;
-            background: var(--ink-divider);
-            margin-top: 16px;
-        }
-
-        .contact-row:last-child .contact-divider {
-            display: none;
-        }
-
-        .actions-section {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 340px;
-            margin: 0 auto;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 300;
+            color: var(--text-tertiary);
         }
 
         .button-row {
             display: flex;
-            gap: 12px;
+            gap: 8px;
+            width: 360px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .button-row {
+                width: 400px;
+            }
         }
 
         .btn {
-            flex: 1;
-            font-family: 'DM Sans', sans-serif;
+            height: 44px;
+            padding: 0 20px;
+            border-radius: 12px;
             font-size: 14px;
             font-weight: 600;
-            padding: 12px 20px;
-            border-radius: var(--radius-btn);
-            border: none;
+            line-height: 1;
+            font-family: 'DM Sans', sans-serif;
             cursor: pointer;
-            transition: transform var(--dur-fast) var(--ease-out),
-                        background-color var(--dur-fast) var(--ease-out),
-                        border-color var(--dur-fast) var(--ease-out);
-            display: flex;
+            border: none;
+            transition: transform var(--t-fast) var(--ease-out),
+                        background var(--t-fast) var(--ease-out);
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            min-height: 44px;
+            text-decoration: none;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
         }
 
         .btn-primary {
             background: var(--accent);
-            color: var(--accent-ink);
+            color: var(--text-on-accent);
+            flex: 1;
         }
 
         .btn-primary:hover {
             background: var(--accent-hover);
-            transform: translateY(-1px);
         }
 
-        .btn-primary:active {
-            transform: scale(0.98);
+        .btn-primary:focus-visible {
+            outline: 2px solid var(--accent-ring);
+            outline-offset: 2px;
         }
 
-        .btn-ghost {
+        .btn-secondary {
             background: transparent;
-            color: var(--ink-primary);
-            border: 1px solid var(--ink-divider);
+            color: var(--text-primary);
+            border: 1px solid var(--border-card);
+            flex: 1;
         }
 
-        .btn-ghost:hover {
-            background: var(--surface-sunken);
-            border-color: #D1D5DB;
+        .btn-secondary:hover {
+            background: var(--surface-sunk);
         }
 
-        .btn-ghost:active {
-            transform: scale(0.98);
-        }
-
-        .btn svg {
+        .btn-icon {
             width: 18px;
             height: 18px;
-            stroke-width: 2px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
         }
 
         .qr-section {
             margin-top: 24px;
-            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid var(--divider);
         }
 
-        .qr-label {
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            color: var(--ink-tertiary);
-            text-transform: uppercase;
-            margin-bottom: 12px;
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 16px;
         }
 
         #qrcode {
-            display: inline-block;
-            padding: 16px;
+            padding: 12px;
             background: white;
-            border-radius: var(--radius-card);
-            border: var(--border-card);
-            box-shadow: var(--shadow-rest);
+            border-radius: 12px;
+            border: 1px solid var(--border-soft);
         }
 
-        #qrcode canvas {
-            display: block;
+        .share-actions {
+            display: flex;
+            gap: 8px;
+            width: 360px;
+            margin: 16px auto 0;
+        }
+
+        @media (min-width: 768px) {
+            .share-actions {
+                width: 400px;
+            }
+        }
+
+        .btn-tertiary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid var(--border-card);
+            height: 44px;
+            padding: 0 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: transform var(--t-fast) var(--ease-out),
+                        background var(--t-fast) var(--ease-out);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .btn-tertiary:hover {
+            background: var(--surface-sunk);
+        }
+
+        .btn-tertiary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            border: none;
+        }
+
+        .btn-whatsapp:hover {
+            background: #20BA5A;
         }
 
         .toast {
             position: fixed;
-            bottom: 32px;
+            bottom: 24px;
             left: 50%;
-            transform: translateX(-50%) translateY(4px);
-            background: var(--ink-primary);
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text-primary);
             color: white;
             padding: 12px 20px;
-            border-radius: var(--radius-btn);
+            border-radius: 8px;
             font-size: 14px;
-            font-weight: 600;
-            box-shadow: var(--shadow-lift);
+            font-weight: 500;
             opacity: 0;
+            transition: all var(--t-base) var(--ease-out);
             pointer-events: none;
-            transition: opacity var(--dur-base) var(--ease-out),
-                        transform var(--dur-base) var(--ease-out);
             z-index: 1000;
         }
 
@@ -438,155 +501,194 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        @media (min-width: 768px) {
-            .card-wrapper {
-                width: 400px;
-                height: 232px;
-            }
-
-            .name {
-                font-size: 28px;
-            }
-
-            .actions-section {
-                width: 400px;
-            }
+        .spacer {
+            flex: 1;
         }
 
-        @media (max-width: 374px) {
-            .card-wrapper {
-                width: 100%;
-                max-width: 340px;
-            }
+        .bio-section {
+            margin-top: 16px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-soft);
+        }
 
-            .actions-section {
-                width: 100%;
-                max-width: 340px;
-            }
-
-            .name {
-                font-size: 20px;
-            }
-
-            .status-pill {
-                font-size: 9px;
-                padding: 2px 8px;
-            }
+        .bio-text {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-secondary);
         }
     </style>
 </head>
 <body>
-    <div class="card-wrapper" onclick="toggleFlip()">
+    <div class="card-wrapper" onclick="flipCard()">
         <div class="card-inner" id="cardInner">
-            <div class="card-face card-front">
-                <div class="accent-rule"></div>
-                <div class="hero-section">
-                    <div class="name-row">
-                        <h1 class="name" id="cardName"></h1>
-                        <div class="status-pill">
-                            <span class="status-dot"></span>
-                            <span>Available</span>
-                        </div>
-                    </div>
-                    <p class="title" id="cardTitle"></p>
-                    <p class="company" id="cardCompany"></p>
+            <div class="card-face card-front card">
+                <div class="accent-bar"></div>
+                
+                <div class="avatar-wrapper">
+                    <img src="https://ui-avatars.com/api/?name=Ahmad+Faris&size=144&background=6366f1&color=fff&bold=true" alt="Ahmad Faris bin Razak" id="avatarImage">
                 </div>
-                <button class="flip-button" onclick="toggleFlip(); event.stopPropagation();" aria-label="Flip card">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M21.888 13.5C21.164 18.311 17.013 22 12 22 6.477 22 2 17.523 2 12S6.477 2 12 2c4.1 0 7.625 2.468 9.168 6" stroke-linecap="round"/>
-                        <path d="M17 8h5m0 0v-5m0 5l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
+
+                <div class="hero-name" id="heroName">Ahmad Faris bin Razak</div>
+                <div class="hero-title" id="heroTitle">Founder & CEO</div>
+
+                <div class="divider"></div>
+
+                <div class="organisation" id="organisation">Pixel Reka Sdn Bhd</div>
+                <div class="department" id="location">Kuala Lumpur, Malaysia</div>
+
+                <div class="badge">
+                    <span>Available</span>
+                </div>
+
+                <div class="spacer"></div>
+
+                <div class="flip-affordance">
+                    <svg class="chevron-down" viewBox="0 0 12 12">
+                        <polyline points="2,4 6,8 10,4"></polyline>
                     </svg>
-                </button>
+                </div>
             </div>
 
-            <div class="card-face card-back">
-                <div class="accent-rule"></div>
+            <div class="card-face card-back card">
+                <div class="accent-bar accent-bar-right"></div>
+                
+                <div class="section-label">Contact</div>
+
                 <div class="contact-rows">
-                    <div class="contact-row">
-                        <div class="contact-label">Email</div>
-                        <div class="contact-value-wrapper">
-                            <span class="contact-value" id="cardEmail"></span>
-                            <div class="contact-action" onclick="copyToClipboard('email'); event.stopPropagation();" title="Copy email">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
+                    <a href="tel:+60123456789" class="contact-row" id="phoneRow">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
                         </div>
-                        <div class="contact-divider"></div>
-                    </div>
-                    <div class="contact-row">
-                        <div class="contact-label">Phone</div>
-                        <div class="contact-value-wrapper">
-                            <span class="contact-value" id="cardPhone"></span>
-                            <div class="contact-action" onclick="copyToClipboard('phone'); event.stopPropagation();" title="Copy phone">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
+                        <div class="contact-content">
+                            <div class="contact-label">Phone</div>
+                            <div class="contact-value" id="phoneValue">+60 12-345 6789</div>
                         </div>
-                        <div class="contact-divider"></div>
-                    </div>
-                    <div class="contact-row">
-                        <div class="contact-label">Website</div>
-                        <div class="contact-value-wrapper">
-                            <span class="contact-value" id="cardWebsite"></span>
-                            <div class="contact-action" onclick="openWebsite(); event.stopPropagation();" title="Open website">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <polyline points="15 3 21 3 21 9" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <line x1="10" y1="14" x2="21" y2="3" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
+                        <svg class="external-icon" viewBox="0 0 24 24">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"></path>
+                        </svg>
+                    </a>
+
+                    <a href="mailto:faris@pixelreka.com.my" class="contact-row" id="emailRow">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
                         </div>
-                        <div class="contact-divider"></div>
+                        <div class="contact-content">
+                            <div class="contact-label">Email</div>
+                            <div class="contact-value" id="emailValue">faris@pixelreka.com.my</div>
+                        </div>
+                        <svg class="external-icon" viewBox="0 0 24 24">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"></path>
+                        </svg>
+                    </a>
+
+                    <a href="#" class="contact-row" id="locationRow" onclick="event.preventDefault();">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="contact-content">
+                            <div class="contact-label">Location</div>
+                            <div class="contact-value" id="locationValueBack">Kuala Lumpur, Malaysia</div>
+                        </div>
+                        <svg class="external-icon" viewBox="0 0 24 24">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"></path>
+                        </svg>
+                    </a>
+
+                    <a href="https://pixelreka.com.my" target="_blank" class="contact-row" id="websiteRow">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </div>
+                        <div class="contact-content">
+                            <div class="contact-label">Website</div>
+                            <div class="contact-value" id="websiteValue">pixelreka.com.my</div>
+                        </div>
+                        <svg class="external-icon" viewBox="0 0 24 24">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"></path>
+                        </svg>
+                    </a>
+
+                    <a href="#" class="contact-row" id="linkedinRow" onclick="event.preventDefault();">
+                        <div class="contact-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                <rect x="2" y="9" width="4" height="12"></rect>
+                                <circle cx="4" cy="4" r="2"></circle>
+                            </svg>
+                        </div>
+                        <div class="contact-content">
+                            <div class="contact-label">LinkedIn</div>
+                            <div class="contact-value">Ahmad Faris</div>
+                        </div>
+                        <svg class="external-icon" viewBox="0 0 24 24">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="qr-section">
+                    <div class="section-label">Scan to save</div>
+                    <div class="qr-container">
+                        <div id="qrcode"></div>
                     </div>
                 </div>
-                <button class="flip-button" onclick="toggleFlip(); event.stopPropagation();" aria-label="Flip card back">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M21.888 13.5C21.164 18.311 17.013 22 12 22 6.477 22 2 17.523 2 12S6.477 2 12 2c4.1 0 7.625 2.468 9.168 6" stroke-linecap="round"/>
-                        <path d="M17 8h5m0 0v-5m0 5l-5-5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
+
+                <div class="credential-strip">
+                    Digital Business Card
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="actions-section">
-        <div class="button-row">
-            <button class="btn btn-primary" onclick="downloadVCard()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke-linecap="round" stroke-linejoin="round"/>
-                    <polyline points="7 10 12 15 17 10" stroke-linecap="round" stroke-linejoin="round"/>
-                    <line x1="12" y1="15" x2="12" y2="3" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Save Contact
-            </button>
-        </div>
-        <div class="button-row">
-            <button class="btn btn-ghost" onclick="sendWhatsApp()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                WhatsApp
-            </button>
-            <button class="btn btn-ghost" onclick="shareCard()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="18" cy="5" r="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="6" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="18" cy="19" r="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke-linecap="round" stroke-linejoin="round"/>
-                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Share
-            </button>
-        </div>
+    <div class="button-row">
+        <button class="btn btn-primary" onclick="event.stopPropagation(); downloadVCard();">
+            <svg class="btn-icon" viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Save Contact
+        </button>
+        <button class="btn btn-secondary" onclick="event.stopPropagation(); shareCard();">
+            <svg class="btn-icon" viewBox="0 0 24 24">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            Share
+        </button>
     </div>
 
-    <div class="qr-section">
-        <div class="qr-label">Scan to Save</div>
-        <div id="qrcode"></div>
+    <div class="share-actions">
+        <button class="btn-tertiary btn-whatsapp" onclick="openWhatsApp();">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            WhatsApp
+        </button>
+        <button class="btn-tertiary" onclick="copyLink();">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            Copy Link
+        </button>
     </div>
 
     <div class="toast" id="toast"></div>
@@ -606,95 +708,75 @@
         };
 
         function initCard() {
-            document.getElementById('cardName').textContent = CONFIG.name;
-            document.getElementById('cardTitle').textContent = CONFIG.title;
-            document.getElementById('cardCompany').textContent = CONFIG.company;
-            document.getElementById('cardEmail').textContent = CONFIG.email;
-            document.getElementById('cardPhone').textContent = CONFIG.phone;
+            document.getElementById('heroName').textContent = CONFIG.name;
+            document.getElementById('heroTitle').textContent = CONFIG.title;
+            document.getElementById('organisation').textContent = CONFIG.company;
+            document.getElementById('location').textContent = CONFIG.location;
+            document.getElementById('phoneValue').textContent = formatPhoneDisplay(CONFIG.phone);
+            document.getElementById('emailValue').textContent = CONFIG.email;
+            document.getElementById('locationValueBack').textContent = CONFIG.location;
+            document.getElementById('websiteValue').textContent = CONFIG.website.replace('https://', '').replace('http://', '');
             
-            const websiteDisplay = CONFIG.website.replace(/^https?:\/\//, '');
-            document.getElementById('cardWebsite').textContent = websiteDisplay;
+            document.getElementById('phoneRow').href = 'tel:' + CONFIG.phone;
+            document.getElementById('emailRow').href = 'mailto:' + CONFIG.email;
+            document.getElementById('websiteRow').href = CONFIG.website;
 
-            if (CONFIG.color && CONFIG.color !== '#6366f1') {
-                document.documentElement.style.setProperty('--accent', CONFIG.color);
-                
-                const hsl = hexToHSL(CONFIG.color);
-                const darkerHSL = `hsl(${hsl.h}, ${hsl.s}%, ${Math.max(hsl.l - 8, 0)}%)`;
-                document.documentElement.style.setProperty('--accent-hover', darkerHSL);
-            }
+            const avatarName = CONFIG.name.split(' ').slice(0, 2).join('+');
+            document.getElementById('avatarImage').src = `https://ui-avatars.com/api/?name=${avatarName}&size=144&background=${CONFIG.color.substring(1)}&color=fff&bold=true`;
 
             generateQRCode();
         }
 
-        function hexToHSL(hex) {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            let r = parseInt(result[1], 16) / 255;
-            let g = parseInt(result[2], 16) / 255;
-            let b = parseInt(result[3], 16) / 255;
-
-            const max = Math.max(r, g, b);
-            const min = Math.min(r, g, b);
-            let h, s, l = (max + min) / 2;
-
-            if (max === min) {
-                h = s = 0;
-            } else {
-                const d = max - min;
-                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-                switch (max) {
-                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
-                    case g: h = ((b - r) / d + 2) / 6; break;
-                    case b: h = ((r - g) / d + 4) / 6; break;
-                }
+        function formatPhoneDisplay(phone) {
+            const cleaned = phone.replace(/\D/g, '');
+            if (cleaned.startsWith('60')) {
+                const withoutCountry = cleaned.substring(2);
+                return `+60 ${withoutCountry.substring(0, 2)}-${withoutCountry.substring(2, 5)} ${withoutCountry.substring(5)}`;
             }
-
-            return {
-                h: Math.round(h * 360),
-                s: Math.round(s * 100),
-                l: Math.round(l * 100)
-            };
+            return phone;
         }
 
-        function toggleFlip() {
+        function flipCard() {
             const cardInner = document.getElementById('cardInner');
             cardInner.classList.toggle('flipped');
         }
 
         function generateQRCode() {
-            const qrData = `BEGIN:VCARD
-VERSION:3.0
-FN:${CONFIG.name}
-TITLE:${CONFIG.title}
-ORG:${CONFIG.company}
-TEL:${CONFIG.phone}
-EMAIL:${CONFIG.email}
-URL:${CONFIG.website}
-NOTE:${CONFIG.bio}
-END:VCARD`;
-
-            new QRCode(document.getElementById("qrcode"), {
-                text: qrData,
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            
+            const vCardData = generateVCardData();
+            
+            new QRCode(qrContainer, {
+                text: vCardData,
                 width: 160,
                 height: 160,
-                colorDark: "#111827",
+                colorDark: CONFIG.color,
                 colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
+                correctLevel: QRCode.CorrectLevel.M
             });
         }
 
-        function downloadVCard() {
-            const vCardData = `BEGIN:VCARD
-VERSION:3.0
-FN:${CONFIG.name}
-TITLE:${CONFIG.title}
-ORG:${CONFIG.company}
-TEL;TYPE=CELL:${CONFIG.phone}
-EMAIL;TYPE=INTERNET:${CONFIG.email}
-URL:${CONFIG.website}
-ADR;TYPE=WORK:;;${CONFIG.location};;;
-NOTE:${CONFIG.bio}
-END:VCARD`;
+        function generateVCardData() {
+            const vcard = [
+                'BEGIN:VCARD',
+                'VERSION:3.0',
+                `FN:${CONFIG.name}`,
+                `ORG:${CONFIG.company}`,
+                `TITLE:${CONFIG.title}`,
+                `TEL;TYPE=CELL:${CONFIG.phone}`,
+                `EMAIL:${CONFIG.email}`,
+                `URL:${CONFIG.website}`,
+                `ADR;TYPE=WORK:;;${CONFIG.location};;;;`,
+                `NOTE:${CONFIG.bio}`,
+                'END:VCARD'
+            ].join('\n');
+            
+            return vcard;
+        }
 
+        function downloadVCard() {
+            const vCardData = generateVCardData();
             const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
@@ -705,89 +787,62 @@ END:VCARD`;
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
             
-            showToast('Contact saved to downloads');
+            showToast('Contact saved successfully!');
         }
 
-        function sendWhatsApp() {
-            const phoneNumber = CONFIG.phone.replace(/\D/g, '');
-            const message = encodeURIComponent(CONFIG.whatsapp_message || `Hi ${CONFIG.name.split(' ')[0]}, I found your digital card!`);
-            const whatsappURL = `https://wa.me/${phoneNumber}?text=${message}`;
-            window.open(whatsappURL, '_blank');
+        function openWhatsApp() {
+            const message = encodeURIComponent(CONFIG.whatsapp_message);
+            const phone = CONFIG.phone.replace(/\D/g, '');
+            const url = `https://wa.me/${phone}?text=${message}`;
+            window.open(url, '_blank');
         }
 
-        function shareCard() {
-            const shareData = {
-                title: `${CONFIG.name} - ${CONFIG.title}`,
-                text: `${CONFIG.name}\n${CONFIG.title} at ${CONFIG.company}\n${CONFIG.bio}`,
-                url: CONFIG.website
-            };
-
-            if (navigator.share) {
-                navigator.share(shareData)
-                    .then(() => showToast('Card shared successfully'))
-                    .catch(() => copyShareText());
-            } else {
-                copyShareText();
-            }
-        }
-
-        function copyShareText() {
-            const shareText = `${CONFIG.name}\n${CONFIG.title} at ${CONFIG.company}\n\n📧 ${CONFIG.email}\n📱 ${CONFIG.phone}\n🌐 ${CONFIG.website}\n\n${CONFIG.bio}`;
+        function copyLink() {
+            const url = window.location.href;
             
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(shareText)
-                    .then(() => showToast('Card details copied to clipboard'))
-                    .catch(() => fallbackCopy(shareText));
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('Link copied to clipboard!');
+                }).catch(() => {
+                    fallbackCopyLink(url);
+                });
             } else {
-                fallbackCopy(shareText);
+                fallbackCopyLink(url);
             }
         }
 
-        function copyToClipboard(type) {
-            let text = '';
-            switch(type) {
-                case 'email':
-                    text = CONFIG.email;
-                    break;
-                case 'phone':
-                    text = CONFIG.phone;
-                    break;
-                case 'website':
-                    text = CONFIG.website;
-                    break;
-            }
-
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text)
-                    .then(() => showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} copied!`))
-                    .catch(() => fallbackCopy(text));
-            } else {
-                fallbackCopy(text);
-            }
-        }
-
-        function fallbackCopy(text) {
+        function fallbackCopyLink(text) {
             const textArea = document.createElement('textarea');
             textArea.value = text;
             textArea.style.position = 'fixed';
             textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
             document.body.appendChild(textArea);
-            textArea.focus();
             textArea.select();
             
             try {
                 document.execCommand('copy');
-                showToast('Copied to clipboard!');
+                showToast('Link copied to clipboard!');
             } catch (err) {
-                showToast('Copy failed - please try manually');
+                showToast('Failed to copy link');
             }
             
             document.body.removeChild(textArea);
         }
 
-        function openWebsite() {
-            window.open(CONFIG.website, '_blank');
+        function shareCard() {
+            const shareData = {
+                title: CONFIG.name,
+                text: `${CONFIG.title} at ${CONFIG.company}`,
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).catch(() => {
+                    copyLink();
+                });
+            } else {
+                copyLink();
+            }
         }
 
         function showToast(message) {
@@ -797,7 +852,7 @@ END:VCARD`;
             
             setTimeout(() => {
                 toast.classList.remove('show');
-            }, 2500);
+            }, 3000);
         }
 
         document.addEventListener('DOMContentLoaded', initCard);

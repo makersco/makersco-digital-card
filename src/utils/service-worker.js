@@ -1,76 +1,87 @@
-// Cache version: v1 — increment to force cache refresh
+// Cache version: v1 - increment this number when updating cached resources
 const CACHE_NAME = 'makersco-card-v1';
-
-const CORE_ASSETS = [
+const urlsToCache = [
   '/',
   '/index.html',
-  '/manifest.json'
-];
-
-const CDN_ASSETS = [
+  '/manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
 ];
 
-const ALL_CACHE_ASSETS = [...CORE_ASSETS, ...CDN_ASSETS];
-
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ALL_CACHE_ASSETS);
-    })
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((cacheName) => cacheName !== CACHE_NAME)
-          .map((cacheName) => caches.delete(cacheName))
-      );
-    })
+    caches.keys()
+      .then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName !== CACHE_NAME) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
-
-  const isCDN = url.origin !== self.location.origin;
-  const isCoreAsset = CORE_ASSETS.some((asset) => url.pathname === asset || url.pathname.endsWith(asset));
-
-  if (isCDN || isCoreAsset) {
+  
+  const isCDNResource = url.hostname.includes('cdnjs.cloudflare.com') || 
+                        url.hostname.includes('cdn.jsdelivr.net') ||
+                        url.hostname.includes('unpkg.com');
+  
+  const isCachedAsset = urlsToCache.some(cachedUrl => 
+    request.url.includes(cachedUrl) || cachedUrl.includes(request.url)
+  );
+  
+  if (isCDNResource || isCachedAsset || request.destination === 'script' || 
+      request.destination === 'style' || request.destination === 'font' ||
+      request.destination === 'image') {
     event.respondWith(
-      caches.match(request).then((cachedResponse) => {
-        return cachedResponse || fetch(request).then((networkResponse) => {
-          return caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, networkResponse.clone());
+      caches.match(request)
+        .then(response => {
+          if (response) {
+            return response;
+          }
+          return fetch(request).then(networkResponse => {
+            if (networkResponse && networkResponse.status === 200) {
+              const responseToCache = networkResponse.clone();
+              caches.open(CACHE_NAME)
+                .then(cache => cache.put(request, responseToCache));
+            }
             return networkResponse;
           });
-        }).catch(() => {
-          if (request.mode === 'navigate') {
-            return caches.match('/index.html');
-          }
-        });
-      })
+        })
+        .catch(() => {
+          return caches.match('/index.html');
+        })
     );
   } else {
     event.respondWith(
-      fetch(request).then((networkResponse) => {
-        return caches.open(CACHE_NAME).then((cache) => {
-          cache.put(request, networkResponse.clone());
-          return networkResponse;
-        });
-      }).catch(() => {
-        return caches.match(request).then((cachedResponse) => {
-          return cachedResponse || (request.mode === 'navigate' ? caches.match('/index.html') : new Response('Offline', { status: 503 }));
-        });
-      })
+      fetch(request)
+        .then(response => {
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME)
+              .then(cache => cache.put(request, responseToCache));
+          }
+          return response;
+        })
+        .catch(() => {
+          return caches.match(request)
+            .then(response => response || caches.match('/index.html'));
+        })
     );
   }
 });

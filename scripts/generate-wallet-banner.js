@@ -8,7 +8,7 @@
  * Or:   npm run generate:banner
  *
  * Output: src/assets/wallet-hero-banner.png
- * Host:   https://makersco.github.io/makersco-card-live/src/assets/wallet-hero-banner.png
+ * Host:   https://makersco.github.io/makersco-digital-card/src/assets/wallet-hero-banner.png
  */
 
 "use strict";

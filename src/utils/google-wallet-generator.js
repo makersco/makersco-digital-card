@@ -32,20 +32,21 @@
 const fs   = require("fs");
 const path = require("path");
 const jwt  = require("jsonwebtoken");
+const LINKS = require("../config/links.json");
 
 // ── CONFIG — update these to match your card ────────────────────────────────
 const CONFIG = {
   // Identity
-  name:    "Wong Soon Fook",
-  title:   "Owner & Founder of Makers Co",
-  company: "MakersCo",
-  phone:   "+60 17-299 6254",
-  website: "https://makersco.github.io/makers-co-pages/",
-  cardUrl: "https://makersco.github.io/makersco-digital-card/src/cards/wong-soon-fook.html",
-  whatsapp:"https://wa.me/60172996254?text=Hi+Soon+Fook%2C+I+found+your+digital+card!",
+  name:    LINKS.person.name,
+  title:   LINKS.person.title,
+  company: LINKS.person.company,
+  phone:   LINKS.person.phoneDisplay,
+  website: LINKS.card.public,
+  cardUrl: LINKS.card.public,
+  whatsapp:`https://wa.me/${LINKS.person.whatsappNumber}?text=${encodeURIComponent(LINKS.person.whatsappMessage)}`,
 
   // Logo — must be a publicly accessible HTTPS URL, min 660×660px recommended
-  logoUrl: "https://makersco.github.io/makersco-digital-card/src/assets/makersco-wordmark-logo.png",
+  logoUrl: LINKS.assets.logo,
 
   // Background colour (hex, shown on the pass card)
   bgColor: "#0a0a0a",
@@ -79,7 +80,7 @@ function buildPassObject(issuerId) {
     logo: {
       sourceUri: { uri: CONFIG.logoUrl },
       contentDescription: {
-        defaultValue: { language: "en-US", value: "MakersCo Logo" }
+        defaultValue: { language: "en-US", value: `${LINKS.business.name} Logo` }
       }
     },
 
@@ -103,7 +104,7 @@ function buildPassObject(issuerId) {
     linksModuleData: {
       uris: [
         { id: "phone",    uri: `tel:${CONFIG.phone.replace(/\s/g,"")}`, description: `📞  ${CONFIG.phone}` },
-        { id: "website",  uri: CONFIG.website,             description: "🌐  Makers Co Website" },
+        { id: "website",  uri: CONFIG.website,             description: "🌐  Digital Card" },
         { id: "whatsapp", uri: CONFIG.whatsapp,            description: "💬  WhatsApp Me" },
       ],
     },
@@ -111,10 +112,10 @@ function buildPassObject(issuerId) {
     // Hero banner — wide image shown at top of pass
     heroImage: {
       sourceUri: {
-        uri: "https://makersco.github.io/makersco-digital-card/src/assets/wallet-hero-banner-wsf2.png"
+        uri: LINKS.assets.walletBanner
       },
       contentDescription: {
-        defaultValue: { language: "en-US", value: "MakersCo Digital Business Card" }
+        defaultValue: { language: "en-US", value: `${LINKS.business.name} Digital Business Card` }
       }
     },
 
