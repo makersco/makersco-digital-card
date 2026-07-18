@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/wong-soon-fook", "destination": "/src/cards/wong-soon-fook.html" },
+    { "source": "/wong-soon-fook-owner", "destination": "/src/cards/wong-soon-fook-owner.html" }
+  ]
+}
