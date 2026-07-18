@@ -269,7 +269,7 @@ function saveContact() {
   const vcf = [
     'BEGIN:VCARD','VERSION:3.0',
     `FN:${CONFIG.name}`,
-    `N:${CONFIG.name.split(' ').slice(-1)[0]};${CONFIG.name.split(' ')[0]};;;`,
+    `N:${CONFIG.name.split(' ')[0]};${CONFIG.name.split(' ').slice(1).join(' ')};;;`,
     `ORG:${CONFIG.company}`,
     `TITLE:${CONFIG.title}`,
     `TEL;TYPE=CELL:${CONFIG.phone}`,
