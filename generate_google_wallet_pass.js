@@ -37,12 +37,18 @@ const LINKS = require("./src/config/links.json");
 
 // ── Your Google Wallet Issuer ID ──────────────────────────────────────────────
 // Get this from: pay.google.com/business/console
-const ISSUER_ID = "3388000000XXXXXXXXX";   // ← replace with your 19-digit Issuer ID
-const CLASS_ID  = `${ISSUER_ID}.wsf_business_card`;
-const OBJECT_ID = `${ISSUER_ID}.wsf_card_001`;
+const ISSUER_ID = "3388000000023148661";
+const CLASS_ID  = `${ISSUER_ID}.makersco_biz_card`;
+const OBJECT_ID = `${ISSUER_ID}.wsf_card_003`;
 
 // ── Service account key ───────────────────────────────────────────────────────
 const KEY_FILE  = path.join(__dirname, "certs", "google-service-account.json");
+
+// ── Class definition (inline, so it doesn't need to exist ahead of time) ──────
+const genericClass = {
+  id: CLASS_ID,
+  issuerName: LINKS.business.name
+};
 
 // ── Pass data ─────────────────────────────────────────────────────────────────
 const passObject = {
@@ -147,6 +153,7 @@ function generateJWT() {
     typ: "savetowallet",
     iat: Math.floor(Date.now() / 1000),
     payload: {
+      genericClasses: [genericClass],
       genericObjects: [passObject]
     }
   };
