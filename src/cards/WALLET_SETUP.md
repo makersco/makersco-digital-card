@@ -97,7 +97,7 @@ Supports both Apple Wallet and Google Wallet. Has a free test option.
       Company:  MakersCo
       Phone:    +60192953528
       Email:    soonfookwong96@gmail.com
-      Website:  https://makersco.github.io/makersco-digital-card/src/cards/wong-soon-fook.html
+      Website:  https://makers-co.org/wong-soon-fook
 5. Publish → they give you:
       Apple Wallet:  a .pkpass hosted URL
       Google Wallet: a pay.google.com/gp/v/save/... URL

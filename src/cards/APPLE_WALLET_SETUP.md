@@ -17,7 +17,7 @@ No code. No Apple Developer account needed.
    - Company: `MakersCo`
    - Phone: `+60192953528`
    - Email: `soonfookwong96@gmail.com`
-   - Website: `https://makersco.github.io/makersco-digital-card/src/cards/wong-soon-fook.html`
+   - Website: `https://makers-co.org/wong-soon-fook`
 5. Download or copy the hosted `.pkpass` URL they provide
 6. Open `wong-soon-fook-owner.html` in a text editor
 7. Find this line near the bottom of the `<script>` section:

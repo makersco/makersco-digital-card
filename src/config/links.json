@@ -13,8 +13,8 @@
   },
 
   "card": {
-    "public": "https://makersco.github.io/makersco-digital-card/src/cards/wong-soon-fook.html",
-    "owner": "https://makersco.github.io/makersco-digital-card/src/cards/wong-soon-fook-owner.html"
+    "public": "https://makers-co.org/wong-soon-fook",
+    "owner": "https://makers-co.org/wong-soon-fook-owner"
   },
 
   "business": {
@@ -24,8 +24,8 @@
   },
 
   "assets": {
-    "logo": "https://makersco.github.io/makersco-digital-card/src/assets/makersco-wordmark-logo.png",
-    "walletBanner": "https://makersco.github.io/makersco-digital-card/src/assets/wallet-hero-banner-wsf2.png"
+    "logo": "https://makers-co.org/src/assets/makersco-wordmark-logo.png",
+    "walletBanner": "https://makers-co.org/src/assets/wallet-hero-banner-wsf2.png"
   },
 
   "maps": "https://maps.google.com/?q=Malaysia"
