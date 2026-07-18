@@ -55,6 +55,7 @@ body::before{
 .card-face{
   position:absolute;top:0;left:0;width:100%;height:100%;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform:translateZ(0);-webkit-transform:translateZ(0);
   border-radius:12px;
   background:var(--paper);
   border:3px solid var(--gold-border);
@@ -96,7 +97,7 @@ body::before{
 .biz-contacts .lbl{font-weight:700;color:var(--ink);margin-left:.6em}
 
 /* ── Back: contact actions ── */
-.card-back{transform:rotateY(180deg);display:flex;flex-direction:column;padding:5.5% 5% 4.5%}
+.card-back{transform:rotateY(180deg) translateZ(0.01px);-webkit-transform:rotateY(180deg) translateZ(0.01px);display:flex;flex-direction:column;padding:5.5% 5% 4.5%}
 .back-header{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .back-logos{display:flex;align-items:center;gap:10px}
 .back-logos img{height:56px;width:auto;object-fit:contain}

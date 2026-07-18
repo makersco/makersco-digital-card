@@ -55,6 +55,7 @@ body::before{
 .card-face{
   position:absolute;top:0;left:0;width:100%;height:100%;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform:translateZ(0);-webkit-transform:translateZ(0);
   border-radius:20px;
   background:linear-gradient(160deg,#15100A 0%,#1C140B 45%,#241808 100%);
   border:1px solid var(--gold-border);
@@ -104,7 +105,7 @@ body::before{
 .wallet-hint svg{width:16px;height:16px;flex-shrink:0}
 
 /* ── Back ── */
-.card-back{transform:rotateY(180deg);display:flex;flex-direction:column;padding:24px 22px 20px}
+.card-back{transform:rotateY(180deg) translateZ(0.01px);-webkit-transform:rotateY(180deg) translateZ(0.01px);display:flex;flex-direction:column;padding:24px 22px 20px}
 .back-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
 .back-mark{height:13px;width:auto;display:block;max-width:190px}
 .back-actions{flex:1;display:flex;flex-direction:column;gap:10px;justify-content:center}
