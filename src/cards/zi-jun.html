@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Ng Zi Jun — RFS Consultants Sdn Bhd | Digital Business Card"/>
+<title>Ng Zi Jun — RFS Consultants</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#070504;
+  --paper:#fefefe;
+  --ink:#171717;
+  --ink2:#3d3d3d;
+  --company:#82826a;
+  --navy:#26324a;
+  --red:#a5222d;
+  --gold-border:#c9a15a;
+  --text3:rgba(245,233,214,.34);
+  --gold:#C9A96E;
+}
+html{height:100%}
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--dark);
+  color:#F5E9D6;
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px 20px;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;top:0;left:0;right:0;height:55vh;
+  background:radial-gradient(ellipse at 50% -10%,rgba(201,169,110,.07) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── Card flip (business-card ratio, landscape) ── */
+.card-wrap{
+  width:min(620px,92vw);
+  aspect-ratio:1855/1131;
+  perspective:1800px;
+  position:relative;z-index:1;
+  flex-shrink:0;
+}
+.card-inner{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;
+  transition:transform .65s cubic-bezier(.22,.61,.36,1);
+}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:12px;
+  background:var(--paper);
+  border:3px solid var(--gold-border);
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  overflow:hidden;
+  container-type:inline-size;
+}
+
+/* ── Flip button ── */
+.flip-btn{
+  position:absolute;top:3.2%;right:2.6%;z-index:2;
+  width:8.5%;aspect-ratio:1;min-width:26px;max-width:34px;border-radius:50%;
+  background:rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.14);
+  color:var(--ink2);cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.flip-btn svg{width:52%;height:52%}
+
+/* ── Front: replica of the physical RFS Consultants / Prudential card ── */
+.biz-front{position:absolute;inset:0}
+.biz-rfs-logo{position:absolute;left:3%;top:5.5%;width:10%;aspect-ratio:1;object-fit:contain}
+.biz-company-name{
+  position:absolute;left:16%;top:8.8%;right:5%;
+  font-weight:800;font-size:5.1cqw;letter-spacing:.01em;
+  color:var(--company);white-space:nowrap;transform:scaleX(.96);transform-origin:left center;
+}
+.biz-company-reg{
+  position:absolute;right:4%;top:18.5%;
+  font-size:2.3cqw;font-weight:600;color:var(--navy);
+}
+.biz-prudential-logo{position:absolute;left:4%;top:35%;width:23%;aspect-ratio:458/371;object-fit:contain}
+.biz-address{
+  position:absolute;left:4%;bottom:6%;width:52%;
+  font-size:2.2cqw;line-height:1.5;color:var(--ink);
+}
+.biz-person{position:absolute;right:4%;top:55.5%;text-align:right}
+.biz-name{font-size:5.3cqw;font-weight:800;color:var(--ink);white-space:nowrap;font-family:Verdana,Arial,sans-serif}
+.biz-phone{font-size:2.85cqw;font-weight:600;color:var(--ink2);margin-top:.5em;white-space:nowrap}
+.biz-contacts{position:absolute;right:4%;bottom:6%;text-align:right;font-size:2.3cqw;line-height:1.85;color:var(--ink2)}
+.biz-contacts .lbl{font-weight:700;color:var(--ink);margin-left:.6em}
+
+/* ── Back: contact actions ── */
+.card-back{transform:rotateY(180deg);display:flex;flex-direction:column;padding:5.5% 5% 4.5%}
+.back-header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.back-logos{display:flex;align-items:center;gap:10px}
+.back-logos img{height:56px;width:auto;object-fit:contain}
+.back-actions{flex:1;display:flex;flex-direction:column;gap:3.2%;justify-content:center;padding:2% 0}
+.back-row{
+  display:flex;align-items:center;gap:14px;
+  width:100%;padding:2.6% 3%;border-radius:12px;
+  background:rgba(0,0,0,.025);border:1px solid rgba(0,0,0,.1);
+  cursor:pointer;text-decoration:none;color:var(--ink);
+  transition:background .15s,transform .15s;
+  font-family:Arial,Helvetica,sans-serif;
+}
+.back-row:hover{background:rgba(165,34,45,.06);transform:translateY(-1px)}
+.back-row:active{transform:scale(.985)}
+.back-icon{
+  width:15%;max-width:42px;aspect-ratio:1;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(38,50,74,.08);border:1px solid rgba(38,50,74,.16);
+  color:var(--navy);
+}
+.back-icon.wa{background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.3);color:#1f9c4f}
+.back-icon svg{width:52%;height:52%}
+.back-text{display:flex;flex-direction:column;gap:2px;text-align:left}
+.back-label{font-size:14px;font-weight:700;letter-spacing:.01em}
+.back-sub{font-size:11.5px;color:var(--ink2)}
+.back-footer{font-size:10.5px;color:var(--ink2);text-align:center;margin-top:1%}
+
+/* ── Toast ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:#1C140B;border:1px solid rgba(201,169,110,.3);color:#F5E9D6;
+  padding:9px 22px;border-radius:24px;font-size:13px;font-weight:600;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;z-index:999;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+.flip-caption{font-size:10.5px;color:var(--text3);text-align:center;letter-spacing:.05em;margin:16px 0 4px;position:relative;z-index:1}
+.powered{width:min(620px,92vw);margin:18px auto 0;text-align:center;font-size:10px;color:var(--text3);letter-spacing:.06em;position:relative;z-index:1;font-family:'Times New Roman',Times,serif}
+.powered span{color:var(--gold);opacity:.8}
+</style>
+</head>
+<body>
+
+<!-- Card -->
+<div class="card-wrap" id="cardWrap">
+  <div class="card-inner" id="cardInner">
+
+    <!-- Front: exact replica of the physical business card. Tap the corner icon to flip. -->
+    <div class="card-face card-front" id="cardFront">
+      <button class="flip-btn" onclick="flipCard()" aria-label="Flip card">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 9a8 8 0 0 1 14.3-3.5M20 15a8 8 0 0 1-14.3 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18 2v4h-4M6 22v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="biz-front">
+        <img class="biz-rfs-logo" src="/src/assets/rfs-consultants-logo.jpeg" alt="RFS Consultants"/>
+        <div class="biz-company-name">RFS CONSULTANTS SDN BHD</div>
+        <div class="biz-company-reg">(527056-W)</div>
+        <img class="biz-prudential-logo" src="/src/assets/prudential-logo.png" alt="Prudential"/>
+        <div class="biz-address">
+          1208, Block B, 12th Floor,<br/>
+          Phileo Damansara 1,<br/>
+          9, Jalan 16/11, Off Jalan Damansara,<br/>
+          46350 Petaling Jaya, Selangor, Malaysia.
+        </div>
+        <div class="biz-person">
+          <div class="biz-name">Ng Zi Jun</div>
+          <div class="biz-phone">+6017-279 8221</div>
+        </div>
+        <div class="biz-contacts">
+          <div>+603-7666 3815<span class="lbl">T</span></div>
+          <div>+603-7931 6016<span class="lbl">F</span></div>
+          <div>zijunnn98@gmail.com<span class="lbl">E</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back: the actionable rows -->
+    <div class="card-face card-back" id="cardBack">
+      <div class="back-header">
+        <div class="back-logos">
+          <img src="/src/assets/rfs-consultants-logo.jpeg" alt="RFS Consultants"/>
+        </div>
+        <button class="flip-btn" style="position:static" onclick="flipCard()" aria-label="Flip card">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 9a8 8 0 0 1 14.3-3.5M20 15a8 8 0 0 1-14.3 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18 2v4h-4M6 22v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="back-actions">
+        <button class="back-row" onclick="saveContact()">
+          <span class="back-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/></svg></span>
+          <span class="back-text"><span class="back-label">Save to Contacts</span><span class="back-sub">Add Ng Zi Jun to your phone</span></span>
+        </button>
+        <button class="back-row" onclick="openWhatsApp()">
+          <span class="back-icon wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.78 1.21h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg></span>
+          <span class="back-text"><span class="back-label">WhatsApp / Call</span><span class="back-sub">+60 17-279 8221</span></span>
+        </button>
+      </div>
+      <div class="back-footer">RFS Consultants Sdn Bhd (527056-W)</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="flip-caption">Use the ⤾ icon to flip and connect</div>
+<div class="powered">Powered by <span>Makers Co</span> · Digital Business Cards</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG = {
+  name:    "Ng Zi Jun",
+  title:   "RFS Consultants Sdn Bhd",
+  company: "RFS Consultants Sdn Bhd",
+  phone:   "+60172798221",
+  phone_display: "+60 17-279 8221",
+  wa_message: "Hi I want to connect"
+};
+
+// ── Flip ────────────────────────────────────────────────────────────────────
+function flipCard() {
+  document.getElementById('cardInner').classList.toggle('flipped');
+}
+
+// ── vCard (no email — cross-platform: opens native Contacts on iOS & Android) ──
+function saveContact() {
+  const vcf = [
+    'BEGIN:VCARD','VERSION:3.0',
+    `FN:${CONFIG.name}`,
+    `N:${CONFIG.name.split(' ').slice(-1)[0]};${CONFIG.name.split(' ')[0]};;;`,
+    `ORG:${CONFIG.company}`,
+    `TITLE:${CONFIG.title}`,
+    `TEL;TYPE=CELL:${CONFIG.phone}`,
+    'END:VCARD'
+  ].join('\r\n');
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([vcf], {type:'text/vcard'})),
+    download: `${CONFIG.name.replace(/\s+/g,'-')}.vcf`
+  });
+  a.click();
+  showToast('Contact saved! ✓');
+}
+
+function openWhatsApp() {
+  window.open(`https://wa.me/${CONFIG.phone.replace(/\D/g,'')}?text=${encodeURIComponent(CONFIG.wa_message)}`, '_blank');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
