@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/", "has": [{ "type": "host", "value": "wong-soon-fook.makers-co.org" }], "destination": "/src/cards/wong-soon-fook.html" },
+    { "source": "/", "has": [{ "type": "host", "value": "wong-soon-fook-owner.makers-co.org" }], "destination": "/src/cards/wong-soon-fook-owner.html" },
     { "source": "/wong-soon-fook", "destination": "/src/cards/wong-soon-fook.html" },
     { "source": "/wong-soon-fook-owner", "destination": "/src/cards/wong-soon-fook-owner.html" },
     { "source": "/zi-jun", "destination": "/zijun.html" },
