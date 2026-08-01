@@ -73,15 +73,8 @@ body::before{
 }
 
 /* ── Front ── */
-.card-front{display:flex;flex-direction:column;padding:30px 26px 26px;transition:box-shadow .2s}
+.card-front{cursor:pointer;display:flex;flex-direction:column;padding:30px 26px 26px;transition:box-shadow .2s}
 .card-wrap:hover .card-front{box-shadow:0 30px 70px rgba(0,0,0,.75),0 0 50px rgba(201,169,110,.08)}
-.flip-btn{
-  position:absolute;top:18px;right:18px;z-index:2;
-  width:32px;height:32px;border-radius:50%;
-  background:rgba(201,169,110,.08);border:1px solid var(--gold-border);
-  color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;
-}
-.flip-btn svg{width:15px;height:15px}
 .card-mark{height:13px;width:auto;display:block;max-width:190px}
 .front-center{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:6px}
 .card-name{
@@ -96,7 +89,7 @@ body::before{
 .card-tagline{font-family:'Times New Roman',Times,serif;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--text3);font-weight:600}
 
 /* ── Back ── */
-.card-back{transform:rotateY(180deg) translateZ(0.01px);-webkit-transform:rotateY(180deg) translateZ(0.01px);display:flex;flex-direction:column;padding:24px 22px 20px}
+.card-back{cursor:pointer;transform:rotateY(180deg) translateZ(0.01px);-webkit-transform:rotateY(180deg) translateZ(0.01px);display:flex;flex-direction:column;padding:24px 22px 20px}
 .back-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
 .back-mark{height:13px;width:auto;display:block;max-width:190px}
 .back-actions{flex:1;display:flex;flex-direction:column;gap:10px;justify-content:center}
@@ -145,11 +138,8 @@ body::before{
 <div class="card-wrap" id="cardWrap">
   <div class="card-inner" id="cardInner">
 
-    <!-- Front: identity. Tap the corner icon to flip to contact actions. -->
-    <div class="card-face card-front" id="cardFront">
-      <button class="flip-btn" onclick="flipCard()" aria-label="Flip card">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M4 9a8 8 0 0 1 14.3-3.5M20 15a8 8 0 0 1-14.3 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18 2v4h-4M6 22v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+    <!-- Front: identity. Tap anywhere on the front to flip to contact actions. -->
+    <div class="card-face card-front" id="cardFront" onclick="flipCard()">
       <img class="card-mark" src="src/assets/makersco-wordmark-only.png" alt="Makers Co"/>
       <div class="front-center">
         <div class="card-name">Wong Soon Fook</div>
@@ -159,13 +149,10 @@ body::before{
       </div>
     </div>
 
-    <!-- Back: the actionable rows -->
+    <!-- Back: tap anywhere that isn't a link/action row to flip back to the front. -->
     <div class="card-face card-back" id="cardBack">
       <div class="back-header">
         <img class="back-mark" src="src/assets/makersco-wordmark-only.png" alt="Makers Co"/>
-        <button class="flip-btn" style="position:static" onclick="flipCard()" aria-label="Flip card">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 9a8 8 0 0 1 14.3-3.5M20 15a8 8 0 0 1-14.3 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18 2v4h-4M6 22v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
       </div>
       <div class="back-actions">
         <button class="back-row" onclick="saveContact()">
@@ -187,7 +174,7 @@ body::before{
   </div>
 </div>
 
-<div class="flip-caption">Use the ⤾ icon to flip and connect</div>
+<div class="flip-caption">Tap the card to flip and connect</div>
 <div class="powered">Powered by <span>Makers Co</span> · Digital Business Cards</div>
 
 <!-- Toast -->
@@ -208,6 +195,12 @@ const CONFIG = {
 function flipCard() {
   document.getElementById('cardInner').classList.toggle('flipped');
 }
+
+// Tapping the back anywhere that isn't a link/action row flips back to the front.
+document.getElementById('cardBack').addEventListener('click', function(e) {
+  if (e.target.closest('.back-row')) return;
+  flipCard();
+});
 
 // ── vCard (no email — cross-platform: opens native Contacts on iOS & Android) ──
 function saveContact() {
