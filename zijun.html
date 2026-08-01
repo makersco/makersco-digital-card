@@ -64,16 +64,8 @@ body::before{
   container-type:inline-size;
 }
 
-/* ── Flip button ── */
-.flip-btn{
-  position:absolute;top:3.2%;right:2.6%;z-index:2;
-  width:8.5%;aspect-ratio:1;min-width:26px;max-width:34px;border-radius:50%;
-  background:rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.14);
-  color:var(--ink2);cursor:pointer;display:flex;align-items:center;justify-content:center;
-}
-.flip-btn svg{width:52%;height:52%}
-
 /* ── Front: replica of the physical RFS Consultants / Prudential card ── */
+.card-front{cursor:pointer}
 .biz-front{position:absolute;inset:0}
 .biz-rfs-logo{position:absolute;left:3%;top:5.5%;width:10%;aspect-ratio:1;object-fit:contain}
 .biz-company-name{
@@ -97,7 +89,7 @@ body::before{
 .biz-contacts .lbl{font-weight:700;color:var(--ink);margin-left:.6em}
 
 /* ── Back: contact actions ── */
-.card-back{transform:rotateY(180deg) translateZ(0.01px);-webkit-transform:rotateY(180deg) translateZ(0.01px);display:flex;flex-direction:column;padding:5.5% 5% 4.5%}
+.card-back{cursor:pointer;transform:rotateY(180deg) translateZ(0.01px);-webkit-transform:rotateY(180deg) translateZ(0.01px);display:flex;flex-direction:column;padding:5.5% 5% 4.5%}
 .back-header{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .back-logos{display:flex;align-items:center;gap:10px}
 .back-logos img{height:56px;width:auto;object-fit:contain}
@@ -145,11 +137,8 @@ body::before{
 <div class="card-wrap" id="cardWrap">
   <div class="card-inner" id="cardInner">
 
-    <!-- Front: exact replica of the physical business card. Tap the corner icon to flip. -->
-    <div class="card-face card-front" id="cardFront">
-      <button class="flip-btn" onclick="flipCard()" aria-label="Flip card">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M4 9a8 8 0 0 1 14.3-3.5M20 15a8 8 0 0 1-14.3 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18 2v4h-4M6 22v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+    <!-- Front: exact replica of the physical business card. Tap anywhere to flip. -->
+    <div class="card-face card-front" id="cardFront" onclick="flipCard()">
       <div class="biz-front">
         <img class="biz-rfs-logo" src="src/assets/rfs-consultants-logo.jpeg" alt="RFS Consultants"/>
         <div class="biz-company-name">RFS CONSULTANTS SDN BHD</div>
@@ -173,15 +162,12 @@ body::before{
       </div>
     </div>
 
-    <!-- Back: the actionable rows -->
+    <!-- Back: tap anywhere that isn't a link/action row to flip back to the front. -->
     <div class="card-face card-back" id="cardBack">
       <div class="back-header">
         <div class="back-logos">
           <img src="src/assets/rfs-consultants-logo.jpeg" alt="RFS Consultants"/>
         </div>
-        <button class="flip-btn" style="position:static" onclick="flipCard()" aria-label="Flip card">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 9a8 8 0 0 1 14.3-3.5M20 15a8 8 0 0 1-14.3 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18 2v4h-4M6 22v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
       </div>
       <div class="back-actions">
         <button class="back-row" onclick="saveContact()">
@@ -199,7 +185,7 @@ body::before{
   </div>
 </div>
 
-<div class="flip-caption">Use the ⤾ icon to flip and connect</div>
+<div class="flip-caption">Tap the card to flip and connect</div>
 <div class="powered">Powered by <span>Makers Co</span> · Digital Business Cards</div>
 
 <!-- Toast -->
@@ -219,6 +205,12 @@ const CONFIG = {
 function flipCard() {
   document.getElementById('cardInner').classList.toggle('flipped');
 }
+
+// Tapping the back anywhere that isn't a link/action row flips back to the front.
+document.getElementById('cardBack').addEventListener('click', function(e) {
+  if (e.target.closest('.back-row')) return;
+  flipCard();
+});
 
 // ── vCard (no email — cross-platform: opens native Contacts on iOS & Android) ──
 function saveContact() {
