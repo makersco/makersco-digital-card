@@ -8,14 +8,14 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0a0a0f;
-  --surface:#111827;
-  --surface2:#1f2937;
+  --bg:#2a160a;
+  --surface:#331c08;
+  --surface2:#4a2f18;
   --border:rgba(255,255,255,0.08);
-  --accent:#6366f1;
-  --accent2:#8b5cf6;
-  --text:#e2e8f0;
-  --muted:#64748b;
+  --accent:#ffd3ac;
+  --accent2:#664c36;
+  --text:#f7ece0;
+  --muted:#ccbeb1;
   --green:#10b981;
   --red:#ef4444;
 }
@@ -30,16 +30,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.9
 .nav-back:hover{color:var(--text)}
 .nav-right{display:flex;align-items:center;gap:10px}
 .nav-cta{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(99,102,241,.4)}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,211,172,.4)}
 
 /* HERO */
 .hero{padding:120px 24px 80px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(99,102,241,.15) 0%,transparent 70%);pointer-events:none}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:500;margin-bottom:24px}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(255,211,172,.15) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,211,172,.1);border:1px solid rgba(255,211,172,.3);color:#ffe0be;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:500;margin-bottom:24px}
 .hero-badge span{width:6px;height:6px;border-radius:50%;background:#10b981;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 h1{font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.1;margin-bottom:20px}
-h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),#ccbeb1);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .hero-sub{font-size:18px;color:var(--muted);max-width:560px;margin:0 auto 40px}
 .hero-stats{display:flex;justify-content:center;gap:48px;flex-wrap:wrap}
 .stat{text-align:center}
@@ -57,8 +57,8 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),#ec4899)
 .pricing{max-width:1100px;margin:0 auto;padding:48px 24px 80px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
 
 .plan{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;display:flex;flex-direction:column;transition:all .3s;position:relative;overflow:hidden}
-.plan:hover{border-color:rgba(99,102,241,.4);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
-.plan.featured{border-color:rgba(99,102,241,.5);background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(139,92,246,.04))}
+.plan:hover{border-color:rgba(255,211,172,.4);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.plan.featured{border-color:rgba(255,211,172,.5);background:linear-gradient(135deg,rgba(255,211,172,.08),rgba(102,76,54,.04))}
 .plan.featured::before{content:'Most Popular';position:absolute;top:16px;right:-28px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:11px;font-weight:700;padding:4px 40px;transform:rotate(45deg) translateX(20px);letter-spacing:.5px}
 
 .plan-name{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:8px}
@@ -79,16 +79,16 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),#ec4899)
 .feature-list li span{color:var(--text)}
 .feature-list li.muted-item span{color:var(--muted)}
 .tag{font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:6px;vertical-align:middle}
-.tag.offline{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.25)}
-.tag.online{background:rgba(99,102,241,.15);color:#818cf8;border:1px solid rgba(99,102,241,.25)}
+.tag.offline{background:rgba(13, 13, 13, 0.15);color:#b91010;border:1px solid rgba(1, 1, 1, 0.25)}
+.tag.online{background:rgba(255,211,172,.15);color:#10b981;border:1px solid rgba(255,211,172,.25)}
 .tag.soon{background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}
 
 .plan-cta{width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
-.plan-cta.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 20px rgba(99,102,241,.35)}
-.plan-cta.primary:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(99,102,241,.5)}
+.plan-cta.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 20px rgba(255,211,172,.35)}
+.plan-cta.primary:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(255,211,172,.5)}
 .plan-cta.secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
-.plan-cta.secondary:hover{border-color:rgba(99,102,241,.5);background:rgba(99,102,241,.06)}
-.plan-cta.enterprise{background:linear-gradient(135deg,#0f172a,#1e293b);color:var(--text);border:1px solid rgba(255,255,255,.15)}
+.plan-cta.secondary:hover{border-color:rgba(255,211,172,.5);background:rgba(255,211,172,.06)}
+.plan-cta.enterprise{background:linear-gradient(135deg,#2a160a,#4a2f18);color:var(--text);border:1px solid rgba(255,255,255,.15)}
 .plan-cta.enterprise:hover{border-color:rgba(255,255,255,.3)}
 
 /* FEATURES SHOWCASE */
@@ -97,11 +97,13 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),#ec4899)
 .showcase .sub{text-align:center;color:var(--muted);margin-bottom:48px;font-size:16px}
 .showcase-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
 .feat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;transition:all .25s}
-.feat-card:hover{border-color:rgba(99,102,241,.35);transform:translateY(-2px)}
+.feat-card:hover{border-color:rgba(255,211,172,.35);transform:translateY(-2px)}
 .feat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px}
 .feat-card h4{font-size:15px;font-weight:700;margin-bottom:6px}
 .feat-card p{font-size:13px;color:var(--muted);line-height:1.6}
 .feat-tags{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.feat-problem{display:flex;align-items:flex-start;gap:8px;font-size:12.5px;font-style:italic;font-weight:500;line-height:1.55;letter-spacing:.1px;color:#f87171;opacity:.9;margin-bottom:16px;padding-bottom:16px;border-bottom:1px dashed var(--border)}
+.feat-problem .x{flex-shrink:0;margin-top:1px;width:16px;height:16px;border-radius:50%;background:rgba(239,68,68,.15);color:var(--red);font-style:normal;font-weight:800;font-size:10px;display:flex;align-items:center;justify-content:center}
 
 /* FAQ */
 .faq{max-width:720px;margin:0 auto;padding:0 24px 80px}
@@ -117,7 +119,7 @@ h1 em{font-style:normal;background:linear-gradient(135deg,var(--accent),#ec4899)
 
 /* CTA SECTION */
 .cta-section{text-align:center;padding:0 24px 100px}
-.cta-box{max-width:600px;margin:0 auto;background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(139,92,246,.05));border:1px solid rgba(99,102,241,.25);border-radius:24px;padding:48px 32px}
+.cta-box{max-width:600px;margin:0 auto;background:linear-gradient(135deg,rgba(255,211,172,.1),rgba(102,76,54,.05));border:1px solid rgba(255,211,172,.25);border-radius:24px;padding:48px 32px}
 .cta-box h2{font-size:28px;font-weight:800;margin-bottom:12px}
 .cta-box p{color:var(--muted);margin-bottom:32px}
 .cta-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
@@ -165,7 +167,7 @@ footer{text-align:center;padding:24px;border-top:1px solid var(--border);color:v
 <div class="billing-toggle">
   <div class="toggle-wrap">
     <div class="toggle-opt active" id="toggle-monthly" onclick="setBilling('monthly')">Monthly</div>
-    <div class="toggle-opt" id="toggle-annual" onclick="setBilling('annual')">Annual <span class="save-badge">Save 28%</span></div>
+    <div class="toggle-opt" id="toggle-annual" onclick="setBilling('annual')">Annual <span class="save-badge">Save 10%</span></div>
   </div>
 </div>
 
@@ -178,22 +180,23 @@ footer{text-align:center;padding:24px;border-top:1px solid var(--border);color:v
     <div class="plan-desc">Perfect for individuals & solo professionals</div>
     <div class="plan-price">
       <span class="currency">RM</span>
-      <span class="amount" id="price-starter">25-30</span>
+      <span class="amount" id="price-starter">38</span>
       <span class="period" id="period-starter">/month</span>
     </div>
     <div class="price-annual" id="annual-starter"></div>
     <div class="plan-who"><strong>1 person.</strong> 1 digital card. Everything you need to make a great first impression.</div>
     <ul class="feature-list">
-      <li><span class="icon check">✓</span><span>Digital business card web address <span class="tag online">Online</span></span></li>
-      <li><span class="icon check">✓</span><span>QR Base Digital Card through PDF<span class="tag offline">Offline</span></span></li>
+      <li><span class="icon check">✓</span><span>Digital business card <span class="tag online">Online</span></span></li>
+      <li><span class="icon check">✓</span><span>QR Base Digital Card Exportable PDF<span class="tag offline">Offline</span></span></li>
+      <li><span class="icon check">✓</span><span>NFC Card<span class="tag soon">Future</span></span></li>
       <li><span class="icon check">✓</span><span>Save to phone contacts</span></li>
       <li><span class="icon check">✓</span><span>Call & Email buttons</span></li>
-      <li><span class="icon check">✓</span><span>Social media links (up to 2)</span></li>
-      <li><span class="icon check">✓</span><span>Up to 3 change of design</span></li>
+      <li><span class="icon check">✓</span><span>Attached links (up to 3)</span></li>
+      <!-- <li><span class="icon check">✓</span><span>Up to 3 change of design</span></li> -->
       <li><span class="icon check">✓</span><span>Share via WhatsApp & link</span></li>
       <li><span class="icon check">✓</span><span>Custom brand colors & logo</span></li>
       <li class="muted-item"><span class="icon cross">✗</span><span>Apple & Google Wallet</span></li>
-      <li class="muted-item"><span class="icon cross">✗</span><span>Lead capture form</span></li>
+      <li class="muted-item"><span class="icon cross">✗</span><span>Specific Domain</span></li>
     </ul>
     <a href="#" class="plan-cta secondary" onclick="enquire('starter');return false">
       Get Starter →
@@ -206,18 +209,20 @@ footer{text-align:center;padding:24px;border-top:1px solid var(--border);color:v
     <div class="plan-desc">For professionals who mean business</div>
     <div class="plan-price">
       <span class="currency">RM</span>
-      <span class="amount" id="price-business">450</span>
+      <span class="amount" id="price-business">360</span>
       <span class="period" id="period-business">/month</span>
     </div>
     <div class="price-annual" id="annual-business"></div>
-    <div class="plan-who"><strong>Up to 20 people.</strong> Full branding, wallet passes, lead capture, and professional exports.</div>
+    <div class="plan-who"><strong>Up to 10 people.</strong> Full branding and professional exports.</div>
     <ul class="feature-list">
-      <li><span class="icon check">✓</span><span>Digital business card web address<span class="tag online">Online</span></span></li>
+      <li><span class="icon check">✓</span><span>Digital business card <span class="tag online">Online</span></span></li>
+      <li><span class="icon check">✓</span><span>QR Base Digital Card <span class="tag online">Online</span></span></li>
       <li><span class="icon check">✓</span><span>WhatsApp, Call & Email buttons<span class="tag online">Online</span></span></li>
+      <li><span class="icon check">✓</span><span>Shared Domain <span class="tag online">Online</span></span></li>
+      <li><span class="icon check">✓</span><span>NFC Card<span class="tag soon">Future</span></span></li>
       <li><span class="icon check">✓</span><span>2 premium card designs</span></li>
-      <li><span class="icon check">✓</span><span>Social links (up to 5)</span></li>
-      <li><span class="icon check">✓</span><span>PDF card for print <span class="tag offline">Offline</span></span></li>
-      <li><span class="icon check">✓</span><span>Priority WhatsApp support</span></li>
+      <li><span class="icon check">✓</span><span>Attached links (up to 5)</span></li>
+      <li><span class="icon check">✓</span><span>Custom brand colors & logo</span></li>
       <li class="muted-item"><span class="icon cross">✗</span><span>Apple & Google Wallet</span></li>
     </ul>
     <a href="#" class="plan-cta primary" onclick="enquire('business');return false">
@@ -228,28 +233,31 @@ footer{text-align:center;padding:24px;border-top:1px solid var(--border);color:v
   <!-- ENTERPRISE -->
   <div class="plan">
     <div class="plan-name">Enterprise</div>
-    <div class="plan-desc">For companies with 50 people</div>
+    <div class="plan-desc">For groups with 20 people</div>
     <div class="plan-price">
       <span class="currency">RM</span>
-      <span class="amount" id="price-enterprise">1200</span>
+      <span class="amount" id="price-enterprise">700</span>
       <span class="period" id="period-enterprise">/month</span>
     </div>
     <div class="price-annual" id="annual-enterprise"></div>
-    <div class="plan-who"><strong>Up to 50 people.</strong> Full company branding, team management, and dedicated account manager.</div>
+    <div class="plan-who"><strong>Up to 20 people.</strong> Full company branding, team management, and instant focus to business use case.</div>
     <ul class="feature-list">
       <li><span class="icon check">✓</span><span>Everything in Business</span></li>
-      <li><span class="icon check">✓</span><span>All 4 premium designs</span></li>
-      <li><span class="icon check">✓</span><span>Up to 10 integrated links</span></li>
+      <li><span class="icon check">✓</span><span>Company 4 premium designs</span></li>
+      <li><span class="icon check">✓</span><span>Attached links (up to 10)</span></li>
       <li><span class="icon check">✓</span><span>WhatsApp, Call & Email buttons<span class="tag online">Online</span></span></li>
+      <li><span class="icon check">✓</span><span>QR Base Digital Card <span class="tag online">Online</span></span></li>
+      <li><span class="icon check">✓</span><span>Apple or Google Wallet integrations<span class="tag online">Online</span></span></li>
+      <li><span class="icon check">✓</span><span>NFC Card<span class="tag soon">Future</span></span></li>
       <!-- <li><span class="icon check">✓</span><span>Company-wide branding</span></li> -->
-      <li><span class="icon check">✓</span><span>Team admin dashboard <span class="tag online">Online</span></span></li>
-      <li><span class="icon check">✓</span><span>Up to 3 cards per person</span></li>
+      <!-- <li><span class="icon check">✓</span><span>Team admin dashboard <span class="tag online">Online</span></span></li> -->
+      <!-- <li><span class="icon check">✓</span><span>Up to 3 cards per person</span></li> -->
       <!-- <li><span class="icon check">✓</span><span>Bulk onboarding (CSV import)</span></li> -->
       <!-- <li><span class="icon check">✓</span><span>Embedded video on card</span></li> -->
       <li><span class="icon check">✓</span><span>Image & portfolio gallery</span></li>
-      <li><span class="icon check">✓</span><span>Apple & Google Wallet<span class="tag online">Online</span></span></li>
-      <li><span class="icon check">✓</span><span>Registration Event Form</span></li>
-      <li><span class="icon check">✓</span><span>Video Meeting Background</span></li>
+      <li><span class="icon check">✓</span><span>Custom brand colors & logo</span></li>
+      <!-- <li><span class="icon check">✓</span><span>Registration Event Form</span></li>
+      <li><span class="icon check">✓</span><span>Video Meeting Background</span></li> -->
     </ul>
     <a href="#" class="plan-cta enterprise" onclick="enquire('enterprise');return false">
       Contact Us →
@@ -265,55 +273,75 @@ footer{text-align:center;padding:24px;border-top:1px solid var(--border);color:v
   <div class="showcase-grid">
 
     <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(99,102,241,.15)">📱</div>
+      <div class="feat-problem"><span class="x">✕</span><span>Physical cards run out, get lost, or end up in the trash before the meeting's even over.</span></div>
+      <div class="feat-icon" style="background:rgba(102,76,54,.15)">🪪</div>
+      <h4>Portable</h4>
+      <p>Why carry a hefty amount of cards when your every day device carries it for you.</p>
+      <div class="feat-tags"><span class="tag offline">Offline</span></div>
+    </div>
+
+    <div class="feat-card">
+      <div class="feat-problem"><span class="x">✕</span><span>Weak signal at events and exhibitions means your link times out right when it matters.</span></div>
+      <div class="feat-icon" style="background:rgba(255,211,172,.15)">📱</div>
       <h4>Works Without Internet</h4>
       <p>Your card loads instantly even with no signal. Perfect for events, exhibitions, and networking anywhere in Malaysia.</p>
       <div class="feat-tags"><span class="tag offline">Offline Ready</span></div>
     </div>
 
     <div class="feat-card">
+      <div class="feat-problem"><span class="x">✕</span><span>Manual data entry and clunky sign-up steps make people give up before connecting.</span></div>
+      <div class="feat-icon" style="background:rgba(251,191,36,.15)">⚡</div>
+      <h4>Usability</h4>
+      <p>Automated save, direct to connect, instant reach and professional designs.</p>
+      <div class="feat-tags"><span class="tag offline">Offline</span></div>
+    </div>
+
+    <div class="feat-card">
+      <div class="feat-problem"><span class="x">✕</span><span>Saved contacts get buried in the camera roll and forgotten within a day.</span></div>
       <div class="feat-icon" style="background:rgba(16,185,129,.15)">👛</div>
       <h4>Apple & Google Wallet</h4>
-      <p>Save your card directly to the Wallet app. Shows on lock screen. Automatically syncs to Apple Watch.</p>
+      <p>Save your card directly to the Wallet app. Instant QR scan from your own wallet. </p>
       <div class="feat-tags"><span class="tag online">Online Ready</span></div>
     </div>
 
     <div class="feat-card">
+      <div class="feat-problem"><span class="x">✕</span><span>One card format doesn't fit every platform your clients actually use to reach you.</span></div>
       <div class="feat-icon" style="background:rgba(245,158,11,.15)">🔗</div>
       <h4>Share Anywhere</h4>
-      <p>WhatsApp, SMS, Telegram, email, QR code, NFC tap — 17 ways to share. One link works everywhere.</p>
+      <p>WhatsApp, SMS, Telegram, email, QR code, NFC tap(Physical NFC) — 17 ways to share. One link works everywhere.</p>
       <div class="feat-tags"><span class="tag online">Online</span><span class="tag offline">QR Offline</span></div>
     </div>
 
     <div class="feat-card">
+      <div class="feat-problem"><span class="x">✕</span><span>Generic template cards make you look and feel like everyone else in the room.</span></div>
       <div class="feat-icon" style="background:rgba(236,72,153,.15)">🎨</div>
       <h4>Your Brand, Your Design</h4>
-      <p>Up to 5 premium designs. Your brand colors. Your logo. Looks nothing like a generic card — because it isn't.</p>
+      <p>Premium designs tailor for your business. Your brand colors. Your logo. Looks nothing like a generic card — because it isn't.</p>
       <div class="feat-tags"><span class="tag offline">Offline Ready</span></div>
     </div>
 
     <!-- <div class="feat-card">
-      <div class="feat-icon" style="background:rgba(139,92,246,.15)">📋</div>
+      <div class="feat-icon" style="background:rgba(102,76,54,.15)">📋</div>
       <h4>Lead Capture Built In</h4>
       <p>Visitors can send you a message directly from your card. You get notified instantly. No separate form tool needed.</p>
       <div class="feat-tags"><span class="tag online">Online</span></div>
     </div> -->
 
-    <div class="feat-card">
+    <!-- <div class="feat-card">
       <div class="feat-icon" style="background:rgba(14,165,233,.15)">📄</div>
       <h4>PDF & Print Ready</h4>
       <p>Export your card as a print-ready PDF for events where you need a physical copy. Same design, instantly generated.</p>
       <div class="feat-tags"><span class="tag offline">Offline</span></div>
-    </div>
+    </div> -->
 
-    <div class="feat-card">
+    <!-- <div class="feat-card">
       <div class="feat-icon" style="background:rgba(251,191,36,.15)">✉️</div>
       <h4>Professional Email Signature</h4>
       <p>Generate an HTML email signature with your card link + QR code. Compatible with Gmail, Outlook, and Apple Mail.</p>
       <div class="feat-tags"><span class="tag online">Online</span></div>
-    </div>
+    </div> -->
 
-    <div class="feat-card">
+    <!-- <div class="feat-card">
       <div class="feat-icon" style="background:rgba(239,68,68,.15)">🎥</div>
       <h4>Video Meeting Background</h4>
       <p>Custom Zoom and Google Meet background with your name, company, and a scannable QR code. Look sharp every call.</p>
@@ -325,7 +353,7 @@ footer{text-align:center;padding:24px;border-top:1px solid var(--border);color:v
       <h4>Team Management</h4>
       <p>One dashboard to manage cards for your entire team. Consistent branding. Instant onboarding for new staff.</p>
       <div class="feat-tags"><span class="tag online">Online</span><span class="tag soon">Enterprise</span></div>
-    </div>
+    </div> -->
 
   </div>
 </section>
@@ -361,12 +389,12 @@ footer{text-align:center;padding:24px;border-top:1px solid var(--border);color:v
 
   <div class="faq-item">
     <div class="faq-q" onclick="toggleFaq(this)">Is this a once-off payment or subscription? <span class="arrow">▼</span></div>
-    <div class="faq-a"><p>Monthly or annual subscription. Annual plans save 27–30% compared to monthly. Cancel anytime — no lock-in contracts. Your card stays live for the duration of your subscription.</p></div>
+    <div class="faq-a"><p>Monthly or annual subscription. Annual plans save 10% compared to monthly. Cancel anytime — no lock-in contracts. Your card stays live for the duration of your subscription.</p></div>
   </div>
 
   <div class="faq-item">
     <div class="faq-q" onclick="toggleFaq(this)">Do you offer setup help? <span class="arrow">▼</span></div>
-    <div class="faq-a"><p>Yes. All plans come with a setup call via WhatsApp. Enterprise plans include on-site or Zoom training for your team. We handle everything — you just send us your details.</p></div>
+    <div class="faq-a"><p>Yes. All plans come with a setup for first time base after will be through Whatsapp support. We handle everything — you just send us your details.</p></div>
   </div>
 </section>
 
@@ -391,13 +419,13 @@ footer{text-align:center;padding:24px;border-top:1px solid var(--border);color:v
 <script>
 // ── Billing toggle ────────────────────────────────────────────────────────────
 const prices = {
-  monthly: { starter: 25, business: 400, enterprise: 1200 },
-  annual:  { starter: 249, business: 3899, enterprise: 9999 },
+  monthly: { starter: 38, business: 360, enterprise: 900 },
+  annual:  { starter: 420, business: 3960, enterprise: 9999 },
 };
 const annualSave = {
-  starter: 'RM 249/year — save RM 51 vs monthly',
-  business: 'RM 3,899/year — save RM 901 vs monthly',
-  enterprise: 'RM 9,999/year — save RM 4,401 or 30% vs monthly',
+  starter: 'RM 420/year — save RM 36 vs monthly',
+  business: 'RM 4,020/year — save RM 360 vs monthly',
+  enterprise: 'RM 9,999/year — save RM 801 vs monthly',
 };
 let billing = 'monthly';
 
