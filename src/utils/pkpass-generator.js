@@ -22,43 +22,49 @@ const path = require('path');
 const { PKPass } = require('passkit-generator');
 const sharp = require('sharp');
 const QRCode = require('qrcode');
+const LINKS = require('../config/links.json');
 
 // ---------------------------------------------------------------------------
 // CONFIG — edit these values to customise the pass.
 // ---------------------------------------------------------------------------
 const CONFIG = {
   // Pass identity (must match values registered in your Apple Developer account)
-  passTypeIdentifier: 'pass.com.makersco.digitalcard',
-  teamIdentifier: 'ABCD123456',
-  organizationName: 'Makers & Co.',
+  passTypeIdentifier: 'pass.co.dummy',
+  teamIdentifier: 'D5V8NK8DVE',
+  organizationName: LINKS.person.company,
   serialNumber: `card-${Date.now()}`,
 
-  // Card holder
+  // Card holder (back-of-pass contact info)
   holder: {
-    name: 'Wong Soon Fook',
-    title: 'Founder & Engineer',
-    company: 'Makers & Co.',
-    phone: '+60 12 345 6789',
-    email: 'hello@makers.co',
-    website: 'https://makers.co/wong-soonfook',
+    name: LINKS.person.name,
+    email: LINKS.person.email,
+    website: LINKS.card.public,
+  },
+
+  // Front-of-pass fields — the name/title already appear inside the hero strip image,
+  // so these only need the two rows shown below the strip.
+  front: {
+    company: 'Makers Co',
+    role: 'Owner & Founder',
+    phone: LINKS.person.phoneDisplay,
+    name: LINKS.person.name,
   },
 
   // QR code destination (scanned to open the digital card)
-  cardUrl: 'https://makers.co/c/wong-soonfook',
+  cardUrl: LINKS.card.public,
 
-  // Colour palette (design rules: no pure black, accent saturation < 80%)
+  // Colour palette — matches the MakersCo gold/dark brand theme.
   colors: {
-    background: '#0b0f1a',   // deep navy, not #000
-    foreground: '#f5f5f7',   // off-white
-    label:      '#9aa3b2',   // muted slate
-    accentFrom: '#5b8def',   // calm blue (HSL S ≈ 78%)
-    accentTo:   '#7c5cff',   // soft violet
+    background: '#15100A',
+    foreground: '#F5E9D6',
+    label:      '#C9A96E',
   },
 
-  // Strip image dimensions (Apple spec: 375x123 @1x, 750x246 @2x, 1125x369 @3x)
+  // Strip image sizes (Apple spec: 375x123 @1x, 750x246 @2x, 1125x369 @3x)
   strip: {
-    width:  1125,
-    height: 369,
+    w1x: 375, h1x: 123,
+    w2x: 750, h2x: 246,
+    w3x: 1125, h3x: 369,
   },
 
   // Icon & logo dimensions
@@ -73,9 +79,10 @@ const CONFIG = {
     signerKeyPass:   process.env.APPLE_SIGNER_KEY_PASSPHRASE || '',
   },
 
-  // Output
-  outputDir:  path.resolve(__dirname, 'output'),
-  outputFile: 'card.pkpass',
+  // Output — written straight into src/cards so it can be committed and hosted
+  // alongside wong-soon-fook-owner.html (see PKPASS_URL there).
+  outputDir:  path.resolve(__dirname, '..', 'cards'),
+  outputFile: 'wong-soon-fook-owner.pkpass',
 };
 
 // ---------------------------------------------------------------------------
@@ -111,68 +118,44 @@ function rgbCss(hex) {
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-/**
- * Build the gradient strip as an SVG, then rasterise to PNG with sharp.
- * Uses transform/opacity-friendly static art (no animations needed at runtime).
- */
+const STRIP_PATH = path.join(__dirname, '..', 'assets', 'wallet-hero-banner-wsf2.png');
+
+/** Hero strip — the branded photo strip (name/title baked in), cropped to Apple's strip aspect. */
 async function buildStripPng(width, height) {
-  const { accentFrom, accentTo, background } = CONFIG.colors;
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-      <defs>
-        <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%"   stop-color="${accentFrom}"/>
-          <stop offset="100%" stop-color="${accentTo}"/>
-        </linearGradient>
-        <radialGradient id="glow" cx="20%" cy="30%" r="60%">
-          <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.18"/>
-          <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <rect width="100%" height="100%" fill="${background}"/>
-      <rect width="100%" height="100%" fill="url(#g)"/>
-      <rect width="100%" height="100%" fill="url(#glow)"/>
-    </svg>
-  `.trim();
-  return sharp(Buffer.from(svg)).png().toBuffer();
+  return sharp(STRIP_PATH)
+    .resize(width, height, { fit: 'cover' })
+    .png()
+    .toBuffer();
 }
 
-/** Solid square PNG used as the icon placeholder. */
+const LOGO_PATH = path.join(__dirname, '..', 'assets', 'makersco-wordmark-only.png');
+
+/** Accent-gradient square icon (shown in notifications/Apple Watch, not on the pass face). */
 async function buildIconPng(size) {
-  const { background, accentFrom, accentTo, foreground } = CONFIG.colors;
+  const { accentFrom, accentTo } = CONFIG.colors;
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
       <defs>
         <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%"   stop-color="${accentFrom}"/>
+          <stop offset="0%" stop-color="${accentFrom}"/>
           <stop offset="100%" stop-color="${accentTo}"/>
         </linearGradient>
       </defs>
-      <rect width="100%" height="100%" rx="18" ry="18" fill="${background}"/>
-      <rect x="8" y="8" width="${size - 16}" height="${size - 16}" rx="14" ry="14" fill="url(#g)"/>
-      <text x="50%" y="58%" text-anchor="middle"
-            font-family="Geist, Outfit, 'Space Grotesk', sans-serif"
-            font-size="${Math.floor(size * 0.5)}"
-            font-weight="800"
-            fill="${foreground}">M</text>
+      <rect width="100%" height="100%" rx="${size * 0.18}" fill="url(#g)"/>
+      <text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle"
+            font-family="-apple-system,Helvetica,Arial,sans-serif" font-weight="700"
+            font-size="${size * 0.52}" fill="#ffffff">W</text>
     </svg>
   `.trim();
   return sharp(Buffer.from(svg)).png().toBuffer();
 }
 
-/** Wordmark logo PNG. */
+/** Logo PNG — the real Makers Co wordmark, letterboxed onto a transparent canvas. */
 async function buildLogoPng(width, height) {
-  const { foreground } = CONFIG.colors;
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-      <text x="0" y="70%"
-            font-family="Geist, Outfit, 'Space Grotesk', sans-serif"
-            font-size="${Math.floor(height * 0.7)}"
-            font-weight="700"
-            fill="${foreground}">${CONFIG.organizationName}</text>
-    </svg>
-  `.trim();
-  return sharp(Buffer.from(svg)).png().toBuffer();
+  return sharp(LOGO_PATH)
+    .resize(width, height, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .png()
+    .toBuffer();
 }
 
 /** Generate a transparent PNG with the QR code (used as a fallback visual). */
@@ -190,7 +173,7 @@ async function buildQrPng(text, size = 480) {
 // ---------------------------------------------------------------------------
 
 function buildPassJson() {
-  const { holder, cardUrl, colors } = CONFIG;
+  const { holder, front, cardUrl, colors } = CONFIG;
   return {
     formatVersion: 1,
     passTypeIdentifier: CONFIG.passTypeIdentifier,
@@ -203,18 +186,17 @@ function buildPassJson() {
     backgroundColor: rgbCss(colors.background),
     labelColor:      rgbCss(colors.label),
 
-    generic: {
-      primaryFields: [
-        { key: 'name',  label: 'NAME',  value: holder.name  },
-        { key: 'title', label: 'TITLE', value: holder.title },
-      ],
+    // storeCard is the pass style that supports a strip image — the name/title/
+    // logo are already baked into the hero strip photo, so primaryFields stays empty.
+    storeCard: {
+      primaryFields: [],
       secondaryFields: [
-        { key: 'company', label: 'COMPANY', value: holder.company },
-        { key: 'phone',   label: 'PHONE',   value: holder.phone   },
+        { key: 'company', label: 'COMPANY', value: front.company },
+        { key: 'role',    label: 'ROLE',    value: front.role, textAlignment: 'PKTextAlignmentRight' },
       ],
       auxiliaryFields: [
-        { key: 'email',   label: 'EMAIL',   value: holder.email   },
-        { key: 'website', label: 'WEBSITE', value: holder.website },
+        { key: 'phone', label: 'PHONE', value: front.phone, dataDetectorTypes: ['PKDataDetectorTypePhoneNumber'] },
+        { key: 'name',  label: 'NAME',  value: front.name, textAlignment: 'PKTextAlignmentRight' },
       ],
       backFields: [
         { key: 'about', label: 'About',   value: `Tap the QR code on the front to open the full digital card.` },
@@ -262,11 +244,12 @@ async function main() {
   fs.mkdirSync(CONFIG.outputDir, { recursive: true });
 
   // 3. Generate image assets in parallel.
-  let stripPng, strip2x, icon1x, icon2x, icon3x, logo1x, logo2x, logo3x, qrPng;
+  let stripPng, strip2x, strip3x, icon1x, icon2x, icon3x, logo1x, logo2x, logo3x, qrPng;
   try {
-    [stripPng, strip2x, icon1x, icon2x, icon3x, logo1x, logo2x, logo3x, qrPng] = await Promise.all([
-      buildStripPng(CONFIG.strip.width, CONFIG.strip.height),
-      buildStripPng(Math.round(CONFIG.strip.width / 1.5), Math.round(CONFIG.strip.height / 1.5)),
+    [stripPng, strip2x, strip3x, icon1x, icon2x, icon3x, logo1x, logo2x, logo3x, qrPng] = await Promise.all([
+      buildStripPng(CONFIG.strip.w1x, CONFIG.strip.h1x),
+      buildStripPng(CONFIG.strip.w2x, CONFIG.strip.h2x),
+      buildStripPng(CONFIG.strip.w3x, CONFIG.strip.h3x),
       buildIconPng(29),
       buildIconPng(58),
       buildIconPng(CONFIG.icon.width),
@@ -306,8 +289,9 @@ async function main() {
         'logo.png':          logo1x,
         'logo@2x.png':       logo2x,
         'logo@3x.png':       logo3x,
-        'strip.png':         strip2x,
-        'strip@2x.png':      stripPng,
+        'strip.png':         stripPng,
+        'strip@2x.png':      strip2x,
+        'strip@3x.png':      strip3x,
         'thumbnail.png':     qrPng,
         'thumbnail@2x.png':  qrPng,
       },
