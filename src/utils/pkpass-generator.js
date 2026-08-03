@@ -38,7 +38,7 @@ const CONFIG = {
   holder: {
     name: LINKS.person.name,
     email: LINKS.person.email,
-    website: LINKS.card.owner,
+    website: LINKS.card.public,
   },
 
   // Front-of-pass fields — the name/title already appear inside the hero strip image,
@@ -51,7 +51,7 @@ const CONFIG = {
   },
 
   // QR code destination (scanned to open the digital card)
-  cardUrl: LINKS.card.owner,
+  cardUrl: LINKS.card.public,
 
   // Colour palette — matches the MakersCo gold/dark brand theme.
   colors: {
@@ -210,7 +210,6 @@ function buildPassJson() {
         format: 'PKBarcodeFormatQR',
         message: cardUrl,
         messageEncoding: 'iso-8859-1',
-        altText: cardUrl.replace(/^https?:\/\//, ''),
       },
     ],
   };
