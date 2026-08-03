@@ -60,11 +60,14 @@ const CONFIG = {
     label:      '#C9A96E',
   },
 
-  // Strip image sizes (Apple spec: 375x123 @1x, 750x246 @2x, 1125x369 @3x)
+  // Strip image sizes. Wallet renders the storeCard strip slot at a ~2.6:1
+  // aspect (375x144 @1x), not the 3:1 the older docs suggest — authoring at
+  // 3:1 made Wallet aspect-fill and crop ~7% off each side, clipping the name
+  // and the wordmark. See buildStripPng for how the source is padded to match.
   strip: {
-    w1x: 375, h1x: 123,
-    w2x: 750, h2x: 246,
-    w3x: 1125, h3x: 369,
+    w1x: 375,  h1x: 144,
+    w2x: 750,  h2x: 288,
+    w3x: 1125, h3x: 432,
   },
 
   // Icon & logo dimensions
@@ -120,12 +123,41 @@ function rgbCss(hex) {
 
 const STRIP_PATH = path.join(__dirname, '..', 'assets', 'wallet-hero-banner-wsf2.png');
 
-/** Hero strip — the branded photo strip (name/title baked in), cropped to Apple's strip aspect. */
+/** Height of the warm accent rule baked along the bottom edge of the banner. */
+const STRIP_BOTTOM_RULE_PX = 2;
+
+/**
+ * Hero strip — the branded photo strip (name/title baked in), fitted to Apple's
+ * strip slot. The source banner is wider than the slot, so a plain `cover`
+ * resize would crop the sides and clip the name/wordmark. Pad it vertically
+ * first (replicating edge rows so the background gradient stays seamless) until
+ * it matches the slot aspect, then the resize is a straight scale with no crop.
+ */
 async function buildStripPng(width, height) {
-  return sharp(STRIP_PATH)
-    .resize(width, height, { fit: 'cover' })
+  const meta = await sharp(STRIP_PATH).metadata();
+  const targetAspect = width / height;
+
+  // Drop the warm accent rule along the source's bottom edge first. Padding
+  // below it would strand it mid-image, and replicating it would smear it into
+  // a visible band; without it both edges are flat and copy out seamlessly.
+  const cropHeight = meta.height - STRIP_BOTTOM_RULE_PX;
+  let source = await sharp(STRIP_PATH)
+    .extract({ left: 0, top: 0, width: meta.width, height: cropHeight })
     .png()
     .toBuffer();
+
+  // Pad in its own pass — sharp always applies resize before extend within a
+  // single pipeline, which would pad the already-scaled image instead.
+  if (meta.width / cropHeight > targetAspect) {
+    const pad = Math.round(meta.width / targetAspect) - cropHeight;
+    const top = Math.floor(pad / 2);
+    source = await sharp(source)
+      .extend({ top, bottom: pad - top, extendWith: 'copy' })
+      .png()
+      .toBuffer();
+  }
+
+  return sharp(source).resize(width, height, { fit: 'cover' }).png().toBuffer();
 }
 
 const LOGO_PATH = path.join(__dirname, '..', 'assets', 'makersco-wordmark-only.png');
