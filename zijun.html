@@ -139,32 +139,45 @@ body::before{
 .rfs-contact{font-size:1.78cqw;line-height:1.4}
 .rfs-lbl{display:inline-block;width:1.9cqw;font-weight:700}
 
-/* ── Back: contact actions ── */
-.card-back{cursor:pointer;transform:rotateY(180deg) translateZ(0.01px);-webkit-transform:rotateY(180deg) translateZ(0.01px);display:flex;flex-direction:column;padding:5.5% 5% 4.5%}
-.back-header{display:flex;justify-content:center;align-items:center;gap:10px}
-.back-logos{display:flex;align-items:center;gap:10px}
-.back-logos img{height:56px;width:auto;object-fit:contain}
+/* ── Back: contact actions ──
+   Everything here is sized in cqw so the back scales with the card the way the
+   front does. It used to mix cqw (the lockup) with fixed px (the action rows),
+   which fit at the 620px desktop width but overflowed the card on a phone —
+   the rows kept their absolute size while the card shrank, pushing the footer
+   past the bottom border. The clamps put a legibility floor under the text
+   that has to stay readable: at a 360pt card, 2.5cqw would be 9pt. */
+.card-back{cursor:pointer;transform:rotateY(180deg) translateZ(0.01px);-webkit-transform:rotateY(180deg) translateZ(0.01px);display:flex;flex-direction:column;padding:4cqw 5cqw 3.2cqw}
+.back-header{display:flex;justify-content:center;align-items:center}
+.back-logos{display:flex;align-items:center;justify-content:center}
 
 /* Stacked RFS lockup — the back-of-card variant of the mark used on the front */
 .rfs-stack{
-  display:flex;flex-direction:column;align-items:center;gap:1.4cqw;
+  display:flex;flex-direction:column;align-items:center;gap:.8cqw;
   font-family:Tinos,'Times New Roman',Times,serif;color:var(--rfs-navy);
 }
 .rfs-stack .rfs-mark{
-  width:8.4cqw;height:8.4cqw;
-  border:.3cqw solid var(--rfs-gold);
+  width:6cqw;height:6cqw;
+  border:.25cqw solid var(--rfs-gold);
   display:flex;align-items:center;justify-content:center;
-  font-size:3.4cqw;font-weight:700;letter-spacing:.04em;
+  font-size:2.5cqw;font-weight:700;letter-spacing:.04em;
 }
-.rfs-stack-text{display:flex;flex-direction:column;align-items:center;gap:.7cqw}
-.rfs-stack-name{font-size:2.6cqw;font-weight:700;letter-spacing:.14em;line-height:1}
-.rfs-stack-sub{font-size:1.7cqw;font-weight:600;letter-spacing:.3em;line-height:1}
-.rfs-stack-rule{width:80%;height:.12cqw;background:var(--rfs-gold);margin:.5cqw 0}
-.rfs-stack-tagline{font-size:1.15cqw;font-weight:700;letter-spacing:.14em;line-height:1}
-.back-actions{flex:1;display:flex;flex-direction:column;gap:3.2%;justify-content:center;padding:2% 0}
+.rfs-stack-text{display:flex;flex-direction:column;align-items:center;gap:.4cqw}
+.rfs-stack-name{font-size:clamp(10px,2.4cqw,16px);font-weight:700;letter-spacing:.14em;line-height:1}
+.rfs-stack-sub{font-size:clamp(7.5px,1.6cqw,10px);font-weight:600;letter-spacing:.3em;line-height:1}
+.rfs-stack-rule{width:80%;height:.12cqw;background:var(--rfs-gold);margin:.3cqw 0}
+.rfs-stack-tagline{font-size:clamp(6.5px,1.05cqw,8px);font-weight:700;letter-spacing:.14em;line-height:1}
+
+/* Below roughly a 400pt-wide card there isn't the height for the full lockup.
+   The rule and tagline are the first to go — at that size the tagline is down
+   to 6.5px and unreadable anyway, and it still appears on the front. */
+@container (max-width:400px){
+  .rfs-stack-rule,.rfs-stack-tagline{display:none}
+  .rfs-stack-text{gap:.3cqw}
+}
+.back-actions{flex:1;display:flex;flex-direction:column;gap:2cqw;justify-content:center;padding:.8cqw 0}
 .back-row{
-  display:flex;align-items:center;gap:14px;
-  width:100%;padding:2.6% 3%;border-radius:12px;
+  display:flex;align-items:center;gap:2.2cqw;
+  width:100%;padding:1.7cqw 3cqw;border-radius:2cqw;
   background:rgba(0,0,0,.025);border:1px solid rgba(0,0,0,.1);
   cursor:pointer;text-decoration:none;color:var(--ink);
   transition:background .15s,transform .15s;
@@ -173,17 +186,30 @@ body::before{
 .back-row:hover{background:rgba(165,34,45,.06);transform:translateY(-1px)}
 .back-row:active{transform:scale(.985)}
 .back-icon{
-  width:15%;max-width:42px;aspect-ratio:1;border-radius:10px;flex-shrink:0;
+  width:6.4cqw;aspect-ratio:1;border-radius:1.6cqw;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
   background:rgba(38,50,74,.08);border:1px solid rgba(38,50,74,.16);
   color:var(--navy);
 }
 .back-icon.wa{background:rgba(37,211,102,.12);border-color:rgba(37,211,102,.3);color:#1f9c4f}
 .back-icon svg{width:52%;height:52%}
-.back-text{display:flex;flex-direction:column;gap:2px;text-align:left}
-.back-label{font-size:14px;font-weight:700;letter-spacing:.01em}
-.back-sub{font-size:11.5px;color:var(--ink2)}
-.back-footer{font-size:10.5px;color:var(--ink2);text-align:center;margin-top:1%}
+.back-text{display:flex;flex-direction:column;gap:.3cqw;text-align:left}
+.back-label{font-size:clamp(11.5px,2.5cqw,15px);font-weight:700;letter-spacing:.01em;line-height:1.2}
+.back-sub{font-size:clamp(9.5px,2cqw,12px);color:var(--ink2);line-height:1.2}
+.back-footer{font-size:clamp(8.5px,1.7cqw,11px);color:var(--ink2);text-align:center;margin-top:.8cqw;line-height:1.2}
+
+/* Last-resort squeeze for 320pt-class phones (iPhone SE 1st gen and similar),
+   where even the trimmed lockup leaves the footer a few pixels short. Must sit
+   after the rules it overrides — a @container block carries no extra
+   specificity, so source order is what decides. */
+@container (max-width:340px){
+  .back-actions{gap:1.4cqw;padding:.3cqw 0}
+  .back-row{padding:1.2cqw 2.6cqw}
+  .rfs-stack{gap:.5cqw}
+  .back-label{font-size:11px}
+  .back-sub{font-size:9px}
+  .back-footer{font-size:8px;margin-top:.5cqw}
+}
 
 /* ── Toast ── */
 .toast{
