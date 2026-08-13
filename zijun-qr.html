@@ -6,6 +6,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="description" content="Ng Zi Jun — RFS Consultants Sdn Bhd | Scan to view digital business card"/>
 <title>Ng Zi Jun — RFS Consultants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -14,6 +17,9 @@
   --ink:#171717;
   --ink2:#3d3d3d;
   --company:#82826a;
+  --rfs-navy:#1f3a6e;
+  --rfs-gold:#c8952c;
+  --rfs-grey:#5f5f5f;
   --gold-border:#c9a15a;
   --text3:rgba(245,233,214,.34);
   --gold:#C9A96E;
@@ -49,16 +55,42 @@ body::before{
   border:3px solid var(--gold-border);
   box-shadow:0 24px 60px rgba(0,0,0,.7);
   overflow:hidden;
-  display:flex;align-items:center;justify-content:center;gap:6%;
-  padding:5% 6%;
   container-type:inline-size;
 }
-.qr-img{height:100%;aspect-ratio:1;object-fit:contain;flex-shrink:0}
-.qr-info{display:flex;flex-direction:column;justify-content:center;min-width:0}
-.qr-name{font-size:6.2cqw;font-weight:800;color:var(--ink);white-space:nowrap;font-family:Verdana,Arial,sans-serif}
-.qr-company{font-size:3cqw;font-weight:600;color:var(--company);margin-top:.5em;white-space:nowrap}
-.qr-hint{font-size:2.4cqw;color:var(--ink2);margin-top:1.4em;line-height:1.5}
-.qr-link{font-size:2.2cqw;color:var(--ink2);margin-top:1em;word-break:break-all}
+
+/* Typography mirrors the card front (zijun.html) so the QR sheet and the card
+   read as one set. Tinos is metric-compatible with Times New Roman — the face
+   the printed card uses — so it renders the same on Android and Windows. */
+.qr-front{
+  position:absolute;inset:0;
+  padding:7cqw 6.2cqw 6.5cqw;
+  display:flex;flex-direction:column;
+  font-family:Tinos,'Times New Roman',Times,serif;
+  color:var(--rfs-navy);
+}
+.rfs-lockup{display:flex;align-items:center;gap:2.9cqw}
+.rfs-mark{
+  width:5.8cqw;height:5.8cqw;flex-shrink:0;
+  border:.22cqw solid var(--rfs-gold);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.25cqw;font-weight:700;letter-spacing:.06em;line-height:1;
+}
+.rfs-lockup-text{display:flex;flex-direction:column;gap:.95cqw}
+.rfs-wordmark{font-size:2.2cqw;font-weight:700;letter-spacing:.06em;line-height:1;white-space:nowrap}
+.rfs-tagline{
+  display:flex;align-items:center;gap:.8cqw;
+  font-size:1.18cqw;font-weight:700;letter-spacing:.12em;line-height:1;white-space:nowrap;
+}
+.rfs-diamond{width:.8cqw;height:.8cqw;background:var(--rfs-gold);transform:rotate(45deg);flex-shrink:0}
+
+.qr-body{flex:1;display:flex;align-items:center;gap:6cqw;padding-top:3cqw}
+.qr-img{width:34cqw;height:auto;flex-shrink:0;display:block}
+.qr-info{display:flex;flex-direction:column;min-width:0}
+.qr-name{font-size:3.15cqw;font-weight:700;line-height:1.1;white-space:nowrap}
+.qr-role{font-size:1.85cqw;font-style:italic;color:var(--rfs-grey);margin-top:1.2cqw}
+.qr-company{font-size:1.75cqw;font-weight:700;letter-spacing:.02em;margin-top:2.6cqw;white-space:nowrap}
+.qr-hint{font-size:1.78cqw;line-height:1.4;margin-top:2.6cqw}
+.qr-link{font-size:1.78cqw;color:var(--rfs-navy);margin-top:2.2cqw;word-break:break-all}
 
 .flip-caption{font-size:10.5px;color:var(--text3);text-align:center;letter-spacing:.05em;margin:16px 0 4px;position:relative;z-index:1}
 .powered{width:min(620px,92vw);margin:18px auto 0;text-align:center;font-size:10px;color:var(--text3);letter-spacing:.06em;position:relative;z-index:1;font-family:'Times New Roman',Times,serif}
@@ -69,12 +101,25 @@ body::before{
 
 <div class="card-wrap">
   <div class="card-face">
-    <img class="qr-img" src="src/assets/zijun-qr-code.png" alt="QR code that opens a WhatsApp chat with Ng Zi Jun"/>
-    <div class="qr-info">
-      <div class="qr-name">Ng Zi Jun</div>
-      <div class="qr-company">RFS Consultants Sdn Bhd</div>
-      <div class="qr-hint">Scan to open WhatsApp and send a hello, with a link to my digital business card.</div>
-      <a class="qr-link" href="https://wa.me/60172798221?text=Hi%20Zi%20Jun%2C%20I%20would%20love%20to%20connect%20%F0%9F%98%8A%20https%3A//makersco.github.io/makersco-digital-card/zijun" target="_blank" rel="noopener">wa.me/60172798221</a>
+    <div class="qr-front">
+      <div class="rfs-lockup">
+        <div class="rfs-mark">RFS</div>
+        <div class="rfs-lockup-text">
+          <div class="rfs-wordmark">RFS CONSULTANTS SDN BHD</div>
+          <div class="rfs-tagline"><span class="rfs-diamond"></span>YOUR TRUSTED FINANCIAL PARTNER</div>
+        </div>
+      </div>
+
+      <div class="qr-body">
+        <img class="qr-img" src="src/assets/zijun-qr-code.png" alt="QR code that opens a WhatsApp chat with Ng Zi Jun"/>
+        <div class="qr-info">
+          <div class="qr-name">Ng Zi Jun</div>
+          <div class="qr-role">Wealth Advisory</div>
+          <div class="qr-company">RFS CONSULTANTS SDN BHD</div>
+          <div class="qr-hint">Scan to open WhatsApp and send a hello, with a link to my digital business card.</div>
+          <a class="qr-link" href="https://wa.me/60172798221?text=Hi%20Zi%20Jun%2C%20I%20would%20love%20to%20connect%20%F0%9F%98%8A%20https%3A//makersco.github.io/makersco-digital-card/zijun" target="_blank" rel="noopener">wa.me/60172798221</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

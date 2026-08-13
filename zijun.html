@@ -17,6 +17,9 @@
 <meta name="twitter:description" content="Ng Zi Jun — RFS Consultants Sdn Bhd | Digital Business Card"/>
 <meta name="twitter:image" content="https://makersco.github.io/makersco-digital-card/src/assets/zijun-og-preview.png"/>
 <title>Ng Zi Jun — RFS Consultants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -26,6 +29,9 @@
   --ink2:#3d3d3d;
   --company:#82826a;
   --navy:#26324a;
+  --rfs-navy:#1f3a6e;
+  --rfs-gold:#c8952c;
+  --rfs-grey:#5f5f5f;
   --red:#a5222d;
   --gold-border:#c9a15a;
   --text3:rgba(245,233,214,.34);
@@ -75,35 +81,86 @@ body::before{
   container-type:inline-size;
 }
 
-/* ── Front: replica of the physical RFS Consultants / Prudential card ── */
+/* ── Front: replica of the RFS Consultants corporate card ──
+   Every size is in cqw (percent of the card's own width) so the whole face
+   scales as one. The numbers are measured off the printed card: the reference
+   is 1206px wide, so 1cqw == 12.06 reference px. The RFS lockup is drawn in
+   CSS rather than shipped as an image so it stays crisp at any size.
+   Tinos is metric-compatible with Times New Roman — the card's actual face —
+   so it renders identically on Android/Windows where Times isn't installed. */
 .card-front{cursor:pointer}
-.biz-front{position:absolute;inset:0}
-.biz-rfs-logo{position:absolute;left:3%;top:5.5%;width:10%;aspect-ratio:1;object-fit:contain}
-.biz-company-name{
-  position:absolute;left:16%;top:8.8%;right:5%;
-  font-weight:800;font-size:5.1cqw;letter-spacing:.01em;
-  color:var(--company);white-space:nowrap;transform:scaleX(.96);transform-origin:left center;
+.rfs-front{
+  position:absolute;inset:0;
+  background:var(--paper);
+  padding:9cqw 6.2cqw 8cqw;
+  display:flex;flex-direction:column;
+  font-family:Tinos,'Times New Roman',Times,serif;
+  color:var(--rfs-navy);
 }
-.biz-company-reg{
-  position:absolute;right:4%;top:18.5%;
-  font-size:2.3cqw;font-weight:600;color:var(--navy);
+
+/* Logo lockup — square RFS mark + wordmark + tagline */
+.rfs-lockup{display:flex;align-items:center;gap:2.9cqw}
+.rfs-mark{
+  width:5.8cqw;height:5.8cqw;flex-shrink:0;
+  border:.22cqw solid var(--rfs-gold);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.25cqw;font-weight:700;letter-spacing:.06em;line-height:1;
 }
-.biz-prudential-logo{position:absolute;left:4%;top:35%;width:23%;aspect-ratio:458/371;object-fit:contain}
-.biz-address{
-  position:absolute;left:4%;bottom:6%;width:52%;
-  font-size:2.2cqw;line-height:1.5;color:var(--ink);
+.rfs-lockup-text{display:flex;flex-direction:column;gap:.95cqw}
+.rfs-wordmark{font-size:2.2cqw;font-weight:700;letter-spacing:.06em;line-height:1;white-space:nowrap}
+.rfs-tagline{
+  display:flex;align-items:center;gap:.8cqw;
+  font-size:1.18cqw;font-weight:700;letter-spacing:.12em;line-height:1;white-space:nowrap;
 }
-.biz-person{position:absolute;right:4%;top:55.5%;text-align:right}
-.biz-name{font-size:5.3cqw;font-weight:800;color:var(--ink);white-space:nowrap;font-family:Verdana,Arial,sans-serif}
-.biz-phone{font-size:2.85cqw;font-weight:600;color:var(--ink2);margin-top:.5em;white-space:nowrap}
-.biz-contacts{position:absolute;right:4%;bottom:6%;text-align:right;font-size:2.3cqw;line-height:1.85;color:var(--ink2)}
-.biz-contacts .lbl{font-weight:700;color:var(--ink);margin-left:.6em}
+.rfs-diamond{width:.8cqw;height:.8cqw;background:var(--rfs-gold);transform:rotate(45deg);flex-shrink:0}
+
+/* Two columns split by the hairline rule, both hanging off the bottom edge
+   exactly as they do on the printed card. */
+.rfs-body{flex:1;display:grid;grid-template-columns:1fr 1fr;padding-top:3.4cqw}
+.rfs-left{display:flex;flex-direction:column;justify-content:flex-end;gap:7cqw;padding-right:5cqw}
+.rfs-right{
+  position:relative;padding-left:6.4cqw;
+  display:flex;flex-direction:column;justify-content:flex-end;gap:2.4cqw;
+}
+.rfs-right::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:.12cqw;background:rgba(31,58,110,.45);
+}
+
+.rfs-person-name{font-size:3.15cqw;font-weight:700;line-height:1.1;white-space:nowrap}
+.rfs-person-role{font-size:1.85cqw;font-style:italic;color:var(--rfs-grey);margin-top:1.2cqw}
+.rfs-partners img{width:10.5cqw;height:auto;display:block}
+
+.rfs-org-name{font-size:1.75cqw;font-weight:700;letter-spacing:.02em;line-height:1.35;white-space:nowrap}
+.rfs-org-reg{font-size:1.78cqw;line-height:1.35}
+.rfs-org-tag{font-size:1.78cqw;font-style:italic;color:var(--rfs-grey);line-height:1.35}
+.rfs-address{font-size:1.78cqw;line-height:1.4}
+.rfs-contacts{display:flex;flex-direction:column}
+.rfs-contact{font-size:1.78cqw;line-height:1.4}
+.rfs-lbl{display:inline-block;width:1.9cqw;font-weight:700}
 
 /* ── Back: contact actions ── */
 .card-back{cursor:pointer;transform:rotateY(180deg) translateZ(0.01px);-webkit-transform:rotateY(180deg) translateZ(0.01px);display:flex;flex-direction:column;padding:5.5% 5% 4.5%}
-.back-header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.back-header{display:flex;justify-content:center;align-items:center;gap:10px}
 .back-logos{display:flex;align-items:center;gap:10px}
 .back-logos img{height:56px;width:auto;object-fit:contain}
+
+/* Stacked RFS lockup — the back-of-card variant of the mark used on the front */
+.rfs-stack{
+  display:flex;flex-direction:column;align-items:center;gap:1.4cqw;
+  font-family:Tinos,'Times New Roman',Times,serif;color:var(--rfs-navy);
+}
+.rfs-stack .rfs-mark{
+  width:8.4cqw;height:8.4cqw;
+  border:.3cqw solid var(--rfs-gold);
+  display:flex;align-items:center;justify-content:center;
+  font-size:3.4cqw;font-weight:700;letter-spacing:.04em;
+}
+.rfs-stack-text{display:flex;flex-direction:column;align-items:center;gap:.7cqw}
+.rfs-stack-name{font-size:2.6cqw;font-weight:700;letter-spacing:.14em;line-height:1}
+.rfs-stack-sub{font-size:1.7cqw;font-weight:600;letter-spacing:.3em;line-height:1}
+.rfs-stack-rule{width:80%;height:.12cqw;background:var(--rfs-gold);margin:.5cqw 0}
+.rfs-stack-tagline{font-size:1.15cqw;font-weight:700;letter-spacing:.14em;line-height:1}
 .back-actions{flex:1;display:flex;flex-direction:column;gap:3.2%;justify-content:center;padding:2% 0}
 .back-row{
   display:flex;align-items:center;gap:14px;
@@ -150,25 +207,45 @@ body::before{
 
     <!-- Front: exact replica of the physical business card. Tap anywhere to flip. -->
     <div class="card-face card-front" id="cardFront" onclick="flipCard()">
-      <div class="biz-front">
-        <img class="biz-rfs-logo" src="src/assets/rfs-consultants-logo.jpeg" alt="RFS Consultants"/>
-        <div class="biz-company-name">RFS CONSULTANTS SDN BHD</div>
-        <div class="biz-company-reg">(527056-W)</div>
-        <img class="biz-prudential-logo" src="src/assets/prudential-logo.png" alt="Prudential"/>
-        <div class="biz-address">
-          1208, Block B, 12th Floor,<br/>
-          Phileo Damansara 1,<br/>
-          9, Jalan 16/11, Off Jalan Damansara,<br/>
-          46350 Petaling Jaya, Selangor, Malaysia.
+      <div class="rfs-front">
+        <div class="rfs-lockup">
+          <div class="rfs-mark">RFS</div>
+          <div class="rfs-lockup-text">
+            <div class="rfs-wordmark">RFS CONSULTANTS SDN BHD</div>
+            <div class="rfs-tagline"><span class="rfs-diamond"></span>YOUR TRUSTED FINANCIAL PARTNER</div>
+          </div>
         </div>
-        <div class="biz-person">
-          <div class="biz-name">Ng Zi Jun</div>
-          <div class="biz-phone">+6017-279 8221</div>
-        </div>
-        <div class="biz-contacts">
-          <div>+603-7666 3815<span class="lbl">T</span></div>
-          <div>+603-7931 6016<span class="lbl">F</span></div>
-          <div>zijunnn98@gmail.com<span class="lbl">E</span></div>
+
+        <div class="rfs-body">
+          <div class="rfs-left">
+            <div>
+              <div class="rfs-person-name">Ng Zi Jun</div>
+              <div class="rfs-person-role">Wealth Advisory</div>
+            </div>
+            <div class="rfs-partners">
+              <img src="src/assets/prudential-lockup.png" alt="Prudential"/>
+            </div>
+          </div>
+
+          <div class="rfs-right">
+            <div>
+              <div class="rfs-org-name">RFS CONSULTANTS SDN BHD</div>
+              <div class="rfs-org-reg">(527056-W)</div>
+              <div class="rfs-org-tag">Million Dollar Agency</div>
+            </div>
+            <div class="rfs-address">
+              Unit 1208, Block B, 12th Floor,<br/>
+              Phileo Damansara 1,<br/>
+              9, Jalan 16/11, Off, Jalan Damansara,<br/>
+              46350 Petaling Jaya, Selangor
+            </div>
+            <div class="rfs-contacts">
+              <div class="rfs-contact">+6017-279 8221</div>
+              <div class="rfs-contact"><span class="rfs-lbl">T</span>+603-7666 3815</div>
+              <div class="rfs-contact"><span class="rfs-lbl">F</span>+603-7931 6016</div>
+            </div>
+            <div class="rfs-contact">zijunnn98@gmail.com</div>
+          </div>
         </div>
       </div>
     </div>
@@ -177,7 +254,15 @@ body::before{
     <div class="card-face card-back" id="cardBack">
       <div class="back-header">
         <div class="back-logos">
-          <img src="src/assets/rfs-consultants-logo.jpeg" alt="RFS Consultants"/>
+          <div class="rfs-stack">
+            <div class="rfs-mark">RFS</div>
+            <div class="rfs-stack-text">
+              <div class="rfs-stack-name">RFS CONSULTANTS</div>
+              <div class="rfs-stack-sub">SDN BHD</div>
+              <div class="rfs-stack-rule"></div>
+              <div class="rfs-stack-tagline">YOUR TRUSTED FINANCIAL PARTNER</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="back-actions">
