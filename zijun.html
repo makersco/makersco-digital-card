@@ -308,6 +308,7 @@ body::before{
 </div>
 
 <div class="flip-caption">Tap the card to flip and connect</div>
+
 <div class="powered">Powered by <span>Makers Co</span> · Digital Business Cards</div>
 
 <!-- Toast -->
@@ -352,6 +353,11 @@ function saveContact() {
   a.click();
   showToast('Contact saved! ✓');
 }
+
+// The Apple Wallet pass lives on the owner page (zijun-wallet-owner.html), not
+// here: its QR opens a WhatsApp chat with Zi Jun, so it is his to show, and that
+// page caps downloads at three. A button on this public card would hand the pass
+// to every visitor and make the cap meaningless.
 
 function openWhatsApp() {
   window.open(`https://wa.me/${CONFIG.phone.replace(/\D/g,'')}?text=${encodeURIComponent(CONFIG.wa_message)}`, '_blank');

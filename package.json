@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "generate:apple": "node src/utils/pkpass-generator.js",
+    "generate:zijun": "node src/utils/zijun-pkpass-generator.js",
     "generate:google": "node src/utils/google-wallet-generator.js",
     "generate:icons": "node scripts/generate-pass-icons.js",
     "generate:banner": "node scripts/generate-wallet-banner.js",

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<script>(function(){var b=document.createElement('base');b.href=location.origin+(location.hostname.indexOf('github.io')>-1?'/makersco-digital-card/':'/');document.head.appendChild(b);})();</script>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<meta name="description" content="Owner access — add Ng Zi Jun's digital business card to Apple Wallet"/>
+<title>Apple Wallet — Ng Zi Jun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#070504;
+  --paper:#fefefe;
+  --rfs-navy:#1f3a6e;
+  --rfs-gold:#c8952c;
+  --gold-border:#c9a15a;
+  --text3:rgba(245,233,214,.34);
+  --text2:rgba(245,233,214,.62);
+  --gold:#C9A96E;
+  --red:#a5222d;
+}
+html{height:100%}
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--dark);
+  color:#F5E9D6;
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 20px;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;top:0;left:0;right:0;height:55vh;
+  background:radial-gradient(ellipse at 50% -10%,rgba(201,169,110,.07) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+.sheet{width:min(380px,94vw);position:relative;z-index:1;text-align:center}
+
+/* ── Header ── */
+.eyebrow{
+  font-size:9.5px;letter-spacing:.22em;color:var(--gold);opacity:.75;
+  text-transform:uppercase;margin-bottom:9px;
+}
+.headline{
+  font-family:Tinos,'Times New Roman',Times,serif;
+  font-size:23px;font-weight:700;letter-spacing:.01em;line-height:1.25;
+}
+.subhead{font-size:12px;color:var(--text2);line-height:1.55;margin-top:8px}
+
+/* ── Pass preview ──
+   A mock of the real pass, not a screenshot: the strip is the exact PNG that
+   ships inside the bundle (written by the generator), and the body is painted in
+   the pass's own backgroundColor — the printed card's white stock and navy ink —
+   so the preview matches what Wallet draws rather than this page's dark theme.
+
+   There is no header row above the strip: the pass ships without a logo.png, so
+   Wallet draws nothing there and the strip's own RFS lockup is the top of it. */
+.pass{
+  margin:22px 0 6px;
+  border-radius:14px;
+  background:#FEFEFE;
+  border:1px solid rgba(201,161,90,.5);
+  box-shadow:0 20px 48px rgba(0,0,0,.65);
+  overflow:hidden;
+  text-align:left;
+}
+.pass-strip{display:block;width:100%;height:auto}
+
+/* Wallet draws the barcode itself: a white rounded panel, centred, about half
+   the pass width, with the altText beneath it. Mocked at those proportions so
+   the preview does not undersell how big the QR actually is on the phone. The
+   pass has no front field rows, so the barcode sits directly under the strip. */
+.pass-qr{padding:20px 13px 20px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.pass-qr img{
+  width:min(186px,56%);height:auto;aspect-ratio:1;
+  background:#fff;border-radius:7px;display:block;
+}
+.pass-qr-text{font-size:10.5px;color:#5F5F5F;letter-spacing:.03em;text-align:center}
+
+/* ── Add to Wallet ── */
+.wallet-cta{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;margin:18px 0 0;padding:14px 20px;border-radius:999px;
+  background:#000;color:#fff;border:1px solid rgba(255,255,255,.2);
+  font-size:15px;font-weight:600;letter-spacing:.01em;line-height:1;
+  cursor:pointer;transition:transform .15s,border-color .15s,opacity .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.wallet-cta:hover{border-color:rgba(255,255,255,.42)}
+.wallet-cta:active{transform:scale(.97)}
+.wallet-cta svg{width:18px;height:18px;flex-shrink:0}
+.wallet-cta[disabled]{
+  opacity:.4;cursor:not-allowed;transform:none;
+  border-color:rgba(255,255,255,.12);
+}
+
+/* ── Uses remaining ── */
+.uses{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.pips{display:flex;gap:7px}
+.pip{
+  width:8px;height:8px;border-radius:50%;
+  border:1px solid var(--gold);background:var(--gold);
+  transition:background .2s,border-color .2s;
+}
+.pip.spent{background:transparent;border-color:rgba(245,233,214,.2)}
+.uses-text{font-size:11px;color:var(--text2);letter-spacing:.03em}
+.uses-text strong{color:var(--gold);font-weight:600}
+
+/* Shown once the three uses are gone. */
+.expired{
+  display:none;margin-top:14px;padding:13px 15px;
+  border:1px solid rgba(165,34,45,.45);border-radius:10px;
+  background:rgba(165,34,45,.09);
+  font-size:11.5px;line-height:1.6;color:rgba(245,233,214,.8);text-align:left;
+}
+.expired a{color:var(--gold)}
+body.is-expired .expired{display:block}
+body.is-expired .uses-text strong{color:rgba(245,233,214,.5)}
+
+.fineprint{font-size:10px;color:var(--text3);line-height:1.65;margin-top:18px;letter-spacing:.02em}
+.fineprint a{color:var(--text2)}
+.powered{margin:20px auto 0;font-size:10px;color:var(--text3);letter-spacing:.06em;font-family:'Times New Roman',Times,serif}
+.powered span{color:var(--gold);opacity:.8}
+
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);
+  background:rgba(20,16,12,.96);border:1px solid rgba(201,169,110,.32);
+  color:#F5E9D6;font-size:12.5px;padding:11px 18px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <div class="eyebrow">Owner access</div>
+  <h1 class="headline">Add your card to Apple Wallet</h1>
+  <p class="subhead">The pass carries the same QR as your printed sheet — show it and the scan opens a WhatsApp chat with you.</p>
+
+  <div class="pass">
+    <img class="pass-strip" src="src/assets/zijun-pass-strip.png" alt="Ng Zi Jun, Wealth Advisory — RFS Consultants Sdn Bhd"/>
+    <div class="pass-qr">
+      <img src="src/assets/zijun-qr-code.png" alt="QR code that opens a WhatsApp chat with Ng Zi Jun"/>
+      <div class="pass-qr-text">Scan to WhatsApp Ng Zi Jun</div>
+    </div>
+  </div>
+
+  <button class="wallet-cta" id="walletCta" onclick="addToWallet()">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.54c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.87 2.31 1.15-.05 1.59-.74 2.98-.74 1.39 0 1.78.74 3 .72 1.24-.02 2.02-1.13 2.78-2.24.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.41-.93-2.42-3.73zM14.9 5.36c.63-.77 1.06-1.83.94-2.9-.91.04-2.02.61-2.67 1.37-.58.68-1.09 1.77-.95 2.81 1.02.08 2.05-.52 2.68-1.28z"/></svg>
+    <span id="walletCtaLabel">Add to Apple Wallet</span>
+  </button>
+
+  <div class="uses">
+    <div class="pips" id="pips" aria-hidden="true"></div>
+    <div class="uses-text" id="usesText"></div>
+  </div>
+
+  <div class="expired">
+    This link has been used all three times. The pass you already added stays in
+    Wallet and keeps working — this only stops new downloads. Need more, or lost
+    the pass? Message
+    <a href="https://wa.me/60172798221" target="_blank" rel="noopener">Makers Co</a>
+    and we'll reissue the link.
+  </div>
+
+  <p class="fineprint" id="fineprint">
+    Owner link — please don't share it. Your public card lives at
+    <a href="zijun" target="_blank" rel="noopener">/zijun</a>.
+  </p>
+
+  <div class="powered">Powered by <span>Makers Co</span> · Digital Business Cards</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Apple Wallet, capped at three downloads ──────────────────────────────────
+// The pass is the signed .pkpass built by src/utils/zijun-pkpass-generator.js.
+// The path is relative on purpose — the <base href> injected at the top of this
+// file resolves it against whichever origin is serving the page.
+const PKPASS_URL = "src/cards/ng-zi-jun.pkpass";
+
+const MAX_USES  = 3;
+const STORE_KEY = 'zijun-wallet-uses';
+
+// This site is static (GitHub Pages), so there is no server to count against:
+// the tally lives in this browser's localStorage. That means the cap holds for
+// whoever is using this browser — clearing site data or opening the link on
+// another phone starts a fresh three. A cap that cannot be reset needs a
+// backend issuing single-use tokens; this is the honest version of that.
+function readUses() {
+  try {
+    const n = parseInt(localStorage.getItem(STORE_KEY), 10);
+    return Number.isFinite(n) && n > 0 ? Math.min(n, MAX_USES) : 0;
+  } catch (e) {
+    return 0;   // private browsing: storage throws, so nothing is counted
+  }
+}
+
+function writeUses(n) {
+  try { localStorage.setItem(STORE_KEY, String(n)); } catch (e) {}
+}
+
+function render() {
+  const used = readUses();
+  const left = Math.max(0, MAX_USES - used);
+
+  const pips = document.getElementById('pips');
+  pips.innerHTML = '';
+  for (let i = 0; i < MAX_USES; i++) {
+    const pip = document.createElement('span');
+    pip.className = i < left ? 'pip' : 'pip spent';
+    pips.appendChild(pip);
+  }
+
+  document.getElementById('usesText').innerHTML =
+    `<strong>${left}</strong> of ${MAX_USES} downloads remaining`;
+
+  const cta = document.getElementById('walletCta');
+  cta.disabled = left === 0;
+  document.getElementById('walletCtaLabel').textContent =
+    left ? 'Add to Apple Wallet' : 'Link expired';
+  document.body.classList.toggle('is-expired', left === 0);
+}
+
+function addToWallet() {
+  const used = readUses();
+  if (used >= MAX_USES) { render(); return; }
+
+  // Count the click before handing off. Navigating to the .pkpass unloads this
+  // page on iOS, so anything deferred to a load/unload handler would be a race.
+  writeUses(used + 1);
+  render();
+
+  const left  = MAX_USES - (used + 1);
+  const apple = /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent);
+
+  // Safari has to see the response's application/vnd.apple.pkpass type to hand
+  // the file to Wallet, so navigate to it rather than using a download link —
+  // an <a download> saves it into Files instead, costing two extra taps.
+  if (apple) {
+    showToast(left ? `Opening Apple Wallet… ${left} left` : 'Opening Apple Wallet… last one');
+    window.location.href = PKPASS_URL;
+    return;
+  }
+  const a = Object.assign(document.createElement('a'), {
+    href: PKPASS_URL,
+    download: 'ng-zi-jun.pkpass',
+  });
+  a.click();
+  showToast('Downloaded — open it on an iPhone to add');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// Coming back from Wallet restores this page from the bfcache, where the DOM is
+// exactly as it was left — re-render so the count on screen matches storage.
+window.addEventListener('pageshow', render);
+render();
+</script>
+</body>
+</html>
